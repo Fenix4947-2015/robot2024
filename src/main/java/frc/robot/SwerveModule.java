@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -37,12 +38,12 @@ public class SwerveModule {
   private SwerveModuleState state = new SwerveModuleState();
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(1, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(0.3, 0, 0);
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
       new ProfiledPIDController(
-          5,
+          0.7,
           0,
           0, 
           new TrapezoidProfile.Constraints(
@@ -74,7 +75,10 @@ public class SwerveModule {
       this.id = id;
 
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
+    m_driveMotor.setIdleMode(IdleMode.kBrake);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
+    m_turningMotor.setIdleMode(IdleMode.kBrake);
+
 
     m_driveEncoder = m_driveMotor.getEncoder();//new Encoder(driveEncoderChannelA, driveEncoderChannelB);
     m_turningEncoder = new CANcoder(turningEncoderId);//new Encoder(turningEncoderChannelA, turningEncoderChannelB);
@@ -162,9 +166,12 @@ public class SwerveModule {
 
     double atPosition = m_turningPIDController.atGoal() ? 1.0 : 1.0;
     double motorVoltage = (driveOutput + driveFeedforward) * reversed * atPosition; 
+    motorVoltage = targetSpeed / 5.0;
     
-    m_driveMotor.setVoltage(motorVoltage);
-    m_turningMotor.setVoltage(turnOutput + turnFeedforward);
+    m_driveMotor.set(motorVoltage);
+    m_turningMotor.set(turnOutput + turnFeedforward);
+    SmartDashboard.putNumber("motor voltage" + id, motorVoltage);
+    SmartDashboard.putNumber("turn output" + id, turnOutput);
   }
 
   private double modFromTurn(double wheelAngle, double wheelTarget) {
