@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.robot.subsystems.swerve;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
@@ -13,9 +13,12 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.swerve.SwerveModule;
 
 /** Represents a swerve drive style drivetrain. */
-public class Drivetrain {
+public class Drivetrain extends SubsystemBase {
 
   private static final double INCH_TO_METER = 0.254;
   private static final double SWERVE_TRANSLATION_X = 11 * INCH_TO_METER;
@@ -107,5 +110,19 @@ public class Drivetrain {
 
   public double getGyroAngle() {
     return m_gyro.getRotation2d().getRadians();
+  }
+
+  public void updateSmartDashboard() {
+    SmartDashboard.putNumber("wheelAngleFrontRight", getSwerveModuleFrontRight().getWheelAngle());
+    SmartDashboard.putNumber("wheelAngleBackRight", getSwerveModuleBackRight().getWheelAngle());
+    SmartDashboard.putNumber("wheelAngleFrontLeft", getSwerveModuleFrontLeft().getWheelAngle());
+    SmartDashboard.putNumber("wheelAngleBackLeft", getSwerveModuleBackLeft().getWheelAngle());
+
+    SmartDashboard.putNumber("stateAngleFrontRight", getSwerveModuleFrontRight().getStateAngle());
+    SmartDashboard.putNumber("stateAngleBackRight", getSwerveModuleBackRight().getStateAngle());
+    SmartDashboard.putNumber("stateAngleFrontLeft", getSwerveModuleFrontLeft().getStateAngle());
+    SmartDashboard.putNumber("stateAngleBackLeft", getSwerveModuleBackLeft().getStateAngle());
+
+    SmartDashboard.putNumber("gyroAngle", getGyroAngle());
   }
 }
