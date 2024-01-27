@@ -16,15 +16,17 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain {
-  public static final double kMaxSpeed = 5.0; // 3 meters per second
-  public static final double kMaxAngularSpeed = Math.PI * 10; // 1/2 rotation per second
 
-  private final double swerveTranslationX = 11 * 0.254;
-  private final double swerveTranslationY = 11 * 0.254;
-  private final Translation2d m_frontLeftLocation = new Translation2d(swerveTranslationX, swerveTranslationY);
-  private final Translation2d m_frontRightLocation = new Translation2d(swerveTranslationX, -swerveTranslationY);
-  private final Translation2d m_backLeftLocation = new Translation2d(-swerveTranslationX, swerveTranslationY);
-  private final Translation2d m_backRightLocation = new Translation2d(-swerveTranslationX, -swerveTranslationY);
+  private static final double INCH_TO_METER = 0.254;
+  private static final double SWERVE_TRANSLATION_X = 11 * INCH_TO_METER;
+  private static final double SWERVE_TRANSLATION_Y = 11 * INCH_TO_METER;
+  public static final double K_MAX_SPEED = 5.0; // 3 meters per second
+  public static final double K_MAX_ANGULAR_SPEED = K_MAX_SPEED / Math.sqrt(Math.pow(SWERVE_TRANSLATION_X, 2) + Math.pow(SWERVE_TRANSLATION_Y, 2)); // 1/2 rotation per second
+
+  private final Translation2d m_frontLeftLocation = new Translation2d(SWERVE_TRANSLATION_X, SWERVE_TRANSLATION_Y);
+  private final Translation2d m_frontRightLocation = new Translation2d(SWERVE_TRANSLATION_X, -SWERVE_TRANSLATION_Y);
+  private final Translation2d m_backLeftLocation = new Translation2d(-SWERVE_TRANSLATION_X, SWERVE_TRANSLATION_Y);
+  private final Translation2d m_backRightLocation = new Translation2d(-SWERVE_TRANSLATION_X, -SWERVE_TRANSLATION_Y);
 
   private final SwerveModule m_frontLeft = new SwerveModule(1, 56, 55, 60, 0, false);
   private final SwerveModule m_frontRight = new SwerveModule(2, 54, 53, 61, 0, false);
@@ -67,8 +69,8 @@ public class Drivetrain {
         m_kinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
-                : new ChassisSpeeds(xSpeed, ySpeed, rot * Math.abs(rot)));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
+                : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, K_MAX_SPEED);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);

@@ -21,11 +21,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
   private final int id;
-  private static final double kGrearRatio = 6;
-  private static final double kWheelRadius = 0.0508;
-  private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularSpeed;
-  private static final double kModuleMaxAngularAcceleration =
-      2 * Math.PI * 100; // radians per second squared
+  private static final double K_SPEED_GEAR_RATIO = 6;
+  private static final double K_WHEEL_RADIUS = 0.0508;
+  private static final double K_MAX_MOTOR_RPM = 5676;
+  private static final double K_TRUN_GEAR_RATIO = 12.8;
+  private static final double K_MODULE_MAX_ANGULAR_VELOCITY = K_MAX_MOTOR_RPM * 2 * Math.PI / 60 / K_TRUN_GEAR_RATIO; // radians per second
+  private static final double K_MODULE_MAX_ANGULAR_ACCELERATION = 2 * Math.PI * 100; // radians per second squared
 
   
   private final CANSparkMax m_driveMotor;
@@ -47,7 +48,7 @@ public class SwerveModule {
           0,
           0, 
           new TrapezoidProfile.Constraints(
-              kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+              K_MODULE_MAX_ANGULAR_VELOCITY, K_MODULE_MAX_ANGULAR_ACCELERATION));
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0);
@@ -87,7 +88,7 @@ public class SwerveModule {
     // resolution.
     //m_driveEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius / kEncoderResolution);
 
-    m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * kWheelRadius / (60 * kGrearRatio));
+    m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * K_WHEEL_RADIUS / (60 * K_SPEED_GEAR_RATIO));
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -156,8 +157,8 @@ public class SwerveModule {
     // final double driveOutput =
     //     m_drivePIDController.calculate(m_driveEncoder.getRate(), state.speedMetersPerSecond);
     final double speed = m_driveEncoder.getVelocity();
-    final double targetSpeed = state.speedMetersPerSecond * modFromTurn(wheelAngle, targetWheelAngle);
-    SmartDashboard.putNumber("targetSpeed" + id, targetSpeed);
+    final double targetSpeed = state.speedMetersPerSecond * changeSpeedDirection(wheelAngle, targetWheelAngle);
+    SmartDashboard.putNumber("encoderVelocity" + id, speed);
 
     final double driveOutput =
         m_drivePIDController.calculate(speed, targetSpeed);
@@ -165,16 +166,14 @@ public class SwerveModule {
     final double driveFeedforward = m_driveFeedforward.calculate(targetSpeed);
 
     double atPosition = m_turningPIDController.atGoal() ? 1.0 : 1.0;
-    double motorVoltage = (driveOutput + driveFeedforward) * reversed * atPosition; 
-    motorVoltage = targetSpeed / 5.0;
+    double motorSetPoint = (driveOutput + driveFeedforward) * reversed * atPosition; 
+    motorSetPoint = targetSpeed / Drivetrain.K_MAX_SPEED;
     
-    m_driveMotor.set(motorVoltage);
+    m_driveMotor.set(motorSetPoint);
     m_turningMotor.set(turnOutput + turnFeedforward);
-    SmartDashboard.putNumber("motor voltage" + id, motorVoltage);
-    SmartDashboard.putNumber("turn output" + id, turnOutput);
   }
 
-  private double modFromTurn(double wheelAngle, double wheelTarget) {
+  private double changeSpeedDirection(double wheelAngle, double wheelTarget) {
     long deltaAngle = Math.round(Math.abs(wheelAngle - wheelTarget)  / Math.PI);
     SmartDashboard.putNumber("modRadFromTurn" + id, deltaAngle);
     double reversed = deltaAngle % 2 == 1 ? -1.0 : 1.0;
