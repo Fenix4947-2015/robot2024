@@ -64,10 +64,15 @@ public class AutoAim extends Command {
 
         if (_limelight.isTargetValid()) {
             //_driveTrain.driveArcadeMethod(-_driveCommand, _steerCommand);
+            _driveTrain.drive(_driveCommand, 0.0, _steerCommand, false);
         } else {
-            //_driveTrain.stop();
+            stopDrivetrain();
         }
 
+    }
+
+    private void stopDrivetrain() {
+        _driveTrain.drive(0.0, 0.0, 0.0, false);
     }
 
     private void refreshPidValues() {
@@ -87,7 +92,7 @@ public class AutoAim extends Command {
     // Called once after isFinished returns true
     @Override
     public void end(boolean interrupted) {
-        //_driveTrain.stop();
+        stopDrivetrain();
     }
 
     public void setAnglePID(double p, double i, double d, double f) {
