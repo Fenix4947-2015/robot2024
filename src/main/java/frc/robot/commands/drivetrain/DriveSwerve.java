@@ -9,6 +9,8 @@ import frc.robot.subsystems.swerve.Drivetrain;
 
 public class DriveSwerve extends Command {
 
+    private static final boolean REVERSE_ROTATION = false;
+
     //private final Frc4947Controller m_controller;
     private final CommandXboxController m_controller;
     private final Drivetrain m_driveTrain;
@@ -27,7 +29,7 @@ public class DriveSwerve extends Command {
 
     @Override
     public void execute() {
-        driveWithJoystick(false);
+        driveWithJoystick(true);
         m_driveTrain.updateSmartDashboard();
     }
 
@@ -49,9 +51,9 @@ public class DriveSwerve extends Command {
         // positive value when we pull to the left (remember, CCW is positive in
         // mathematics). Xbox controllers return positive values when you pull to
         // the right by default.
-        final var rot =
-                -m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.2))
-                        * Drivetrain.K_MAX_ANGULAR_SPEED;
+        final var rot = (REVERSE_ROTATION ? -1 : 1) *
+                m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.2))
+                * Drivetrain.K_MAX_ANGULAR_SPEED;
 
         m_driveTrain.drive(xSpeed, ySpeed, rot, fieldRelative);
 

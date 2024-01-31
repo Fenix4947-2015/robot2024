@@ -9,10 +9,10 @@ import frc.robot.SmartDashboardSettings;
 import frc.robot.limelight.Limelight;
 
 public class AutoAim extends Command {
-    public static final double K_FEED_FORWARD_ANGLE = 0.41;
-    public static final double K_PID_P_ANGLE = 0.018;
-    public static final double K_PID_I_ANGLE = 0.000;
-    public static final double K_PID_D_ANGLE = 0.002;
+    public static final double K_FEED_FORWARD_ANGLE = 0.0;
+    public static final double K_PID_P_ANGLE = 0.01;
+    public static final double K_PID_I_ANGLE = 0.0;
+    public static final double K_PID_D_ANGLE = 0.0;
 
     public static final double K_FEED_FORWARD_DISTANCE = 0.0;
     public static final double K_PID_P_DISTANCE = 0.35;
@@ -45,6 +45,7 @@ public class AutoAim extends Command {
         _limelight = limelight;
         _smartDashboardSettings = smartDashboardSettings;
         addRequirements(_limelight);
+        smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
     }
 
     // Called just before this Command runs the first time
@@ -64,10 +65,15 @@ public class AutoAim extends Command {
 
         if (_limelight.isTargetValid()) {
             //_driveTrain.driveArcadeMethod(-_driveCommand, _steerCommand);
+            _driveTrain.drive(_driveCommand, 0.0, _steerCommand, false);
         } else {
-            //_driveTrain.stop();
+            stopDrivetrain();
         }
 
+    }
+
+    private void stopDrivetrain() {
+        _driveTrain.drive(0.0, 0.0, 0.0, false);
     }
 
     private void refreshPidValues() {
@@ -78,6 +84,8 @@ public class AutoAim extends Command {
         }
     }
 
+
+
     // Make this return true when this Command no longer needs to run execute()
     @Override
     public boolean isFinished() {
@@ -87,7 +95,7 @@ public class AutoAim extends Command {
     // Called once after isFinished returns true
     @Override
     public void end(boolean interrupted) {
-        //_driveTrain.stop();
+        stopDrivetrain();
     }
 
     public void setAnglePID(double p, double i, double d, double f) {
