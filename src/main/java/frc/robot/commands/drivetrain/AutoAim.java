@@ -9,10 +9,10 @@ import frc.robot.SmartDashboardSettings;
 import frc.robot.limelight.Limelight;
 
 public class AutoAim extends Command {
-    public static final double K_FEED_FORWARD_ANGLE = 0.41;
-    public static final double K_PID_P_ANGLE = 0.018;
-    public static final double K_PID_I_ANGLE = 0.000;
-    public static final double K_PID_D_ANGLE = 0.002;
+    public static final double K_FEED_FORWARD_ANGLE = 0.0;
+    public static final double K_PID_P_ANGLE = 0.01;
+    public static final double K_PID_I_ANGLE = 0.0;
+    public static final double K_PID_D_ANGLE = 0.0;
 
     public static final double K_FEED_FORWARD_DISTANCE = 0.0;
     public static final double K_PID_P_DISTANCE = 0.35;
@@ -45,6 +45,7 @@ public class AutoAim extends Command {
         _limelight = limelight;
         _smartDashboardSettings = smartDashboardSettings;
         addRequirements(_limelight);
+        smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
     }
 
     // Called just before this Command runs the first time
@@ -82,6 +83,8 @@ public class AutoAim extends Command {
                     _smartDashboardSettings.getPidD(), _smartDashboardSettings.getPidF());
         }
     }
+
+
 
     // Make this return true when this Command no longer needs to run execute()
     @Override
