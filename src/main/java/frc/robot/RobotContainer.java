@@ -23,7 +23,7 @@ import frc.robot.subsystems.swerve.Drivetrain;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final double SPEED_RATIO = 0.2;
+    private final double SPEED_RATIO = 1;
     private final SmartDashboardSettings m_smartDashboardSettings = new SmartDashboardSettings();
     private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 

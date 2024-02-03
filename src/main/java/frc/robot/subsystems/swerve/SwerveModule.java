@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
   private final int id;
@@ -158,7 +157,6 @@ public class SwerveModule {
     //     m_drivePIDController.calculate(m_driveEncoder.getRate(), state.speedMetersPerSecond);
     final double speed = m_driveEncoder.getVelocity();
     final double targetSpeed = state.speedMetersPerSecond * changeSpeedDirection(wheelAngle, targetWheelAngle);
-    SmartDashboard.putNumber("encoderVelocity" + id, speed);
 
     final double driveOutput =
         m_drivePIDController.calculate(speed, targetSpeed);
@@ -175,9 +173,7 @@ public class SwerveModule {
 
   private double changeSpeedDirection(double wheelAngle, double wheelTarget) {
     long deltaAngle = Math.round(Math.abs(wheelAngle - wheelTarget)  / Math.PI);
-    SmartDashboard.putNumber("modRadFromTurn" + id, deltaAngle);
     double reversed = deltaAngle % 2 == 1 ? -1.0 : 1.0;
-    SmartDashboard.putNumber("modFromTurn" + id, reversed);
     return reversed;
   }
 }
