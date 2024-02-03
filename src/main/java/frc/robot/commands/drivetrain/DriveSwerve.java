@@ -19,11 +19,11 @@ public class DriveSwerve extends Command {
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
-
-    public DriveSwerve(CommandXboxController controller, Drivetrain driveTrain) {
+    private double speedRatio;
+    public DriveSwerve(CommandXboxController controller, Drivetrain driveTrain,double speedRatio) {
         m_controller = controller;
         m_driveTrain = driveTrain;
-
+        this.speedRatio = speedRatio;
         addRequirements(driveTrain);
     }
 
@@ -37,23 +37,20 @@ public class DriveSwerve extends Command {
         // Get the x speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.
         final var xSpeed =
-                -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.2))
-                        * Drivetrain.K_MAX_SPEED;
+                -m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftY(), 0.2));
 
         // Get the y speed or sideways/strafe speed. We are inverting this because
         // we want a positive value when we pull to the left. Xbox controllers
         // return positive values when you pull to the right by default.
         final var ySpeed =
-                -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.2))
-                        * Drivetrain.K_MAX_SPEED;
+                -m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_controller.getLeftX(), 0.2));
 
         // Get the rate of angular rotation. We are inverting this because we want a
         // positive value when we pull to the left (remember, CCW is positive in
         // mathematics). Xbox controllers return positive values when you pull to
         // the right by default.
         final var rot = (REVERSE_ROTATION ? -1 : 1) *
-                m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.2))
-                * Drivetrain.K_MAX_ANGULAR_SPEED;
+                m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.2));
 
         m_driveTrain.drive(xSpeed, ySpeed, rot, fieldRelative);
 

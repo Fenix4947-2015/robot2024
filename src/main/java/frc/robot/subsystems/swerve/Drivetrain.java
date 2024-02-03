@@ -7,6 +7,7 @@ package frc.robot.subsystems.swerve;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -36,6 +37,7 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveModule m_backLeft = new SwerveModule(3, 58, 57, 59, 0, false);
   private final SwerveModule m_backRight = new SwerveModule(4, 52, 51, 62, 0, false);
 
+  private double speedRatio;
   //private final AnalogGyro m_gyro = null;//new AnalogGyro(0);
   private final WPI_TalonSRX m_spareTalon = new WPI_TalonSRX(9);
     private final WPI_PigeonIMU m_gyro = new WPI_PigeonIMU(m_spareTalon);
@@ -55,8 +57,10 @@ public class Drivetrain extends SubsystemBase {
             m_backRight.getPosition()
           });
 
-  public Drivetrain() {
+  public Drivetrain(double speedRatio) {
     m_gyro.reset();
+    m_gyro.setCompassAngle(180);
+    this.speedRatio = speedRatio;
   }
 
   /**
@@ -68,12 +72,16 @@ public class Drivetrain extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    
+    double robotXSpeed = xSpeed * K_MAX_SPEED * speedRatio;
+    double robotYSpeed = ySpeed * K_MAX_SPEED * speedRatio;
+    double robotRotSpeed = rot * K_MAX_ANGULAR_SPEED * speedRatio;
     SwerveModuleState[] swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(robotXSpeed, robotYSpeed, robotRotSpeed, getAdjustedRotation2D())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, K_MAX_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, K_MAX_SPEED * speedRatio);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
@@ -109,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getGyroAngle() {
-    return m_gyro.getRotation2d().getRadians();
+    return getAdjustedRotation2D().getRadians();
   }
 
   public void updateSmartDashboard() {
@@ -124,5 +132,9 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("stateAngleBackLeft", getSwerveModuleBackLeft().getStateAngle());
 
     SmartDashboard.putNumber("gyroAngle", getGyroAngle());
+  }
+
+  public Rotation2d getAdjustedRotation2D() {
+    return Rotation2d.fromDegrees(m_gyro.getFusedHeading() + 180);
   }
 }

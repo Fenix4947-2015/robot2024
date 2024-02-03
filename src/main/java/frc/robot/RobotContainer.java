@@ -23,7 +23,7 @@ import frc.robot.subsystems.swerve.Drivetrain;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-
+    private final double SPEED_RATIO = 0.2;
     private final SmartDashboardSettings m_smartDashboardSettings = new SmartDashboardSettings();
     private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
@@ -31,9 +31,9 @@ public class RobotContainer {
     private final CommandXboxController m_driverController =
             new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
-    private final Drivetrain m_driveTrain = new Drivetrain();
+    private final Drivetrain m_driveTrain = new Drivetrain(SPEED_RATIO);
 
-    private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain);
+    private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
 
     private final Limelight m_limelight = new Limelight("limelight-three");
 

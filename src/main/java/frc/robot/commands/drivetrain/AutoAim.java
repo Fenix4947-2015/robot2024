@@ -3,9 +3,11 @@ package frc.robot.commands.drivetrain;
 import java.util.Objects;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.SmartDashboardSettings;
+import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.limelight.Limelight;
 
 public class AutoAim extends Command {
@@ -15,7 +17,7 @@ public class AutoAim extends Command {
     public static final double K_PID_D_ANGLE = 0.0;
 
     public static final double K_FEED_FORWARD_DISTANCE = 0.0;
-    public static final double K_PID_P_DISTANCE = 0.35;
+    public static final double K_PID_P_DISTANCE = 10;
     public static final double K_PID_I_DISTANCE = 0.0;
     public static final double K_PID_D_DISTANCE = 0.0;
 
@@ -31,10 +33,13 @@ public class AutoAim extends Command {
 
     private final int _pipeline;
 
-    public double _driveCommand = 0.0;
+    public double _driveCommandX = 0.0;
+    public double _driveCommandY = 0.0;
     public double _steerCommand = 0.0;
     private PIDController _pidAngle = new PIDController(K_PID_P_ANGLE, K_PID_I_ANGLE, K_PID_D_ANGLE);
-    private PIDController _pidDistance = new PIDController(K_PID_P_DISTANCE, K_PID_I_DISTANCE, K_PID_D_DISTANCE);
+    private PIDController _pidDistanceX = new PIDController(K_PID_P_DISTANCE, K_PID_I_DISTANCE, K_PID_D_DISTANCE);
+    private PIDController _pidDistanceY = new PIDController(K_PID_P_DISTANCE, K_PID_I_DISTANCE, K_PID_D_DISTANCE);
+
     private double _feedForward = K_FEED_FORWARD_ANGLE;
 
     private boolean _isAtSetPoint = false;
@@ -46,6 +51,7 @@ public class AutoAim extends Command {
         _smartDashboardSettings = smartDashboardSettings;
         addRequirements(_limelight);
         smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
+        _pidAngle.enableContinuousInput(-180, 180);
     }
 
     // Called just before this Command runs the first time
@@ -65,7 +71,8 @@ public class AutoAim extends Command {
 
         if (_limelight.isTargetValid()) {
             //_driveTrain.driveArcadeMethod(-_driveCommand, _steerCommand);
-            _driveTrain.drive(_driveCommand, 0.0, _steerCommand, false);
+            _smartDashboardSettings.
+            _driveTrain.drive(_driveCommandX, _driveCommandY, -_steerCommand, false);
         } else {
             stopDrivetrain();
         }
@@ -105,20 +112,16 @@ public class AutoAim extends Command {
     }
 
     public void updateTracking() {
-        _driveCommand = 0.0;
-        _steerCommand = 0.0;
 
         // These numbers must be tuned for your Robot! Be careful!
-        final double STEER_K = 0.03; // how hard to turn toward the target
-        final double DRIVE_K = 0.35; // how hard to drive fwd toward the target
-        final double DESIRED_TARGET_AREA = 0.025; // Area of the target when the robot reaches the wall
-        final double DESIRED_HEIGHT = 0.0; //8.6;
-        final double DESIRED_ANGLE = 0.0;//2.6;
-        final double MAX_DRIVE = 0.7; // Simple speed limit so we don't drive too fast
+        final double DESIRED_X = 2.74; //8.6;
+        final double DESIRED_Y = 2.67;
+        final double DESIRED_ANGLE = -172;//2.6;
 
         final boolean tv = _limelight.isTargetValid();
-        final double tx = _limelight.getTx();
-        final double ty = _limelight.getTy();
+
+        final LimelightResults limelightResult = _limelight.getLimelightResults();
+        final Pose2d botpose2d = limelightResult.targetingResults.getBotPose2d_wpiRed();
 
         //System.out.println(String.format("tv: %s, tx: %f, ty: %f", tv, tx, ty));
 
@@ -128,33 +131,25 @@ public class AutoAim extends Command {
 
         _pidAngle.setSetpoint(DESIRED_ANGLE);
         _pidAngle.setTolerance(0.5);
-        double steer_cmd = _pidAngle.calculate(-tx);
+        double steer_cmd = _pidAngle.calculate(botpose2d.getRotation().getDegrees());
 
         double feedFwd = Math.signum(steer_cmd) * _feedForward;
         _steerCommand = steer_cmd + feedFwd;
 
-        _pidDistance.setSetpoint(DESIRED_HEIGHT);
-        _pidDistance.setTolerance(0.5);
-        double drive_cmd = _pidDistance.calculate(-ty);
+        _pidDistanceX.setSetpoint(DESIRED_X);
+        _pidDistanceX.setTolerance(0.05);
+        double drive_x_cmd = _pidDistanceX.calculate(botpose2d.getX());
 
-        // try to drive forward until the target area reaches our desired area
-        // double drive_cmd = (DESIRED_TARGET_AREA - ta) * DRIVE_K;
-        //double drive_cmd = (DESIRED_HEIGHT - ty) * -DRIVE_K;
+        _pidDistanceY.setSetpoint(DESIRED_Y);
+        _pidDistanceY.setTolerance(0.05);
+        double drive_y_cmd = _pidDistanceY.calculate(botpose2d.getY());
 
-        steer_cmd = Math.max(steer_cmd, -0.5);
-        drive_cmd = Math.max(drive_cmd, -0.5);
+        _driveCommandX = drive_x_cmd;
+        _driveCommandY = drive_y_cmd;
 
-        steer_cmd = Math.min(steer_cmd, 0.5);
-        drive_cmd = Math.min(drive_cmd, 0.5);
-
-        // don't let the robot drive too fast into the goal
-        if (drive_cmd > MAX_DRIVE) {
-            drive_cmd = MAX_DRIVE;
-        }
-        _driveCommand = drive_cmd;
 
         _pidAngle.atSetpoint();
-        _isAtSetPoint = _pidAngle.atSetpoint() && _pidDistance.atSetpoint();
+        _isAtSetPoint = _pidAngle.atSetpoint() && _pidDistanceX.atSetpoint() && _pidDistanceY.atSetpoint();
     }
 
 }
