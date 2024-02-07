@@ -80,7 +80,7 @@ public class Drivetrain extends SubsystemBase {
         m_kinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(robotXSpeed, robotYSpeed, robotRotSpeed, getAdjustedRotation2D())
-                : new ChassisSpeeds(xSpeed, ySpeed, rot));
+                : new ChassisSpeeds(robotXSpeed, robotYSpeed, robotRotSpeed));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, K_MAX_SPEED * speedRatio);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
