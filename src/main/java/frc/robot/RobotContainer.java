@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -27,6 +29,8 @@ public class RobotContainer {
     private final SmartDashboardSettings m_smartDashboardSettings = new SmartDashboardSettings();
     private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
+    private final Transform2d TARGET_SPEAKER = new Transform2d(2.74,2.67, Rotation2d.fromDegrees(180));
+
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController =
             new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -37,7 +41,7 @@ public class RobotContainer {
 
     private final Limelight m_limelight = new Limelight("limelight-three");
 
-    private final AutoAim m_autoAim = new AutoAim(0, m_driveTrain, m_limelight, m_smartDashboardSettings);
+    private final AutoAim m_autoAim = new AutoAim(0, m_driveTrain, m_limelight, m_smartDashboardSettings, TARGET_SPEAKER);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.

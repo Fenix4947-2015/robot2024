@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.Drivetrain;
@@ -33,6 +35,8 @@ public class AutoAim extends Command {
     private final SmartDashboardSettings _smartDashboardSettings;
 
     private final int _pipeline;
+    private final Transform2d _target;
+    private final boolean _distanceOnly;
 
     public double _driveCommandX = 0.0;
     public double _driveCommandY = 0.0;
@@ -45,13 +49,21 @@ public class AutoAim extends Command {
 
     private boolean _isAtSetPoint = false;
 
-    public AutoAim(int pipeline, Drivetrain driveTrain, Limelight limelight, SmartDashboardSettings smartDashboardSettings) {
+    public AutoAim(
+        int pipeline, 
+        Drivetrain driveTrain, 
+        Limelight limelight,
+        SmartDashboardSettings smartDashboardSettings,
+        Transform2d target,
+        boolean distanceOnly) {
         _pipeline = pipeline;
         _driveTrain = driveTrain;
         _limelight = limelight;
         _smartDashboardSettings = smartDashboardSettings;
+        _target = target;
+        _distanceOnly = distanceOnly;
         addRequirements(_limelight);
-        smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
+        _smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
         _pidAngle.enableContinuousInput(-180, 180);
     }
 
@@ -117,9 +129,6 @@ public class AutoAim extends Command {
     public void updateTracking() {
 
         // These numbers must be tuned for your Robot! Be careful!
-        final double DESIRED_X = 2.74; //8.6;
-        final double DESIRED_Y = 2.67;
-        final double DESIRED_ANGLE = -180;//2.6;
         final double CALCULATED_DISTANCE = 0.75;
 
         final boolean tv = _limelight.isTargetValid();
@@ -139,11 +148,11 @@ public class AutoAim extends Command {
 
         double currentX = botpose2d.getX();
         double currentY = botpose2d.getY();
-        double currentAngle =botpose2d.getRotation().getDegrees();
+        double currentAngle = botpose2d.getRotation().getDegrees();
 
-        double distanceX = DESIRED_X - currentX;
-        double distanceY = DESIRED_Y - currentY;
-        double distanceAngle = continousAngle(DESIRED_ANGLE - currentAngle);
+        double distanceX = _target.getX() - currentX;
+        double distanceY = _target.getY() - currentY;
+        double distanceAngle = continousAngle(_target.getRotation().getDegrees() - currentAngle);
         SmartDashboard.putNumber("distanceAngle", distanceAngle);
         
         double totalDistance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
@@ -214,5 +223,9 @@ public class AutoAim extends Command {
 
     private double norm(double x, double y) {
         return Math.max(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 1);
+    }
+
+    private Transform2d planMotion() {
+        
     }
 }
