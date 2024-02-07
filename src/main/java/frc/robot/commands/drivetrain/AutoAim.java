@@ -18,9 +18,9 @@ public class AutoAim extends Command {
     public static final double K_PID_D_ANGLE = 0.0;
 
     public static final double K_FEED_FORWARD_DISTANCE = 0.0;
-    public static final double K_PID_P_DISTANCE = 3;
+    public static final double K_PID_P_DISTANCE = 1;
     public static final double K_PID_I_DISTANCE = 0.0;
-    public static final double K_PID_D_DISTANCE = 0.0;
+    public static final double K_PID_D_DISTANCE = 0.03;
 
     public static final String PIDTYPE_AUTOAIM = "AUTOAIM";
 
@@ -75,7 +75,7 @@ public class AutoAim extends Command {
             SmartDashboard.putNumber("AutoAimDriveCommandY", _driveCommandY);
             SmartDashboard.putNumber("AutoAimDriveCommandRot", _steerCommand);
             //_driveTrain.driveArcadeMethod(-_driveCommand, _steerCommand);
-            _driveTrain.drive(_driveCommandX, _driveCommandY, -_steerCommand, false);
+            _driveTrain.drive(-_driveCommandX, -_driveCommandY, -_steerCommand, true);
         } else {
             stopDrivetrain();
         }
@@ -83,7 +83,7 @@ public class AutoAim extends Command {
     }
 
     private void stopDrivetrain() {
-        _driveTrain.drive(0.0, 0.0, 0.0, false);
+        _driveTrain.drive(0.0, 0.0, 0.0, true);
     }
 
     private void refreshPidValues() {
@@ -115,15 +115,12 @@ public class AutoAim extends Command {
     }
 
     public void updateTracking() {
-        _steerCommand = 0;
-        _driveCommandX = 0;
-        _driveCommandY = 0;
 
         // These numbers must be tuned for your Robot! Be careful!
         final double DESIRED_X = 2.74; //8.6;
         final double DESIRED_Y = 2.67;
-        final double DESIRED_ANGLE = -172;//2.6;
-        final double CALCULATED_DISTANCE = 0.1;
+        final double DESIRED_ANGLE = -180;//2.6;
+        final double CALCULATED_DISTANCE = 0.75;
 
         final boolean tv = _limelight.isTargetValid();
 
@@ -146,11 +143,13 @@ public class AutoAim extends Command {
 
         double distanceX = DESIRED_X - currentX;
         double distanceY = DESIRED_Y - currentY;
-        double distanceAngle = DESIRED_ANGLE - currentAngle;
+        double distanceAngle = continousAngle(DESIRED_ANGLE - currentAngle);
+        SmartDashboard.putNumber("distanceAngle", distanceAngle);
         
         double totalDistance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+        SmartDashboard.putNumber("totalDistance", totalDistance);
         double distanceRatio = CALCULATED_DISTANCE / totalDistance;
-        if (totalDistance > CALCULATED_DISTANCE) {
+        if (totalDistance < CALCULATED_DISTANCE) {
             distanceRatio = 1;
         }
 
@@ -170,9 +169,12 @@ public class AutoAim extends Command {
         _pidDistanceY.setTolerance(0.1);
         double drive_y_cmd = _pidDistanceY.calculate(botpose2d.getY());
 
-        _steerCommand = clipValue(steerCommand, -1, 1);
-        _driveCommandX = clipValue(drive_x_cmd, -1, 1);
-        _driveCommandY = clipValue(drive_y_cmd, -1, 1);
+        SmartDashboard.putNumber("drive_x_cmd", drive_x_cmd);
+        SmartDashboard.putNumber("drive_y_cmd", drive_y_cmd);
+
+        _steerCommand = clipValue(steerCommand, -0.7, 0.7);
+        _driveCommandX = normaliseX(drive_x_cmd, drive_y_cmd);
+        _driveCommandY = normaliseY(drive_x_cmd, drive_y_cmd);
 
         _isAtSetPoint = _pidAngle.atSetpoint() && _pidDistanceX.atSetpoint() && _pidDistanceY.atSetpoint();
     }
@@ -187,5 +189,30 @@ public class AutoAim extends Command {
         }
 
         return value;
+    }
+
+    private double continousAngle(double angle) {
+        if (angle >= -180 && angle <= 180) {
+            return angle;
+        }
+        if (angle > 180) {
+            return continousAngle(angle - 360);
+        }
+        if (angle < -180) {
+            return continousAngle(angle + 360);
+        }
+        return angle;
+    }
+
+    private double normaliseX(double x, double y) {
+        return x / norm(x, y);
+    }
+
+    private double normaliseY(double x, double y) {
+        return y / norm(x, y);
+    }
+
+    private double norm(double x, double y) {
+        return Math.max(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 1);
     }
 }
