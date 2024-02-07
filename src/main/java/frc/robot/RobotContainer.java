@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
 import frc.robot.commands.drivetrain.AutoAim;
 import frc.robot.commands.drivetrain.DriveSwerve;
+import frc.robot.commands.intake.RollIntake;
 import frc.robot.limelight.Limelight;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swerve.Drivetrain;
 
 /**
@@ -25,19 +25,22 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final double SPEED_RATIO = 1;
     private final SmartDashboardSettings m_smartDashboardSettings = new SmartDashboardSettings();
-    private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController =
             new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController m_helperController =
+            new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
+    // SUBSYSTEMS
     private final Drivetrain m_driveTrain = new Drivetrain(SPEED_RATIO);
-
-    private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
-
     private final Limelight m_limelight = new Limelight("limelight-three");
+    private final Intake m_intake = new Intake();
 
+    // COMMANDS
     private final AutoAim m_autoAim = new AutoAim(0, m_driveTrain, m_limelight, m_smartDashboardSettings);
+    private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
+    private final RollIntake m_rollIntake = new RollIntake(m_intake, m_helperController);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -69,6 +72,7 @@ public class RobotContainer {
 
     private void configureDefaultCommands() {
         m_driveTrain.setDefaultCommand(m_driveSwerve);
+        m_intake.setDefaultCommand(m_rollIntake);
     }
 
     /**
@@ -78,7 +82,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return Autos.exampleAuto(m_exampleSubsystem);
+        return null;
     }
 
     public void autonomousPeriodic() {

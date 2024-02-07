@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.swerve.SwerveModule;
 
+import static frc.robot.Constants.ElectricConstants.*;
+
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
 
@@ -32,10 +34,12 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backLeftLocation = new Translation2d(-SWERVE_TRANSLATION_X, SWERVE_TRANSLATION_Y);
   private final Translation2d m_backRightLocation = new Translation2d(-SWERVE_TRANSLATION_X, -SWERVE_TRANSLATION_Y);
 
-  private final SwerveModule m_frontLeft = new SwerveModule(1, 56, 55, 60, 0, false);
-  private final SwerveModule m_frontRight = new SwerveModule(2, 54, 53, 61, 0, false);
-  private final SwerveModule m_backLeft = new SwerveModule(3, 58, 57, 59, 0, false);
-  private final SwerveModule m_backRight = new SwerveModule(4, 52, 51, 62, 0, false);
+  public record SwerveModuleSettings(int id, int driveMotorChannel, int turningMotorChannel, int turningEncoderId) {}
+
+  private final SwerveModule m_frontLeft = new SwerveModule(kSwerveModuleSettings1, 0, false);
+  private final SwerveModule m_frontRight = new SwerveModule(kSwerveModuleSettings2, 0, false);
+  private final SwerveModule m_backLeft = new SwerveModule(kSwerveModuleSettings3, 0, false);
+  private final SwerveModule m_backRight = new SwerveModule(kSwerveModuleSettings4, 0, false);
 
   private double speedRatio;
   //private final AnalogGyro m_gyro = null;//new AnalogGyro(0);
