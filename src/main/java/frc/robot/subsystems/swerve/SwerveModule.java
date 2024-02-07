@@ -64,24 +64,21 @@ public class SwerveModule {
    * @param turningEncoderChannelB DIO input for the turning encoder channel B
    */
   public SwerveModule(
-      int id,
-      int driveMotorChannel,
-      int turningMotorChannel,
-      int turningEncoderId,
+      Drivetrain.SwerveModuleSettings swerveModuleSettings,
       int turningEncoderMagnetOffsetDegrees,
       boolean isReversed
     ) {
 
-      this.id = id;
+      this.id = swerveModuleSettings.id();
 
-    m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
+    m_driveMotor = new CANSparkMax(swerveModuleSettings.driveMotorChannel(), MotorType.kBrushless);
     m_driveMotor.setIdleMode(IdleMode.kBrake);
-    m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
+    m_turningMotor = new CANSparkMax(swerveModuleSettings.turningMotorChannel(), MotorType.kBrushless);
     m_turningMotor.setIdleMode(IdleMode.kBrake);
 
 
     m_driveEncoder = m_driveMotor.getEncoder();//new Encoder(driveEncoderChannelA, driveEncoderChannelB);
-    m_turningEncoder = new CANcoder(turningEncoderId);//new Encoder(turningEncoderChannelA, turningEncoderChannelB);
+    m_turningEncoder = new CANcoder(swerveModuleSettings.turningEncoderId());//new Encoder(turningEncoderChannelA, turningEncoderChannelB);
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
