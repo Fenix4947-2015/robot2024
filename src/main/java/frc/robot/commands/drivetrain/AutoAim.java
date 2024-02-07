@@ -226,6 +226,6 @@ public class AutoAim extends Command {
     }
 
     private Transform2d planMotion() {
-        
+        return null;
     }
 }
