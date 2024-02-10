@@ -7,6 +7,7 @@ package frc.robot.subsystems.swerve;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -44,26 +45,14 @@ public class Drivetrain extends SubsystemBase {
   private double speedRatio;
   //private final AnalogGyro m_gyro = null;//new AnalogGyro(0);
   private final WPI_TalonSRX m_spareTalon = new WPI_TalonSRX(9);
-    private final WPI_PigeonIMU m_gyro = new WPI_PigeonIMU(m_spareTalon);
+  private final WPI_PigeonIMU m_gyro = new WPI_PigeonIMU(m_spareTalon);
 
-  private final SwerveDriveKinematics m_kinematics =
-      new SwerveDriveKinematics(
-          m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+  private SwerveDriveKinematics m_kinematics;
 
-  private final SwerveDriveOdometry m_odometry =
-      new SwerveDriveOdometry(
-          m_kinematics,
-          m_gyro.getRotation2d(),
-          new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
-          });
+  private SwerveDriveOdometry m_odometry;
 
   public Drivetrain(double speedRatio) {
-    m_gyro.reset();
-    m_gyro.setCompassAngle(180);
+    resetGyro();
     this.speedRatio = speedRatio;
   }
 
@@ -90,12 +79,14 @@ public class Drivetrain extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
+    updateOdometry();
+    getOdometry();
   }
 
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
     m_odometry.update(
-        m_gyro.getRotation2d(),
+        getAdjustedRotation2D(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -124,6 +115,42 @@ public class Drivetrain extends SubsystemBase {
     return getAdjustedRotation2D().getRadians();
   }
 
+  public Pose2d getOdometry() {
+    Pose2d currentPose = m_odometry.getPoseMeters();
+
+    SmartDashboard.putNumber("currentPoseX", currentPose.getX());
+    SmartDashboard.putNumber("currentPoseY", currentPose.getY());
+    SmartDashboard.putNumber("currentPoseAngle", currentPose.getRotation().getDegrees());
+
+    return currentPose;
+  }
+
+  public void resetOdometry(Pose2d currentPose) {
+    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getFusedHeading()),
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_backLeft.getPosition(),
+          m_backRight.getPosition()
+        },
+        currentPose);
+  }
+
+  public void resetGyro() {
+    m_gyro.reset();;
+    m_kinematics = new SwerveDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+    m_odometry = new SwerveDriveOdometry(
+      m_kinematics,
+      getAdjustedRotation2D(),
+      new SwerveModulePosition[] {
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_backLeft.getPosition(),
+        m_backRight.getPosition()
+      });
+    resetOdometry(new Pose2d(0,0, Rotation2d.fromDegrees(180)));
+  }
+
   public void updateSmartDashboard() {
     SmartDashboard.putNumber("wheelAngleFrontRight", getSwerveModuleFrontRight().getWheelAngle());
     SmartDashboard.putNumber("wheelAngleBackRight", getSwerveModuleBackRight().getWheelAngle());
@@ -139,6 +166,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getAdjustedRotation2D() {
-    return Rotation2d.fromDegrees(m_gyro.getFusedHeading() + 180);
+    return Rotation2d.fromDegrees(m_gyro.getFusedHeading());
   }
 }

@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.Drivetrain;
@@ -35,7 +36,7 @@ public class AutoAim extends Command {
     private final SmartDashboardSettings _smartDashboardSettings;
 
     private final int _pipeline;
-    private final Transform2d _target;
+    private final Pose2d _target;
     private final boolean _distanceOnly;
 
     public double _driveCommandX = 0.0;
@@ -54,7 +55,7 @@ public class AutoAim extends Command {
         Drivetrain driveTrain, 
         Limelight limelight,
         SmartDashboardSettings smartDashboardSettings,
-        Transform2d target,
+        Pose2d target,
         boolean distanceOnly) {
         _pipeline = pipeline;
         _driveTrain = driveTrain;
@@ -82,12 +83,12 @@ public class AutoAim extends Command {
         refreshPidValues();
         updateTracking();
 
-        if (_limelight.isTargetValid()) {
+        if (_limelight.isTargetValid() || true) {
             SmartDashboard.putNumber("AutoAimDriveCommandX", _driveCommandX);
             SmartDashboard.putNumber("AutoAimDriveCommandY", _driveCommandY);
             SmartDashboard.putNumber("AutoAimDriveCommandRot", _steerCommand);
             //_driveTrain.driveArcadeMethod(-_driveCommand, _steerCommand);
-            _driveTrain.drive(-_driveCommandX, -_driveCommandY, -_steerCommand, true);
+            _driveTrain.drive(_driveCommandX, _driveCommandY, _steerCommand, true);
         } else {
             stopDrivetrain();
         }
@@ -138,52 +139,68 @@ public class AutoAim extends Command {
 
         //System.out.println(String.format("tv: %s, tx: %f, ty: %f", tv, tx, ty));
 
-        SmartDashboard.putNumber("AutoAimPosRot", botpose2d.getRotation().getDegrees());
-        SmartDashboard.putNumber("AutoAimPosX", botpose2d.getX());
-        SmartDashboard.putNumber("AutoAimPosY", botpose2d.getY());
-
-        if (!tv) {
-            return;
+        if (tv) {
+            _driveTrain.resetOdometry(botpose2d);;
         }
 
-        double currentX = botpose2d.getX();
-        double currentY = botpose2d.getY();
-        double currentAngle = botpose2d.getRotation().getDegrees();
+        
+        Pose2d currentPose = _driveTrain.getOdometry();
+
+        double currentX = currentPose.getX();
+        double currentY = currentPose.getY();
+        double currentAngle = currentPose.getRotation().getDegrees();
+
+        
 
         double distanceX = _target.getX() - currentX;
         double distanceY = _target.getY() - currentY;
         double distanceAngle = continousAngle(_target.getRotation().getDegrees() - currentAngle);
         SmartDashboard.putNumber("distanceAngle", distanceAngle);
+
+        Transform2d movePose = new Transform2d(currentPose, _target);
         
-        double totalDistance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+        double totalDistance = movePose.getTranslation().getNorm();
         SmartDashboard.putNumber("totalDistance", totalDistance);
         double distanceRatio = CALCULATED_DISTANCE / totalDistance;
         if (totalDistance < CALCULATED_DISTANCE) {
             distanceRatio = 1;
         }
 
+        Transform2d moveSmall = movePose.times(distanceRatio);
+        Pose2d newTarget = currentPose.plus(moveSmall);
+
         double targetX = currentX + distanceRatio * distanceX;
         double targetY = currentY + distanceRatio * distanceY;
         double targetAngle = currentAngle + distanceRatio * distanceAngle;
 
-        _pidAngle.setSetpoint(targetAngle);
-        _pidAngle.setTolerance(1);
-        double steerCommand = _pidAngle.calculate(botpose2d.getRotation().getDegrees());
+        Twist2d twist = currentPose.log(newTarget);
 
-        _pidDistanceX.setSetpoint(targetX);
+        double dx = twist.dx;
+        double dy = twist.dy;
+        double dtheta = twist.dtheta * 180 / Math.PI;
+
+        SmartDashboard.putNumber("twistX", twist.dx);
+        SmartDashboard.putNumber("twistY", twist.dy);
+        SmartDashboard.putNumber("twistAngle", twist.dtheta);
+
+        _pidAngle.setSetpoint(0);
+        _pidAngle.setTolerance(2);
+        double steerCommand = _pidAngle.calculate(dtheta);
+
+        _pidDistanceX.setSetpoint(0);
         _pidDistanceX.setTolerance(0.1);
-        double drive_x_cmd = _pidDistanceX.calculate(botpose2d.getX());
+        double drive_x_cmd = _pidDistanceX.calculate(dx);
 
-        _pidDistanceY.setSetpoint(targetY);
+        _pidDistanceY.setSetpoint(0);
         _pidDistanceY.setTolerance(0.1);
-        double drive_y_cmd = _pidDistanceY.calculate(botpose2d.getY());
+        double drive_y_cmd = _pidDistanceY.calculate(dy);
 
         SmartDashboard.putNumber("drive_x_cmd", drive_x_cmd);
         SmartDashboard.putNumber("drive_y_cmd", drive_y_cmd);
 
         _steerCommand = clipValue(steerCommand, -0.7, 0.7);
-        _driveCommandX = normaliseX(drive_x_cmd, drive_y_cmd);
-        _driveCommandY = normaliseY(drive_x_cmd, drive_y_cmd);
+        _driveCommandX = normaliseX(drive_x_cmd, drive_y_cmd, 0.9);
+        _driveCommandY = normaliseY(drive_x_cmd, drive_y_cmd, 0.9);
 
         _isAtSetPoint = _pidAngle.atSetpoint() && _pidDistanceX.atSetpoint() && _pidDistanceY.atSetpoint();
     }
@@ -213,19 +230,15 @@ public class AutoAim extends Command {
         return angle;
     }
 
-    private double normaliseX(double x, double y) {
-        return x / norm(x, y);
+    private double normaliseX(double x, double y, double maxCmd) {
+        return x / norm(x, y) * maxCmd;
     }
 
-    private double normaliseY(double x, double y) {
-        return y / norm(x, y);
+    private double normaliseY(double x, double y, double maxCmd) {
+        return y / norm(x, y) * maxCmd;
     }
 
     private double norm(double x, double y) {
         return Math.max(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 1);
-    }
-
-    private Transform2d planMotion() {
-        return null;
     }
 }
