@@ -15,16 +15,15 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         m_motorTop.setIdleMode(CANSparkBase.IdleMode.kCoast);
         m_motorBottom.setIdleMode(CANSparkBase.IdleMode.kCoast);
+        m_motorBottom.follow(m_motorTop);
     }
 
     public void roll(double speed) {
         m_motorTop.set(speed);
-        m_motorBottom.set(speed);
     }
 
     public void stop() {
         m_motorTop.set(0.0);
-        m_motorBottom.set(0.0);
     }
 
     @Override

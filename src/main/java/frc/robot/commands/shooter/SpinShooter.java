@@ -8,6 +8,7 @@ public class SpinShooter extends InstantCommand {
 
     public SpinShooter(Shooter shooter) {
         m_shooter = shooter;
+        addRequirements(shooter);
     }
 
     @Override

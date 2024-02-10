@@ -37,11 +37,14 @@ public class RobotContainer {
     // SUBSYSTEMS
     private final Drivetrain m_driveTrain = new Drivetrain(SPEED_RATIO);
     private final Limelight m_limelight = new Limelight("limelight-three");
-    // private final Intake m_intake = new Intake();
+    private final Intake m_intake = new Intake();
 
     private final AutoAim m_autoAim = new AutoAim(0, m_driveTrain, m_limelight, m_smartDashboardSettings, TARGET_SPEAKER, false);
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
-    // private final RollIntake m_rollIntake = new RollIntake(m_intake, m_helperController);
+    private final RollIntake m_rollIntakeForward = new RollIntake(m_intake,0.5);
+    private final RollIntake m_rollIntakeBackward = new RollIntake(m_intake,-0.5);
+    private final RollIntake m_rollIntakeStop = new RollIntake(m_intake,0);
+
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -69,11 +72,13 @@ public class RobotContainer {
         // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
         // cancelling on release.
         m_driverController.b().whileTrue(m_autoAim);
+        m_driverController.leftBumper().whileTrue(m_rollIntakeForward);
+        m_driverController.rightBumper().whileTrue(m_rollIntakeBackward);
     }
 
     private void configureDefaultCommands() {
         m_driveTrain.setDefaultCommand(m_driveSwerve);
-        // m_intake.setDefaultCommand(m_rollIntake);
+        m_intake.setDefaultCommand(m_rollIntakeStop);
     }
 
     /**
