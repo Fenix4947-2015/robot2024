@@ -25,6 +25,10 @@ public final class Constants {
         public static final int kIntakeMotorThirdlinkChannel = 28;
         public static final int kShooterMotorTopChannel = 27;
         public static final int kShooterMotorBottomChannel = 23;
+        public static final int kArmrMotorOneChannel = 31;
+        public static final int kArmrMotorTwoChannel = 32;
+        public static final int kWinchMotorOneChannel = 24;
+        public static final int kWinchMotorTwoChannel = 29;
         public static Drivetrain.SwerveModuleSettings kSwerveModuleSettings1 = new Drivetrain.SwerveModuleSettings(1, 56, 55, 60);
         public static Drivetrain.SwerveModuleSettings kSwerveModuleSettings2 = new Drivetrain.SwerveModuleSettings(2, 54, 53, 61);
         public static Drivetrain.SwerveModuleSettings kSwerveModuleSettings3 = new Drivetrain.SwerveModuleSettings(3, 58, 57, 59);
