@@ -8,22 +8,22 @@ import frc.robot.Constants.ElectricConstants;
 
 public class Intake extends SubsystemBase {
 
-    private final CANSparkMax m_motorTop = new CANSparkMax(ElectricConstants.kIntakeMotorTopChannel, CANSparkLowLevel.MotorType.kBrushless);
-    private final CANSparkMax m_motorBottom = new CANSparkMax(ElectricConstants.kIntakeMotorBottomChannel, CANSparkLowLevel.MotorType.kBrushless);
+    private final CANSparkMax m_motor = new CANSparkMax(ElectricConstants.kIntakeMotorChannel, CANSparkLowLevel.MotorType.kBrushless);
+    private final CANSparkMax m_motorThirdlink = new CANSparkMax(ElectricConstants.kIntakeMotorThirdlinkChannel, CANSparkLowLevel.MotorType.kBrushless);
 
     public Intake() {
-        m_motorTop.setIdleMode(CANSparkBase.IdleMode.kBrake);
-        m_motorBottom.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        m_motor.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        m_motorThirdlink.setIdleMode(CANSparkBase.IdleMode.kBrake);
     }
 
     public void roll(double speed) {
-        m_motorTop.set(speed);
-        m_motorBottom.set(speed);
+        m_motor.set(speed);
+        m_motorThirdlink.set(speed);
     }
 
     public void stop() {
-        m_motorTop.set(0.0);
-        m_motorBottom.set(0.0);
+        m_motor.set(0.0);
+        m_motorThirdlink.set(0.0);
     }
 
     @Override

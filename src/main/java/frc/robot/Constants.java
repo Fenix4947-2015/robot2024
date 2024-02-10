@@ -21,10 +21,10 @@ public final class Constants {
     }
 
     public static class ElectricConstants {
-        public static final int kIntakeMotorTopChannel = 1;
-        public static final int kIntakeMotorBottomChannel = 2;
-        public static final int kShooterMotorTopChannel = 3;
-        public static final int kShooterMotorBottomChannel = 4;
+        public static final int kIntakeMotorChannel = 35;
+        public static final int kIntakeMotorThirdlinkChannel = 28;
+        public static final int kShooterMotorTopChannel = 27;
+        public static final int kShooterMotorBottomChannel = 23;
         public static Drivetrain.SwerveModuleSettings kSwerveModuleSettings1 = new Drivetrain.SwerveModuleSettings(1, 56, 55, 60);
         public static Drivetrain.SwerveModuleSettings kSwerveModuleSettings2 = new Drivetrain.SwerveModuleSettings(2, 54, 53, 61);
         public static Drivetrain.SwerveModuleSettings kSwerveModuleSettings3 = new Drivetrain.SwerveModuleSettings(3, 58, 57, 59);

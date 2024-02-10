@@ -62,7 +62,7 @@ public class AutoAim extends Command {
         _smartDashboardSettings = smartDashboardSettings;
         _target = target;
         _distanceOnly = distanceOnly;
-        addRequirements(_limelight);
+        addRequirements(_limelight,driveTrain);
         _smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
         _pidAngle.enableContinuousInput(-180, 180);
     }
