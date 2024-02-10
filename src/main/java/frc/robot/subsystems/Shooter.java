@@ -22,14 +22,10 @@ public class Shooter extends SubsystemBase {
         m_motorTop.set(speed);
     }
 
-    public void stop() {
-        m_motorTop.set(0.0);
-    }
-
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Shooter / Shooter Top Speed (RPM)", getShooterTopRpm());
-        SmartDashboard.putNumber("Shooter / Shooter Bottom Speed (RPM)", getShooterBottomRpm());
+        // SmartDashboard.putNumber("Shooter / Shooter Top Speed (RPM)", getShooterTopRpm());
+        // SmartDashboard.putNumber("Shooter / Shooter Bottom Speed (RPM)", getShooterBottomRpm());
     }
 
     private double getShooterTopRpm() {

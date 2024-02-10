@@ -22,7 +22,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void stop() {
-        m_motor.set(0.0);
+        //m_motor.set(0.0);
         m_motorThirdlink.set(0.0);
     }
 

@@ -39,8 +39,8 @@ public class RobotContainer {
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController =
             new CommandXboxController(OperatorConstants.kDriverControllerPort);
-    private final CommandXboxController m_helperController =
-            new CommandXboxController(OperatorConstants.kHelperControllerPort);
+    //private final CommandXboxController m_helperController =
+    //        new CommandXboxController(OperatorConstants.kHelperControllerPort);
 
     // SUBSYSTEMS
     //private final Drivetrain m_driveTrain = new Drivetrain(SPEED_RATIO);
@@ -55,12 +55,12 @@ public class RobotContainer {
     private final RollIntake m_rollIntakeForward = new RollIntake(m_intake,0.5);
     private final RollIntake m_rollIntakeBackward = new RollIntake(m_intake,-0.5);
     private final RollIntake m_rollIntakeStop = new RollIntake(m_intake,0);
-    private final SpinShooter m_SpinShooter = new SpinShooter(m_shooter,0.5);
+    private final SpinShooter m_SpinShooter = new SpinShooter(m_shooter,1.0);
     private final SpinShooter m_SpinShooterStop = new SpinShooter(m_shooter,0);
-    private final MoveArm m_SpinArmForward = new MoveArm(m_arm,0.5);
-    private final MoveArm m_SpinArmBackward = new MoveArm(m_arm,-0.5);
+    private final MoveArm m_SpinArmForward = new MoveArm(m_arm,0.3);
+    private final MoveArm m_SpinArmBackward = new MoveArm(m_arm,-0.3);
     private final MoveArm m_StopArm = new MoveArm(m_arm,0);
-    private final RollWinch m_rollWinch = new RollWinch(m_winch, m_helperController);
+    private final RollWinch m_rollWinch = new RollWinch(m_winch, m_driverController);
 
 
     /**

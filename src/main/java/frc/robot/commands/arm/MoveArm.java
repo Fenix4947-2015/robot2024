@@ -1,10 +1,11 @@
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Shooter;
 
-public class MoveArm extends InstantCommand {
+public class MoveArm extends Command {
     private final Arm m_arm;
     private final double m_speed;
 

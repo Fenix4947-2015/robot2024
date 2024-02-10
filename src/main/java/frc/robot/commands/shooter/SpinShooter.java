@@ -1,9 +1,10 @@
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Shooter;
 
-public class SpinShooter extends InstantCommand {
+public class SpinShooter extends Command {
     private final Shooter m_shooter;
     private final double m_speed;
 
