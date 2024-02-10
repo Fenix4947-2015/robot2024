@@ -52,13 +52,13 @@ public class RobotContainer {
 
     //private final AutoAim m_autoAim = new AutoAim(0, m_driveTrain, m_limelight, m_smartDashboardSettings, TARGET_SPEAKER, false);
     //private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
-    private final RollIntake m_rollIntakeForward = new RollIntake(m_intake,0.5);
-    private final RollIntake m_rollIntakeBackward = new RollIntake(m_intake,-0.5);
+    private final RollIntake m_rollIntakeForward = new RollIntake(m_intake,0.3);
+    private final RollIntake m_rollIntakeBackward = new RollIntake(m_intake,-0.3);
     private final RollIntake m_rollIntakeStop = new RollIntake(m_intake,0);
     private final SpinShooter m_SpinShooter = new SpinShooter(m_shooter,1.0);
     private final SpinShooter m_SpinShooterStop = new SpinShooter(m_shooter,0);
-    private final MoveArm m_SpinArmForward = new MoveArm(m_arm,0.3);
-    private final MoveArm m_SpinArmBackward = new MoveArm(m_arm,-0.3);
+    private final MoveArm m_SpinArmForward = new MoveArm(m_arm,0.25);
+    private final MoveArm m_SpinArmBackward = new MoveArm(m_arm,-0.25);
     private final MoveArm m_StopArm = new MoveArm(m_arm,0);
     private final RollWinch m_rollWinch = new RollWinch(m_winch, m_driverController);
 

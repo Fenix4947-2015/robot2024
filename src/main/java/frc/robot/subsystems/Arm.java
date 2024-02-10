@@ -9,18 +9,16 @@ import frc.robot.Constants.ElectricConstants;
 
 public class Arm extends SubsystemBase {
 
-    //private final CANSparkMax m_motorOne = new CANSparkMax(ElectricConstants.kArmrMotorOneChannel, CANSparkLowLevel.MotorType.kBrushless);
+    private final CANSparkMax m_motorOne = new CANSparkMax(ElectricConstants.kArmrMotorOneChannel, CANSparkLowLevel.MotorType.kBrushless);
     private final CANSparkMax m_motorTwo = new CANSparkMax(ElectricConstants.kArmrMotorTwoChannel, CANSparkLowLevel.MotorType.kBrushless);
     public Arm() {
-        //m_motorOne.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        m_motorOne.setIdleMode(CANSparkBase.IdleMode.kBrake);
         m_motorTwo.setIdleMode(CANSparkBase.IdleMode.kBrake);
-        //m_motorTwo.setInverted(true);
-        //m_motorTwo.follow(m_motorOne);
     }
 
     public void roll(double speed) {
-        //m_motorOne.set(speed);
-        m_motorTwo.set(speed);
+        m_motorOne.set(speed);
+        m_motorTwo.set(-speed);
     }
 
     @Override
