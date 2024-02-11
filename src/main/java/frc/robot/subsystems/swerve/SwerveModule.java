@@ -27,7 +27,6 @@ public class SwerveModule {
   private static final double K_MODULE_MAX_ANGULAR_VELOCITY = K_MAX_MOTOR_RPM * 2 * Math.PI / 60 / K_TRUN_GEAR_RATIO; // radians per second
   private static final double K_MODULE_MAX_ANGULAR_ACCELERATION = 2 * Math.PI * 100; // radians per second squared
 
-  
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
 
@@ -43,7 +42,7 @@ public class SwerveModule {
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
       new ProfiledPIDController(
-          0.7,
+          0.3,
           0,
           0, 
           new TrapezoidProfile.Constraints(
@@ -51,7 +50,7 @@ public class SwerveModule {
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0);
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0, 0);
+  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.3, 0);
 
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder and turning encoder.
@@ -85,6 +84,7 @@ public class SwerveModule {
     //m_driveEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius / kEncoderResolution);
 
     m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * K_WHEEL_RADIUS / (60 * K_SPEED_GEAR_RATIO));
+    m_driveEncoder.setPositionConversionFactor(2 * Math.PI * K_WHEEL_RADIUS / K_SPEED_GEAR_RATIO);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -115,7 +115,7 @@ public class SwerveModule {
     // return new SwerveModulePosition(
     //     m_driveEncoder.getDistance(), new Rotation2d(m_turningEncoder.getDistance()));
         return new SwerveModulePosition(
-          m_driveEncoder.getPosition(), Rotation2d.fromRadians(m_turningEncoder.getPosition().getValueAsDouble()));
+          m_driveEncoder.getPosition(), Rotation2d.fromRadians(m_turningEncoder.getPosition().getValueAsDouble() * 2 * Math.PI));
   
       }
 

@@ -4,8 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -34,7 +34,7 @@ public class RobotContainer {
     private final double SPEED_RATIO = 1;
     private final SmartDashboardSettings m_smartDashboardSettings = new SmartDashboardSettings();
 
-    private final Transform2d TARGET_SPEAKER = new Transform2d(2.74,2.67, Rotation2d.fromDegrees(180));
+    private final Pose2d TARGET_SPEAKER = new Pose2d(2.74,2.67, Rotation2d.fromDegrees(180));
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController =
@@ -117,4 +117,9 @@ public class RobotContainer {
     public void autonomousPeriodic() {
         //m_driveTrain.updateOdometry();
     }
+
+    public void teleopInit() {
+        // m_driveTrain.resetGyro();
+    }
+
 }
