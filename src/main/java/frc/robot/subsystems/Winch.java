@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElectricConstants;
@@ -11,6 +12,8 @@ public class Winch extends SubsystemBase {
 
     private final CANSparkMax m_motorOne = new CANSparkMax(ElectricConstants.kWinchMotorOneChannel, CANSparkLowLevel.MotorType.kBrushless);
     private final CANSparkMax m_motorTwo = new CANSparkMax(ElectricConstants.kWinchMotorTwoChannel, CANSparkLowLevel.MotorType.kBrushless);
+
+    private final Encoder m_encoder = new Encoder(ElectricConstants.kWinchEncoderChannel1, ElectricConstants.kWinchEncoderChannel2);
 
     public Winch() {
         m_motorOne.setIdleMode(CANSparkBase.IdleMode.kBrake);
@@ -26,17 +29,17 @@ public class Winch extends SubsystemBase {
         m_motorOne.set(0.0);
     }
 
+    public double getEncoderDistance() {
+        return m_encoder.getDistance();
+    }
+
+    public void resetEncoder() {
+        m_encoder.reset();
+    }
+
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("Winch / Winch 1 Speed (RPM)", getMotorOneRpm());
-        // SmartDashboard.putNumber("Winch / Winch 2 Speed (RPM)", getMotorTwoRpm());
+        SmartDashboard.putNumber("Winch / Distance", getEncoderDistance());
     }
 
-    private double getMotorOneRpm() {
-        return m_motorOne.getEncoder().getVelocity();
-    }
-
-    private double getMotorTwoRpm() {
-        return m_motorTwo.getEncoder().getVelocity();
-    }
 }

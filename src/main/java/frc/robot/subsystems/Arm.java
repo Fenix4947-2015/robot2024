@@ -3,17 +3,23 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElectricConstants;
+import frc.robot.SmartDashboardSettings;
 
 public class Arm extends SubsystemBase {
 
-    private final CANSparkMax m_motorOne = new CANSparkMax(ElectricConstants.kArmrMotorOneChannel, CANSparkLowLevel.MotorType.kBrushless);
-    private final CANSparkMax m_motorTwo = new CANSparkMax(ElectricConstants.kArmrMotorTwoChannel, CANSparkLowLevel.MotorType.kBrushless);
+    private final CANSparkMax m_motorOne = new CANSparkMax(ElectricConstants.kArmMotorOneChannel, CANSparkLowLevel.MotorType.kBrushless);
+    private final CANSparkMax m_motorTwo = new CANSparkMax(ElectricConstants.kArmMotorTwoChannel, CANSparkLowLevel.MotorType.kBrushless);
+
+    private final Encoder m_encoder = new Encoder(ElectricConstants.kArmEncoderChannel1, ElectricConstants.kArmEncoderChannel2);
+
     public Arm() {
         m_motorOne.setIdleMode(CANSparkBase.IdleMode.kBrake);
         m_motorTwo.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        resetEncoder();
     }
 
     public void roll(double speed) {
@@ -21,17 +27,17 @@ public class Arm extends SubsystemBase {
         m_motorTwo.set(-speed);
     }
 
-    @Override
-    public void periodic() {
-        //SmartDashboard.putNumber("Shooter / Shooter Top Speed (RPM)", getShooterTopRpm());
-        //SmartDashboasrd.putNumber("Shooter / Shooter Bottom Speed (RPM)", getShooterBottomRpm());
+    public double getEncoderDistance() {
+        return m_encoder.getDistance();
     }
 
-    // private double getShooterTopRpm() {
-    //     return m_motorOne.getEncoder().getVelocity();
-    // }
+    public void resetEncoder() {
+        m_encoder.reset();
+    }
 
-    // private double getShooterBottomRpm() {
-    //     return m_motorTwo.getEncoder().getVelocity();
-    // }
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Arm / Distance", getEncoderDistance());
+    }
+
 }

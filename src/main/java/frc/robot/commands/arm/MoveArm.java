@@ -9,7 +9,7 @@ public class MoveArm extends Command {
     private final Arm m_arm;
     private final double m_speed;
 
-    public MoveArm(Arm arm,double speed) {
+    public MoveArm(Arm arm, double speed) {
         m_arm = arm;
         m_speed = speed;
         addRequirements(arm);

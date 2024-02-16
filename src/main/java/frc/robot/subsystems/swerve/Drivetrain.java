@@ -4,9 +4,7 @@
 
 package frc.robot.subsystems.swerve;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-
+import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.swerve.SwerveModule;
 
 import static frc.robot.Constants.ElectricConstants.*;
 
@@ -37,15 +34,16 @@ public class Drivetrain extends SubsystemBase {
 
   public record SwerveModuleSettings(int id, int driveMotorChannel, int turningMotorChannel, int turningEncoderId) {}
 
-  private final SwerveModule m_frontLeft = new SwerveModule(kSwerveModuleSettings1, 0, false);
-  private final SwerveModule m_frontRight = new SwerveModule(kSwerveModuleSettings2, 0, false);
-  private final SwerveModule m_backLeft = new SwerveModule(kSwerveModuleSettings3, 0, false);
-  private final SwerveModule m_backRight = new SwerveModule(kSwerveModuleSettings4, 0, false);
+  private final SwerveModule m_frontLeft = new SwerveModule(kSwerveModuleSettingsFL, 0, false);
+  private final SwerveModule m_frontRight = new SwerveModule(kSwerveModuleSettingsFR, 0, false);
+  private final SwerveModule m_backLeft = new SwerveModule(kSwerveModuleSettingsBL, 0, false);
+  private final SwerveModule m_backRight = new SwerveModule(kSwerveModuleSettingsBR, 0, false);
 
   private double speedRatio;
   //private final AnalogGyro m_gyro = null;//new AnalogGyro(0);
-  private final WPI_TalonSRX m_spareTalon = new WPI_TalonSRX(9);
-  private final WPI_PigeonIMU m_gyro = new WPI_PigeonIMU(m_spareTalon);
+  //private final WPI_TalonSRX m_spareTalon = new WPI_TalonSRX(9);
+  //private final WPI_PigeonIMU m_gyro = new WPI_PigeonIMU(m_spareTalon);
+  private final Pigeon2 m_gyro = new Pigeon2(kPigeon2Channel, "rio");
 
   private SwerveDriveKinematics m_kinematics;
 
@@ -126,7 +124,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d currentPose) {
-    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getFusedHeading()),
+    // voir https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf
+    // getYaw() est l'équivalent de getFusedHeading() du pigeon 1
+    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -137,7 +137,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetGyro() {
-    m_gyro.reset();;
+    m_gyro.reset();
     m_kinematics = new SwerveDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
     m_odometry = new SwerveDriveOdometry(
       m_kinematics,
@@ -166,6 +166,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getAdjustedRotation2D() {
-    return Rotation2d.fromDegrees(m_gyro.getFusedHeading());
+    return Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble());
   }
 }

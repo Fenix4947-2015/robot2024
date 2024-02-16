@@ -24,8 +24,8 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("Shooter / Shooter Top Speed (RPM)", getShooterTopRpm());
-        // SmartDashboard.putNumber("Shooter / Shooter Bottom Speed (RPM)", getShooterBottomRpm());
+        SmartDashboard.putNumber("Shooter / Shooter Top Speed (RPM)", getShooterTopRpm());
+        SmartDashboard.putNumber("Shooter / Shooter Bottom Speed (RPM)", getShooterBottomRpm());
     }
 
     private double getShooterTopRpm() {
