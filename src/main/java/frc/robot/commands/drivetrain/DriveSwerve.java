@@ -52,7 +52,7 @@ public class DriveSwerve extends Command {
         final var rot = (REVERSE_ROTATION ? -1 : 1) *
                 m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.2));
 
-        m_driveTrain.drive(-xSpeed, -ySpeed, rot, fieldRelative);
+        m_driveTrain.drive(xSpeed, ySpeed, rot, fieldRelative);
 
         SmartDashboard.putNumber("xSpeed", xSpeed);
         SmartDashboard.putNumber("ySpeed", ySpeed);

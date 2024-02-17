@@ -99,6 +99,7 @@ public class RobotContainer {
 
     public void autonomousPeriodic() {
         m_driveTrain.updateOdometry();
+        m_driveTrain.resetGyro(m_limelight.getResultPose2d());
     }
 
     public void teleopInit() {

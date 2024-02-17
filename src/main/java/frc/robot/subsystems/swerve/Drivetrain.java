@@ -51,9 +51,12 @@ public class Drivetrain extends SubsystemBase {
 
   private SwerveDriveOdometry m_odometry;
 
+  private double gyroOffset;
+
   public Drivetrain(double speedRatio) {
-    resetGyro();
+    resetGyro(new Pose2d(0,0, Rotation2d.fromDegrees(180)));
     this.speedRatio = speedRatio;
+    this.gyroOffset = 0;
   }
 
   /**
@@ -125,19 +128,19 @@ public class Drivetrain extends SubsystemBase {
     return currentPose;
   }
 
-  public void resetOdometry(Pose2d currentPose) {
-    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getFusedHeading()),
+  public void resetOdometry(Pose2d pose) {
+    m_odometry.resetPosition(getAdjustedRotation2D(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
           m_backLeft.getPosition(),
           m_backRight.getPosition()
         },
-        currentPose);
+        pose);
   }
 
-  public void resetGyro() {
-    m_gyro.reset();;
+  public void resetGyro(Pose2d pose) {
+    m_gyro.reset();
     m_kinematics = new SwerveDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
     m_odometry = new SwerveDriveOdometry(
       m_kinematics,
@@ -148,7 +151,7 @@ public class Drivetrain extends SubsystemBase {
         m_backLeft.getPosition(),
         m_backRight.getPosition()
       });
-    resetOdometry(new Pose2d(0,0, Rotation2d.fromDegrees(180)));
+    resetOdometry(pose);
   }
 
   public void updateSmartDashboard() {
@@ -166,6 +169,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getAdjustedRotation2D() {
-    return Rotation2d.fromDegrees(m_gyro.getFusedHeading());
+    return Rotation2d.fromDegrees(m_gyro.getFusedHeading() + gyroOffset);
   }
 }

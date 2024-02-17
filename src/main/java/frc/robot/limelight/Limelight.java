@@ -71,5 +71,13 @@ public class Limelight extends SubsystemBase {
     }
     return getLimelightResults().targetingResults.getBotPose2d_wpiBlue();
   }
+
+  public Pose2d findStartingPose() {
+    while (true) {
+      if (isTargetValid()) {
+        return getResultPose2d();
+      }
+    }
+  }
 }
 
