@@ -2,8 +2,10 @@ package frc.robot.limelight;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+import frc.robot.SmartDashboardSettings;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.enums.Team;
 
@@ -65,19 +67,24 @@ public class Limelight extends SubsystemBase {
     NetworkTableInstance.getDefault().getTable(identifier).getEntry("pipeline").setNumber(pipelineID);
   }
 
+  public Team getTeam() {
+    double fiducialId = getLimelightResults().targetingResults.targets_Fiducials[0].fiducialID;
+    if (fiducialId == 3 || fiducialId == 4) {
+      return Team.RED;
+    } else {
+      return Team.BLUE;
+    }
+  }
+
+  public void setTeam(Team team) {
+    this.team = team;
+  }
+
   public Pose2d getResultPose2d() {
     if (Team.RED.equals(team)) {
       return getLimelightResults().targetingResults.getBotPose2d_wpiRed();
     }
     return getLimelightResults().targetingResults.getBotPose2d_wpiBlue();
-  }
-
-  public Pose2d findStartingPose() {
-    while (true) {
-      if (isTargetValid()) {
-        return getResultPose2d();
-      }
-    }
   }
 }
 

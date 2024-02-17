@@ -120,7 +120,7 @@ public class SwerveModule {
       }
 
   public double getWheelAngle() {
-    return m_turningEncoder.getPosition().getValueAsDouble() * 2 * Math.PI;
+    return m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
   }
 
   public double getStateAngle() {

@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.swerve.Drivetrain;
-import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.Position;
 import frc.robot.SmartDashboardSettings;
 import frc.robot.limelight.Limelight;
 
@@ -13,19 +13,15 @@ public class AutoAimLine extends AutoMoveStrategy {
 
     private final int _pipeline;
     private final Limelight _limelight;
-    private final Pose2d _reference;
 
     public AutoAimLine(
         int pipeline, 
         Drivetrain driveTrain, 
         Limelight limelight,    
-        SmartDashboardSettings smartDashboardSettings,
-        Pose2d target, 
-        Pose2d reference) {
-            super(driveTrain, smartDashboardSettings, target);
+        SmartDashboardSettings smartDashboardSettings) {
+            super(driveTrain, smartDashboardSettings, null);
             _pipeline = pipeline;
             _limelight = limelight;
-            _reference = reference;
             addRequirements(_limelight);
     }
 
@@ -56,15 +52,16 @@ public class AutoAimLine extends AutoMoveStrategy {
     public Pose2d updateDestination() {
         
         Pose2d currentPose = getCurrentPose();
-        Pose2d targetPose = getTargetPose();
+        Pose2d targetPose = Position.SPEAKER_SHOOT.getPositionForTeam(_limelight.getTeam());
+        Pose2d reference = Position.SPEAKER.getPositionForTeam(_limelight.getTeam());
 
-        Transform2d referenceToTarget = new Transform2d(_reference, targetPose);
-        Transform2d referenceToCurrent = new Transform2d(_reference, currentPose);
+        Transform2d referenceToTarget = new Transform2d(reference, targetPose);
+        Transform2d referenceToCurrent = new Transform2d(reference, currentPose);
 
         double angle = computeFullAngleBetween(referenceToTarget, referenceToCurrent);
         Transform2d referenceToAngle = new Transform2d(0,0, Rotation2d.fromDegrees(angle));
 
-        return _reference.plus(referenceToAngle).plus(referenceToTarget);
+        return reference.plus(referenceToAngle).plus(referenceToTarget);
     }
 
     public static double computeFullAngleBetween(Transform2d transformA, Transform2d transformB) {

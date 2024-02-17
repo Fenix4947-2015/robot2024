@@ -15,6 +15,8 @@ import frc.robot.commands.auto.AutoAimPose;
 import frc.robot.commands.auto.AutoMoveStrategy;
 import frc.robot.commands.drivetrain.DriveSwerve;
 import frc.robot.commands.intake.RollIntake;
+import frc.robot.commands.limelight.FindInitialPose;
+import frc.robot.commands.sequence.AutoSequence;
 import frc.robot.enums.Team;
 import frc.robot.limelight.Limelight;
 import frc.robot.subsystems.Intake;
@@ -45,11 +47,12 @@ public class RobotContainer {
     private final Limelight m_limelight = new Limelight("limelight-three", Team.RED);
     private final Intake m_intake = new Intake();
 
-    private final AutoMoveStrategy m_autoAim = new AutoAimLine(1, m_driveTrain, m_limelight, m_smartDashboardSettings, TARGET_SPEAKER, TARGET_PIVOT_SPEAKER);
+    private final AutoMoveStrategy m_autoAim = new AutoAimLine(1, m_driveTrain, m_limelight, m_smartDashboardSettings);
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
     private final RollIntake m_rollIntakeForward = new RollIntake(m_intake,0.5);
     private final RollIntake m_rollIntakeBackward = new RollIntake(m_intake,-0.5);
     private final RollIntake m_rollIntakeStop = new RollIntake(m_intake,0);
+    private final AutoSequence m_AutoSequence = new AutoSequence(m_limelight, m_driveTrain);
 
 
     /**
@@ -94,12 +97,11 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return null;
+        return m_AutoSequence;
     }
 
     public void autonomousPeriodic() {
         m_driveTrain.updateOdometry();
-        m_driveTrain.resetGyro(m_limelight.getResultPose2d());
     }
 
     public void teleopInit() {

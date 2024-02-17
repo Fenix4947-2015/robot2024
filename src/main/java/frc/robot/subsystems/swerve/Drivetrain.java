@@ -141,6 +141,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void resetGyro(Pose2d pose) {
     m_gyro.reset();
+    gyroOffset = pose.getRotation().getDegrees();
     m_kinematics = new SwerveDriveKinematics(m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
     m_odometry = new SwerveDriveOdometry(
       m_kinematics,
