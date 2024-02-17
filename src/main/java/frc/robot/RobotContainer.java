@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.drivetrain.AutoAimPose;
 import frc.robot.commands.drivetrain.AutoMoveStrategy;
 import frc.robot.commands.drivetrain.DriveSwerve;
 import frc.robot.commands.intake.RollIntake;
@@ -42,7 +43,7 @@ public class RobotContainer {
     private final Limelight m_limelight = new Limelight("limelight-three");
     private final Intake m_intake = new Intake();
 
-    private final AutoMoveStrategy m_autoAim = new AutoMoveStrategy(0, m_driveTrain, m_limelight, m_smartDashboardSettings, TARGET_SPEAKER);
+    private final AutoAimPose m_autoAim = new AutoAimPose(0, m_driveTrain, m_limelight, m_smartDashboardSettings, TARGET_SPEAKER);
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
     private final RollIntake m_rollIntakeForward = new RollIntake(m_intake,0.5);
     private final RollIntake m_rollIntakeBackward = new RollIntake(m_intake,-0.5);

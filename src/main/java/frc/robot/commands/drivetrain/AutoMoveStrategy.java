@@ -32,13 +32,11 @@ public class AutoMoveStrategy extends Command {
 
     final double CALCULATED_DISTANCE = 0.75;
 
-    private final Drivetrain _driveTrain;
-    private final Limelight _limelight;
+    protected final Drivetrain _driveTrain;
 
     private final SmartDashboardSettings _smartDashboardSettings;
-
-    private final int _pipeline;
-    private final Pose2d _target;
+    protected Pose2d _target;
+    protected Pose2d _currentPose;
 
     public double _driveCommandX = 0.0;
     public double _driveCommandY = 0.0;
@@ -52,17 +50,14 @@ public class AutoMoveStrategy extends Command {
     private boolean _isAtSetPoint = false;
 
     public AutoMoveStrategy(
-        int pipeline, 
         Drivetrain driveTrain, 
-        Limelight limelight,
         SmartDashboardSettings smartDashboardSettings,
         Pose2d target) {
-        _pipeline = pipeline;
         _driveTrain = driveTrain;
-        _limelight = limelight;
         _smartDashboardSettings = smartDashboardSettings;
         _target = target;
-        addRequirements(_limelight,driveTrain);
+        _currentPose = _driveTrain.getOdometry();
+        addRequirements(driveTrain);
         _smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
         _pidAngle.enableContinuousInput(-180, 180);
     }
@@ -78,11 +73,10 @@ public class AutoMoveStrategy extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     public void execute() {
-        _limelight.changePipeline(_pipeline);
         refreshPidValues();
-        updateTarget();
-        updateRobotPosition();
-        updateTracking();
+        _currentPose = updateRobotPosition();
+        Pose2d destination = updateDestination();
+        updateTracking(destination);
 
         SmartDashboard.putNumber("AutoAimDriveCommandX", _driveCommandX);
         SmartDashboard.putNumber("AutoAimDriveCommandY", _driveCommandY);
@@ -122,29 +116,18 @@ public class AutoMoveStrategy extends Command {
         _feedForward = f;
     }
 
-    public void updateRobotPosition() {
-        final boolean tv = _limelight.isTargetValid();
-
-        final LimelightResults limelightResult = _limelight.getLimelightResults();
-        final Pose2d botpose2d = limelightResult.targetingResults.getBotPose2d_wpiRed();
-
-        //System.out.println(String.format("tv: %s, tx: %f, ty: %f", tv, tx, ty));
-
-        if (tv) {
-            _driveTrain.resetOdometry(botpose2d);;
-        }
+    public Pose2d updateRobotPosition() {
+        return _driveTrain.getOdometry();
     }
 
-    public void updateTarget() {
-        return;
+    public Pose2d updateDestination() {
+        return _target;
     }
     
     
-    public void updateTracking() {
+    public void updateTracking(Pose2d destination) {
 
-        Pose2d currentPose = _driveTrain.getOdometry();
-
-        Transform2d movePose = new Transform2d(currentPose, _target);
+        Transform2d movePose = new Transform2d(_currentPose, destination);
         
         double totalDistance = movePose.getTranslation().getNorm();
         SmartDashboard.putNumber("totalDistance", totalDistance);
@@ -154,9 +137,9 @@ public class AutoMoveStrategy extends Command {
         }
 
         Transform2d moveSmall = movePose.times(distanceRatio);
-        Pose2d newTarget = currentPose.plus(moveSmall);
+        Pose2d newTarget = _currentPose.plus(moveSmall);
 
-        Twist2d twist = currentPose.log(newTarget);
+        Twist2d twist = _currentPose.log(newTarget);
 
         double dx = twist.dx;
         double dy = twist.dy;
