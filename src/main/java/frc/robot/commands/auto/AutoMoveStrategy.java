@@ -1,4 +1,4 @@
-package frc.robot.commands.drivetrain;
+package frc.robot.commands.auto;
 
 import java.util.Objects;
 
@@ -35,8 +35,8 @@ public class AutoMoveStrategy extends Command {
     protected final Drivetrain _driveTrain;
 
     private final SmartDashboardSettings _smartDashboardSettings;
-    protected Pose2d _target;
-    protected Pose2d _currentPose;
+    private Pose2d _target;
+    private Pose2d _currentPose;
 
     public double _driveCommandX = 0.0;
     public double _driveCommandY = 0.0;
@@ -65,8 +65,6 @@ public class AutoMoveStrategy extends Command {
     // Called just before this Command runs the first time
     @Override
     public void initialize() {
-        //System.out.println("AutoAim");
-        //_driveTrain.shiftLow();
         _isAtSetPoint = false;
     }
 
@@ -193,5 +191,13 @@ public class AutoMoveStrategy extends Command {
 
     private double norm(double x, double y) {
         return Math.max(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 1);
+    }
+
+    protected Pose2d getCurrentPose() {
+        return _currentPose;
+    }
+
+    protected Pose2d getTargetPose() {
+        return _target;
     }
 }

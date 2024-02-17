@@ -10,10 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.drivetrain.AutoAimPose;
-import frc.robot.commands.drivetrain.AutoMoveStrategy;
+import frc.robot.commands.auto.AutoAimLine;
+import frc.robot.commands.auto.AutoAimPose;
+import frc.robot.commands.auto.AutoMoveStrategy;
 import frc.robot.commands.drivetrain.DriveSwerve;
 import frc.robot.commands.intake.RollIntake;
+import frc.robot.enums.Team;
 import frc.robot.limelight.Limelight;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swerve.Drivetrain;
@@ -29,7 +31,7 @@ public class RobotContainer {
     private final double SPEED_RATIO = 1;
     private final SmartDashboardSettings m_smartDashboardSettings = new SmartDashboardSettings();
 
-    private final Pose2d TARGET_SPEAKER = new Pose2d(2.74,2.67, Rotation2d.fromDegrees(180));
+    private final Pose2d TARGET_SPEAKER = new Pose2d(5,2.67, Rotation2d.fromDegrees(180));
     private final Pose2d TARGET_PIVOT_SPEAKER = new Pose2d(0,2.67, Rotation2d.fromDegrees(180));
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -40,10 +42,10 @@ public class RobotContainer {
 
     // SUBSYSTEMS
     private final Drivetrain m_driveTrain = new Drivetrain(SPEED_RATIO);
-    private final Limelight m_limelight = new Limelight("limelight-three");
+    private final Limelight m_limelight = new Limelight("limelight-three", Team.RED);
     private final Intake m_intake = new Intake();
 
-    private final AutoAimPose m_autoAim = new AutoAimPose(0, m_driveTrain, m_limelight, m_smartDashboardSettings, TARGET_SPEAKER);
+    private final AutoMoveStrategy m_autoAim = new AutoAimLine(1, m_driveTrain, m_limelight, m_smartDashboardSettings, TARGET_SPEAKER, TARGET_PIVOT_SPEAKER);
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
     private final RollIntake m_rollIntakeForward = new RollIntake(m_intake,0.5);
     private final RollIntake m_rollIntakeBackward = new RollIntake(m_intake,-0.5);
