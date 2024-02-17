@@ -10,7 +10,7 @@ public class RollWinch extends Command {
     private final Winch m_winch;
     private final CommandXboxController m_controller;
 
-    private static final boolean PREVENT_UNROLL = true;
+    private static final boolean PREVENT_UNROLL = false;
 
     public RollWinch(Winch winch, CommandXboxController controller) {
         m_winch = winch;
@@ -23,7 +23,7 @@ public class RollWinch extends Command {
         double speed = m_controller.getLeftY();
 
         if (PREVENT_UNROLL) {
-            speed = Math.max(speed, 0.0);
+            speed = Math.min(speed, 0.0);
         }
 
         m_winch.roll(MathUtil.applyDeadband(speed, 0.1));
