@@ -2,7 +2,6 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.swerve.Drivetrain;
-import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.SmartDashboardSettings;
 import frc.robot.limelight.Limelight;
 

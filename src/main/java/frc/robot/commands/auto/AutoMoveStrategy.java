@@ -5,14 +5,11 @@ import java.util.Objects;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.SmartDashboardSettings;
-import frc.robot.LimelightHelpers.LimelightResults;
-import frc.robot.limelight.Limelight;
 
 public class AutoMoveStrategy extends Command {
     public static final double K_FEED_FORWARD_ANGLE = 0.0;
@@ -44,8 +41,6 @@ public class AutoMoveStrategy extends Command {
     private PIDController _pidAngle = new PIDController(K_PID_P_ANGLE, K_PID_I_ANGLE, K_PID_D_ANGLE);
     private PIDController _pidDistanceX = new PIDController(K_PID_P_DISTANCE, K_PID_I_DISTANCE, K_PID_D_DISTANCE);
     private PIDController _pidDistanceY = new PIDController(K_PID_P_DISTANCE, K_PID_I_DISTANCE, K_PID_D_DISTANCE);
-
-    private double _feedForward = K_FEED_FORWARD_ANGLE;
 
     private boolean _isAtSetPoint = false;
 
@@ -111,7 +106,6 @@ public class AutoMoveStrategy extends Command {
     public void setAnglePID(double p, double i, double d, double f) {
         // System.out.println(String.format("pid: %f %f %f %f", p, i, d, f));
         _pidAngle.setPID(p, i, d);
-        _feedForward = f;
     }
 
     public Pose2d updateRobotPosition() {

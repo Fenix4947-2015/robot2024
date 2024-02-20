@@ -19,11 +19,9 @@ public class DriveSwerve extends Command {
     private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
-    private double speedRatio;
     public DriveSwerve(CommandXboxController controller, Drivetrain driveTrain,double speedRatio) {
         m_controller = controller;
         m_driveTrain = driveTrain;
-        this.speedRatio = speedRatio;
         addRequirements(driveTrain);
     }
 
