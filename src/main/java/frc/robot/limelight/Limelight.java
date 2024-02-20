@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.SmartDashboardSettings;
 import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers.Results;
 import frc.robot.enums.Team;
 
 public class Limelight extends SubsystemBase {
@@ -85,6 +86,11 @@ public class Limelight extends SubsystemBase {
       return getLimelightResults().targetingResults.getBotPose2d_wpiRed();
     }
     return getLimelightResults().targetingResults.getBotPose2d_wpiBlue();
+  }
+
+  public double getLatency() {
+    Results results = getLimelightResults().targetingResults;
+    return (results.latency_capture + results.latency_jsonParse + results.latency_pipeline) / 1000;
   }
 }
 

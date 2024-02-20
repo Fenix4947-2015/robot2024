@@ -128,6 +128,18 @@ public class Drivetrain extends SubsystemBase {
     return currentPose;
   }
 
+  public ChassisSpeeds getVelocity() {
+
+    ChassisSpeeds chassisSpeeds = m_kinematics.toChassisSpeeds(
+      m_frontLeft.getState(),
+      m_frontRight.getState(),
+      m_backLeft.getState(),
+      m_backRight.getState()
+      );
+
+      return chassisSpeeds;
+  }
+
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(getAdjustedRotation2D(),
         new SwerveModulePosition[] {
