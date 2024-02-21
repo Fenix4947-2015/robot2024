@@ -16,7 +16,7 @@ public class Limelight extends SubsystemBase {
     private double ty;
     private double ta;
     private LimelightHelpers.LimelightResults limelightResults;
-    private Team team;
+    private Team team = Team.RED;
 
   public Limelight(String identifier, Team team) {
     this.identifier = identifier;
@@ -65,13 +65,17 @@ public class Limelight extends SubsystemBase {
     NetworkTableInstance.getDefault().getTable(identifier).getEntry("pipeline").setNumber(pipelineID);
   }
 
-  public Team getTeam() {
+  public Team findTeam() {
     double fiducialId = getLimelightResults().targetingResults.targets_Fiducials[0].fiducialID;
     if (fiducialId == 3 || fiducialId == 4) {
       return Team.RED;
     } else {
       return Team.BLUE;
     }
+  }
+
+  public Team getTeam() {
+    return this.team;
   }
 
   public void setTeam(Team team) {

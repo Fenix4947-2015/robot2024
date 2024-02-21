@@ -37,7 +37,7 @@ public class SwerveModule {
   private SwerveModuleState state = new SwerveModuleState();
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(0.3, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(0.5, 0, 0);
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
@@ -49,7 +49,7 @@ public class SwerveModule {
               K_MODULE_MAX_ANGULAR_VELOCITY, K_MODULE_MAX_ANGULAR_ACCELERATION));
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 0);
+  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0, 1);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.3, 0);
 
   /**
@@ -155,14 +155,17 @@ public class SwerveModule {
     final double speed = m_driveEncoder.getVelocity();
     final double targetSpeed = state.speedMetersPerSecond * changeSpeedDirection(wheelAngle, targetWheelAngle);
 
-    final double driveOutput =
-        m_drivePIDController.calculate(speed, targetSpeed);
+    final double speedNormalized = speed / Drivetrain.K_MAX_SPEED;
+    final double targetSpeedNormalized = targetSpeed / Drivetrain.K_MAX_SPEED;
 
-    final double driveFeedforward = m_driveFeedforward.calculate(targetSpeed);
+    final double driveOutput =
+        m_drivePIDController.calculate(speedNormalized, targetSpeedNormalized);
+
+    final double driveFeedforward = m_driveFeedforward.calculate(targetSpeedNormalized);
 
     double atPosition = m_turningPIDController.atGoal() ? 1.0 : 1.0;
     double motorSetPoint = (driveOutput + driveFeedforward) * reversed * atPosition; 
-    motorSetPoint = targetSpeed / Drivetrain.K_MAX_SPEED;
+    // motorSetPoint = targetSpeed / Drivetrain.K_MAX_SPEED;
     
     m_driveMotor.set(motorSetPoint);
     m_turningMotor.set(turnOutput + turnFeedforward);

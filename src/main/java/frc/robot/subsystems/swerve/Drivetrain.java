@@ -26,8 +26,14 @@ public class Drivetrain extends SubsystemBase {
   private static final double SWERVE_TRANSLATION_X = 11 * INCH_TO_METER;
   private static final double SWERVE_TRANSLATION_Y = 11 * INCH_TO_METER;
   public static final double K_MAX_SPEED = 5.0; // 3 meters per second
-  public static final double K_MAX_ANGULAR_SPEED = K_MAX_SPEED / Math.sqrt(Math.pow(SWERVE_TRANSLATION_X, 2) + Math.pow(SWERVE_TRANSLATION_Y, 2)); // 1/2 rotation per second
+  private static final double K_TURN_RADIUS = Math.sqrt(Math.pow(SWERVE_TRANSLATION_X, 2) + Math.pow(SWERVE_TRANSLATION_Y, 2));
+  public static final double K_MAX_ANGULAR_SPEED = K_MAX_SPEED / K_TURN_RADIUS; // 1/2 rotation per second
 
+  public static final double K_MAX_ACCELERATION = 1.0;
+  public static final double K_MAX_DECELERATION = 1.0;
+  public static final double K_MAX_ANGLUAR_ACCELERATION = K_MAX_ACCELERATION / K_TURN_RADIUS;
+  public static final double K_MAX_ANGLUAR_DECCELERATION = K_MAX_DECELERATION / K_TURN_RADIUS;
+  
   private final Translation2d m_frontLeftLocation = new Translation2d(SWERVE_TRANSLATION_X, SWERVE_TRANSLATION_Y);
   private final Translation2d m_frontRightLocation = new Translation2d(SWERVE_TRANSLATION_X, -SWERVE_TRANSLATION_Y);
   private final Translation2d m_backLeftLocation = new Translation2d(-SWERVE_TRANSLATION_X, SWERVE_TRANSLATION_Y);
@@ -65,11 +71,19 @@ public class Drivetrain extends SubsystemBase {
    * @param rot Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void driveNormalized(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     
     double robotXSpeed = xSpeed * K_MAX_SPEED * speedRatio;
     double robotYSpeed = ySpeed * K_MAX_SPEED * speedRatio;
     double robotRotSpeed = rot * K_MAX_ANGULAR_SPEED * speedRatio;
+    drive(robotXSpeed, robotYSpeed, robotRotSpeed, fieldRelative);
+  }
+
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    
+    double robotXSpeed = xSpeed;
+    double robotYSpeed = ySpeed;
+    double robotRotSpeed = rot;
     SwerveModuleState[] swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative

@@ -5,7 +5,9 @@ import java.util.Objects;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.Drivetrain;
@@ -22,6 +24,8 @@ public class AutoMoveStrategy extends Command {
     public static final double K_PID_I_DISTANCE = 0.0;
     public static final double K_PID_D_DISTANCE = 0.03;
 
+    public static final double MAX_DECEL = 1;
+
     public static final String PIDTYPE_AUTOAIM = "AUTOAIM";
 
     public static final int AUTOAIM_FAR_PIPELINE = 0;
@@ -34,6 +38,9 @@ public class AutoMoveStrategy extends Command {
     private final SmartDashboardSettings _smartDashboardSettings;
     private Pose2d _target;
     private Pose2d _currentPose;
+    private double _lastTimeMillis;
+    private Translation2d _lastSpeed;
+    private double _lastAngularSpeed;
 
     public double _driveCommandX = 0.0;
     public double _driveCommandY = 0.0;
@@ -61,6 +68,10 @@ public class AutoMoveStrategy extends Command {
     @Override
     public void initialize() {
         _isAtSetPoint = false;
+        _lastTimeMillis = System.currentTimeMillis();
+        ChassisSpeeds chassisSpeeds = _driveTrain.getVelocity();
+        _lastSpeed = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+        _lastAngularSpeed = chassisSpeeds.omegaRadiansPerSecond;
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -122,45 +133,88 @@ public class AutoMoveStrategy extends Command {
         Transform2d movePose = new Transform2d(_currentPose, destination);
         
         double totalDistance = movePose.getTranslation().getNorm();
+
+        ChassisSpeeds chassisSpeeds = _driveTrain.getVelocity();
+        Translation2d linearSpeed = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+        double brakeDistance = getBrakeDistance(linearSpeed.getNorm());
+        double angularBrakeDistance = getBrakeDistance(chassisSpeeds.omegaRadiansPerSecond);
+        
+        Translation2d normalizedLinearSpeed = movePose.getTranslation().times(1/movePose.getTranslation().getNorm());
+        
+        double dt = (System.currentTimeMillis() - _lastTimeMillis) / 1000;
+
+        SmartDashboard.putNumber("linearSpeed", linearSpeed.getNorm());
         SmartDashboard.putNumber("totalDistance", totalDistance);
-        double distanceRatio = CALCULATED_DISTANCE / totalDistance;
-        if (totalDistance < CALCULATED_DISTANCE) {
-            distanceRatio = 1;
+        SmartDashboard.putNumber("brakeDistance", brakeDistance);
+        SmartDashboard.putNumber("dt", dt);
+        
+        Translation2d targetSpeed;
+        if (brakeDistance > totalDistance && Math.abs(computeFullAngleBetween(linearSpeed, movePose.getTranslation())) < 90) {
+            double targetSpeedNorm = Math.sqrt(2 * Drivetrain.K_MAX_DECELERATION * brakeDistance);
+            targetSpeed = normalizedLinearSpeed.times(targetSpeedNorm);
+        } else {
+            targetSpeed = _lastSpeed.plus(normalizedLinearSpeed.times(Drivetrain.K_MAX_ACCELERATION * dt));
+        }
+        SmartDashboard.putNumber("targetSpeed", targetSpeed.getNorm());
+        
+        double targetAngularSpeed;
+        double turnSide = movePose.getRotation().getDegrees() > 0 ? 1 : -1;
+        if (angularBrakeDistance > Math.abs(movePose.getRotation().getRadians())) {
+            targetAngularSpeed = Math.sqrt(2 * Drivetrain.K_MAX_ANGLUAR_DECCELERATION * brakeDistance) * turnSide;
+        } else {
+            targetAngularSpeed = (_lastAngularSpeed + Drivetrain.K_MAX_ANGLUAR_DECCELERATION * dt) * turnSide;
         }
 
-        Transform2d moveSmall = movePose.times(distanceRatio);
-        Pose2d newTarget = _currentPose.plus(moveSmall);
+        SmartDashboard.putNumber("targetAngularSpeed", targetAngularSpeed);
 
-        Twist2d twist = _currentPose.log(newTarget);
+        _lastTimeMillis = System.currentTimeMillis();
+        _lastSpeed = targetSpeed;
+        _lastAngularSpeed = Math.abs(targetAngularSpeed);
 
-        double dx = twist.dx;
-        double dy = twist.dy;
-        double dtheta = twist.dtheta * 180 / Math.PI;
 
-        SmartDashboard.putNumber("twistX", twist.dx);
-        SmartDashboard.putNumber("twistY", twist.dy);
-        SmartDashboard.putNumber("twistAngle", twist.dtheta);
+        _driveCommandX = -targetSpeed.getX();
+        _driveCommandY = -targetSpeed.getY();
+        _steerCommand = -0;
 
-        _pidAngle.setSetpoint(0);
-        _pidAngle.setTolerance(2);
-        double steerCommand = _pidAngle.calculate(dtheta);
+        // SmartDashboard.putNumber("totalDistance", totalDistance);
+        // double distanceRatio = CALCULATED_DISTANCE / totalDistance;
+        // if (totalDistance < CALCULATED_DISTANCE) {
+        //     distanceRatio = 1;
+        // }
 
-        _pidDistanceX.setSetpoint(0);
-        _pidDistanceX.setTolerance(0.1);
-        double drive_x_cmd = _pidDistanceX.calculate(dx);
+        // Transform2d moveSmall = movePose.times(distanceRatio);
+        // Pose2d newTarget = _currentPose.plus(moveSmall);
 
-        _pidDistanceY.setSetpoint(0);
-        _pidDistanceY.setTolerance(0.1);
-        double drive_y_cmd = _pidDistanceY.calculate(dy);
+        // Twist2d twist = _currentPose.log(newTarget);
 
-        SmartDashboard.putNumber("drive_x_cmd", drive_x_cmd);
-        SmartDashboard.putNumber("drive_y_cmd", drive_y_cmd);
+        // double dx = twist.dx;
+        // double dy = twist.dy;
+        // double dtheta = twist.dtheta * 180 / Math.PI;
 
-        _steerCommand = clipValue(steerCommand, -0.7, 0.7);
-        _driveCommandX = normaliseX(drive_x_cmd, drive_y_cmd, 0.9);
-        _driveCommandY = normaliseY(drive_x_cmd, drive_y_cmd, 0.9);
+        // SmartDashboard.putNumber("twistX", twist.dx);
+        // SmartDashboard.putNumber("twistY", twist.dy);
+        // SmartDashboard.putNumber("twistAngle", twist.dtheta);
 
-        _isAtSetPoint = _pidAngle.atSetpoint() && _pidDistanceX.atSetpoint() && _pidDistanceY.atSetpoint();
+        // _pidAngle.setSetpoint(0);
+        // _pidAngle.setTolerance(2);
+        // double steerCommand = _pidAngle.calculate(dtheta);
+
+        // _pidDistanceX.setSetpoint(0);
+        // _pidDistanceX.setTolerance(0.1);
+        // double drive_x_cmd = _pidDistanceX.calculate(dx);
+
+        // _pidDistanceY.setSetpoint(0);
+        // _pidDistanceY.setTolerance(0.1);
+        // double drive_y_cmd = _pidDistanceY.calculate(dy);
+
+        // SmartDashboard.putNumber("drive_x_cmd", drive_x_cmd);
+        // SmartDashboard.putNumber("drive_y_cmd", drive_y_cmd);
+
+        // _steerCommand = clipValue(steerCommand, -0.7, 0.7);
+        // _driveCommandX = normaliseX(drive_x_cmd, drive_y_cmd, 0.9);
+        // _driveCommandY = normaliseY(drive_x_cmd, drive_y_cmd, 0.9);
+
+        // _isAtSetPoint = _pidAngle.atSetpoint() && _pidDistanceX.atSetpoint() && _pidDistanceY.atSetpoint();
     }
 
     private double clipValue(double value, double minValue, double maxValue) {
@@ -193,5 +247,29 @@ public class AutoMoveStrategy extends Command {
 
     protected Pose2d getTargetPose() {
         return _target;
+    }
+    
+    private double getBrakeDistance(double speed) {
+        return Math.pow(speed, 2) / (2 * Drivetrain.K_MAX_DECELERATION);
+    }
+
+    protected static double computeFullAngleBetween(Transform2d transformA, Transform2d transformB) {
+
+        return computeFullAngleBetween(transformA.getTranslation(), transformB.getTranslation());
+    }
+
+    protected static double computeFullAngleBetween(Translation2d translationA, Translation2d translationB) {
+        double angleA = Math.atan2(translationA.getY(), translationA.getX());
+        double angleB = Math.atan2(translationB.getY(), translationB.getX());
+        
+        double angleDifferenceRadians = angleB - angleA;
+
+        if (angleDifferenceRadians < 0) {
+            angleDifferenceRadians += 2 * Math.PI;
+        }
+
+        double angleDifferenceDegrees = Math.toDegrees(angleDifferenceRadians);
+
+        return angleDifferenceDegrees;
     }
 }

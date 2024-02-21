@@ -73,22 +73,4 @@ public class AutoAimLine extends AutoMoveStrategy {
 
         return reference.plus(referenceToAngle).plus(referenceToTarget);
     }
-
-    public static double computeFullAngleBetween(Transform2d transformA, Transform2d transformB) {
-        Translation2d translationA = transformA.getTranslation();
-        Translation2d translationB = transformB.getTranslation();
-
-        double angleA = Math.atan2(translationA.getY(), translationA.getX());
-        double angleB = Math.atan2(translationB.getY(), translationB.getX());
-        
-        double angleDifferenceRadians = angleB - angleA;
-
-        if (angleDifferenceRadians < 0) {
-            angleDifferenceRadians += 2 * Math.PI;
-        }
-
-        double angleDifferenceDegrees = Math.toDegrees(angleDifferenceRadians);
-
-        return angleDifferenceDegrees;
-    }
 }

@@ -24,7 +24,7 @@ public class FindTeam extends Command {
     @Override
     public void execute() {
         if (limelight.isTargetValid()) {
-            team = limelight.getTeam();
+            team = limelight.findTeam();
             limelight.setTeam(team);
             done = true;
         }
