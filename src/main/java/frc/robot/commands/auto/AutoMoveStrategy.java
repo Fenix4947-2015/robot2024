@@ -144,7 +144,7 @@ public class AutoMoveStrategy extends Command {
         double dt = (System.currentTimeMillis() - _lastTimeMillis) / 1000;
 
         SmartDashboard.putNumber("linearSpeed", linearSpeed.getNorm());
-        SmartDashboard.putNumber("totalDistance", totalDistance);
+        SmartDashboard.putNumber("totalDistance", totalDistance)    ;
         SmartDashboard.putNumber("brakeDistance", brakeDistance);
         SmartDashboard.putNumber("dt", dt);
         

@@ -37,7 +37,7 @@ public class SwerveModule {
   private SwerveModuleState state = new SwerveModuleState();
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(0.5, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(0, 0, 0.0);
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final ProfiledPIDController m_turningPIDController =
@@ -102,7 +102,7 @@ public class SwerveModule {
     // return new SwerveModuleState(
     //     m_driveEncoder.getRate(), new Rotation2d(m_turningEncoder.getDistance()));
         return new SwerveModuleState(
-          m_driveEncoder.getVelocity(), Rotation2d.fromRadians(m_turningEncoder.getPosition().getValueAsDouble()));
+          m_driveEncoder.getVelocity(), Rotation2d.fromRadians(m_turningEncoder.getAbsolutePosition().getValueAsDouble()));
   
   }
 
@@ -115,7 +115,7 @@ public class SwerveModule {
     // return new SwerveModulePosition(
     //     m_driveEncoder.getDistance(), new Rotation2d(m_turningEncoder.getDistance()));
         return new SwerveModulePosition(
-          m_driveEncoder.getPosition(), Rotation2d.fromRadians(m_turningEncoder.getPosition().getValueAsDouble() * 2 * Math.PI));
+          m_driveEncoder.getPosition(), Rotation2d.fromRadians(m_turningEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI));
   
       }
 
