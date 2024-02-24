@@ -3,23 +3,22 @@ package frc.robot.commands.auto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.Position;
 import frc.robot.SmartDashboardSettings;
-import frc.robot.limelight.Limelight;
+import frc.robot.limelight.LimelightThree;
 
 public class AutoAimLine extends AutoMoveStrategy {
 
     private final int _pipeline;
-    private final Limelight _limelight;
+    private final LimelightThree _limelight;
     private Pose2d _lastPose;
 
     public AutoAimLine(
         int pipeline, 
         Drivetrain driveTrain, 
-        Limelight limelight,    
+        LimelightThree limelight,    
         SmartDashboardSettings smartDashboardSettings) {
             super(driveTrain, smartDashboardSettings, null);
             _pipeline = pipeline;

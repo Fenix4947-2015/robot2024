@@ -1,11 +1,7 @@
 package frc.robot.limelight;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.Results;
-import frc.robot.enums.Team;
 
 public class Limelight extends SubsystemBase {
 
@@ -15,12 +11,9 @@ public class Limelight extends SubsystemBase {
     private double tx;
     private double ty;
     private double ta;
-    private LimelightHelpers.LimelightResults limelightResults;
-    private Team team = Team.RED;
 
-  public Limelight(String identifier, Team team) {
+  public Limelight(String identifier) {
     this.identifier = identifier;
-    this.team = team;
   }
 
   @Override
@@ -57,41 +50,8 @@ public class Limelight extends SubsystemBase {
     return targetValid;
   }
 
-  public LimelightHelpers.LimelightResults getLimelightResults() {
-    return limelightResults;
-  }
-
   public void changePipeline(int pipelineID){
     NetworkTableInstance.getDefault().getTable(identifier).getEntry("pipeline").setNumber(pipelineID);
-  }
-
-  public Team findTeam() {
-    double fiducialId = getLimelightResults().targetingResults.targets_Fiducials[0].fiducialID;
-    if (fiducialId == 3 || fiducialId == 4) {
-      return Team.RED;
-    } else {
-      return Team.BLUE;
-    }
-  }
-
-  public Team getTeam() {
-    return this.team;
-  }
-
-  public void setTeam(Team team) {
-    this.team = team;
-  }
-
-  public Pose2d getResultPose2d() {
-    if (Team.RED.equals(team)) {
-      return getLimelightResults().targetingResults.getBotPose2d_wpiRed();
-    }
-    return getLimelightResults().targetingResults.getBotPose2d_wpiBlue();
-  }
-
-  public double getLatency() {
-    Results results = getLimelightResults().targetingResults;
-    return (results.latency_capture + results.latency_jsonParse + results.latency_pipeline) / 1000;
   }
 }
 

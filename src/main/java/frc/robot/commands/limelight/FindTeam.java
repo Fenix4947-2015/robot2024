@@ -2,15 +2,15 @@ package frc.robot.commands.limelight;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.enums.Team;
-import frc.robot.limelight.Limelight;
+import frc.robot.limelight.LimelightThree;
 
 public class FindTeam extends Command {
 
-    private final Limelight limelight;
+    private final LimelightThree limelight;
     private boolean done;
     private Team team;
 
-    public FindTeam(Limelight limelight) {
+    public FindTeam(LimelightThree limelight) {
         this.limelight = limelight;
         this.done = false;
         addRequirements(limelight); // This command requires the Limelight subsystem.

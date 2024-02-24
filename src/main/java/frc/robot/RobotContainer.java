@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.auto.AutoAimLine;
 import frc.robot.commands.auto.AutoMoveStrategy;
-import frc.robot.commands.arm.MoveArm;
+import frc.robot.commands.arm.MoveArmDirect;
+import frc.robot.commands.arm.MoveArmPosition;
 import frc.robot.commands.drivetrain.DriveSwerve;
 import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
@@ -19,6 +20,7 @@ import frc.robot.enums.Team;
 import frc.robot.commands.shooter.SpinShooter;
 import frc.robot.commands.winch.RollWinch;
 import frc.robot.limelight.Limelight;
+import frc.robot.limelight.LimelightThree;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -44,13 +46,14 @@ public class RobotContainer {
 
     // SUBSYSTEMS
     private final Drivetrain m_driveTrain = new Drivetrain(SPEED_RATIO);
-    private final Limelight m_limelight = new Limelight("limelight-three", Team.RED);
+    private final LimelightThree m_limelight_three = new LimelightThree("limelight-three", Team.RED);
+    private final Limelight m_limelight = new Limelight("limelight");
     private final Intake m_intake = new Intake();
     private final Shooter m_shooter = new Shooter();
     private final Arm m_arm = new Arm();
     private final Winch m_winch = new Winch();
 
-    private final AutoMoveStrategy m_autoAim = new AutoAimLine(1, m_driveTrain, m_limelight, m_smartDashboardSettings);
+    private final AutoMoveStrategy m_autoAim = new AutoAimLine(1, m_driveTrain, m_limelight_three, m_smartDashboardSettings);
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
 
     private final RollIntake m_rollIntakeForward = new RollIntake(m_intake, 0.3);
@@ -59,11 +62,11 @@ public class RobotContainer {
     private final IntakeNote m_intakeNote = new IntakeNote(m_intake);
     private final SpinShooter m_SpinShooter = new SpinShooter(m_shooter, 1.0);
     private final SpinShooter m_stopShooter = new SpinShooter(m_shooter, 0);
-    private final MoveArm m_spinArmForward = new MoveArm(m_arm, 0.5);
-    private final MoveArm m_spinArmBackward = new MoveArm(m_arm, -0.5);
-    private final MoveArm m_stopArm = new MoveArm(m_arm, 0);
+    private final MoveArmPosition m_spinArmForward = new MoveArmPosition(m_arm, 320);
+    private final MoveArmPosition m_spinArmBackward = new MoveArmPosition(m_arm, 290);
+    private final MoveArmDirect m_stopArm = new MoveArmDirect(m_arm, m_helperController);
     private final RollWinch m_rollWinch = new RollWinch(m_winch, m_helperController);
-    private final AutoSequence m_AutoSequence = new AutoSequence(m_limelight, m_driveTrain);
+    private final AutoSequence m_AutoSequence = new AutoSequence(m_limelight_three, m_driveTrain);
     
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -94,13 +97,14 @@ public class RobotContainer {
         m_helperController.a().whileTrue(m_SpinShooter);
         m_helperController.x().whileTrue(m_spinArmForward);
         m_helperController.y().whileTrue(m_spinArmBackward);
+        m_helperController.getLeftX();
     }
 
     private void configureDefaultCommands() {
         m_driveTrain.setDefaultCommand(m_driveSwerve);
+        m_arm.setDefaultCommand(m_stopArm);
         m_intake.setDefaultCommand(m_stopIntake);
         m_shooter.setDefaultCommand(m_stopShooter);
-        m_arm.setDefaultCommand(m_stopArm);
         m_winch.setDefaultCommand(m_rollWinch);
     }
 

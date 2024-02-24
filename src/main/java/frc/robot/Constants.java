@@ -34,15 +34,25 @@ public final class Constants {
         public static final int kWinchMotorTwoChannel = 29;
         public static final int kWinchEncoderChannel1 = 9;
         public static final int kWinchEncoderChannel2 = 8;
+        public static final int kArmDutyCycleChannel = 7;
 
         //public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsFL = new Drivetrain.SwerveModuleSettings(1, 56, 55, 60);
         //public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsFR = new Drivetrain.SwerveModuleSettings(2, 54, 53, 61);
         //public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsBL = new Drivetrain.SwerveModuleSettings(3, 58, 57, 59);
         //public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsBR = new Drivetrain.SwerveModuleSettings(4, 52, 51, 62);
-        public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsFL = new Drivetrain.SwerveModuleSettings(1, 41, 42, 60);
-        public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsFR = new Drivetrain.SwerveModuleSettings(2, 22, 21, 61);
-        public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsBL = new Drivetrain.SwerveModuleSettings(3, 46, 43, 59);
-        public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsBR = new Drivetrain.SwerveModuleSettings(4, 45, 44, 62);
+        public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsFL = new Drivetrain.SwerveModuleSettings(1, 45, 44, 60);
+        public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsFR = new Drivetrain.SwerveModuleSettings(2, 46, 43, 61);
+        public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsBL = new Drivetrain.SwerveModuleSettings(3, 21, 22, 59);
+        public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsBR = new Drivetrain.SwerveModuleSettings(4, 41, 42, 62);
         public static final int kPigeon2Channel = 3;
+    }
+
+    public static class Arm {
+        public static final double kP = 0.01;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kToleranceDegrees = 1;
+        public static final double kLowestPosition = 343;
+        public static final double kHighestPosition = 274;
     }
 }

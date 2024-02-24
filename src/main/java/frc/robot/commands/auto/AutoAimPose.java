@@ -4,16 +4,17 @@ import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.SmartDashboardSettings;
 import frc.robot.limelight.Limelight;
+import frc.robot.limelight.LimelightThree;
 
 public class AutoAimPose extends AutoMoveStrategy {
 
     private final int _pipeline;
-    private final Limelight _limelight;
+    private final LimelightThree _limelight;
 
     public AutoAimPose(
         int pipeline, 
         Drivetrain driveTrain, 
-        Limelight limelight,
+        LimelightThree limelight,
         SmartDashboardSettings smartDashboardSettings,
         Pose2d target) {
             super(driveTrain, smartDashboardSettings, target);

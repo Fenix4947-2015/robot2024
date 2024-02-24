@@ -1,17 +1,17 @@
 package frc.robot.commands.limelight;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.limelight.Limelight;
+import frc.robot.limelight.LimelightThree;
 import frc.robot.subsystems.swerve.Drivetrain;
 import edu.wpi.first.math.geometry.Pose2d;
 
 public class FindInitialPose extends Command {
 
-    private final Limelight limelight;
+    private final LimelightThree limelight;
     private final Drivetrain drivetrain;
     private Pose2d targetPose;
 
-    public FindInitialPose(Limelight limelight, Drivetrain drivetrain) {
+    public FindInitialPose(LimelightThree limelight, Drivetrain drivetrain) {
         this.limelight = limelight;
         this.drivetrain = drivetrain;
         addRequirements(limelight, drivetrain); // This command requires the Limelight subsystem.
