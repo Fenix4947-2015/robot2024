@@ -10,12 +10,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.auto.AutoAimLine;
 import frc.robot.commands.auto.AutoMoveStrategy;
+import frc.robot.commands.arm.MoveArm;
 import frc.robot.commands.drivetrain.DriveSwerve;
+import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
 import frc.robot.commands.sequence.AutoSequence;
 import frc.robot.enums.Team;
+import frc.robot.commands.shooter.SpinShooter;
+import frc.robot.commands.winch.RollWinch;
 import frc.robot.limelight.Limelight;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Winch;
 import frc.robot.subsystems.swerve.Drivetrain;
 
 /**
@@ -33,21 +40,31 @@ public class RobotContainer {
     private final CommandXboxController m_driverController =
             new CommandXboxController(OperatorConstants.kDriverControllerPort);
     private final CommandXboxController m_helperController =
-            new CommandXboxController(OperatorConstants.kDriverControllerPort);
+            new CommandXboxController(OperatorConstants.kHelperControllerPort);
 
     // SUBSYSTEMS
     private final Drivetrain m_driveTrain = new Drivetrain(SPEED_RATIO);
     private final Limelight m_limelight = new Limelight("limelight-three", Team.RED);
     private final Intake m_intake = new Intake();
+    private final Shooter m_shooter = new Shooter();
+    private final Arm m_arm = new Arm();
+    private final Winch m_winch = new Winch();
 
     private final AutoMoveStrategy m_autoAim = new AutoAimLine(1, m_driveTrain, m_limelight, m_smartDashboardSettings);
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
-    private final RollIntake m_rollIntakeForward = new RollIntake(m_intake,0.5);
-    private final RollIntake m_rollIntakeBackward = new RollIntake(m_intake,-0.5);
-    private final RollIntake m_rollIntakeStop = new RollIntake(m_intake,0);
+
+    private final RollIntake m_rollIntakeForward = new RollIntake(m_intake, 0.3);
+    private final RollIntake m_rollIntakeBackward = new RollIntake(m_intake, -0.3);
+    private final RollIntake m_stopIntake = new RollIntake(m_intake, 0);
+    private final IntakeNote m_intakeNote = new IntakeNote(m_intake);
+    private final SpinShooter m_SpinShooter = new SpinShooter(m_shooter, 1.0);
+    private final SpinShooter m_stopShooter = new SpinShooter(m_shooter, 0);
+    private final MoveArm m_spinArmForward = new MoveArm(m_arm, 0.5);
+    private final MoveArm m_spinArmBackward = new MoveArm(m_arm, -0.5);
+    private final MoveArm m_stopArm = new MoveArm(m_arm, 0);
+    private final RollWinch m_rollWinch = new RollWinch(m_winch, m_helperController);
     private final AutoSequence m_AutoSequence = new AutoSequence(m_limelight, m_driveTrain);
-
-
+    
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -67,20 +84,24 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-        //new Trigger(m_exampleSubsystem::exampleCondition)
-        //    .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-        // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-        // cancelling on release.
+        // DRIVER
         m_driverController.b().whileTrue(m_autoAim);
-        m_driverController.leftBumper().whileTrue(m_rollIntakeForward);
-        m_driverController.rightBumper().whileTrue(m_rollIntakeBackward);
+
+        // HELPER
+        m_helperController.leftBumper().whileTrue(m_rollIntakeForward);
+        m_helperController.rightBumper().whileTrue(m_rollIntakeBackward);
+        m_helperController.start().whileTrue(m_intakeNote);
+        m_helperController.a().whileTrue(m_SpinShooter);
+        m_helperController.x().whileTrue(m_spinArmForward);
+        m_helperController.y().whileTrue(m_spinArmBackward);
     }
 
     private void configureDefaultCommands() {
         m_driveTrain.setDefaultCommand(m_driveSwerve);
-        m_intake.setDefaultCommand(m_rollIntakeStop);
+        m_intake.setDefaultCommand(m_stopIntake);
+        m_shooter.setDefaultCommand(m_stopShooter);
+        m_arm.setDefaultCommand(m_stopArm);
+        m_winch.setDefaultCommand(m_rollWinch);
     }
 
     /**
@@ -94,11 +115,11 @@ public class RobotContainer {
     }
 
     public void autonomousPeriodic() {
-        m_driveTrain.updateOdometry();
+        //m_driveTrain.updateOdometry();
     }
 
     public void teleopInit() {
         // m_driveTrain.resetGyro();
     }
-        
+
 }

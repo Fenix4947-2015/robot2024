@@ -1,0 +1,24 @@
+CAN ID
+41 swerve avant gauche
+46 swerve arriere gauche
+31 moteur bras gauche
+24 treuil 1
+29 treuil 2
+27 Shooter gauche
+23 Shooter droite
+22 Swerve avant droite
+21 swerve avant droite
+45 swerve arriere droite
+32 moteur bras droite
+28 3ieme lien
+35 intake
+42 swerve avant gauche
+43 swerve arriere gauche
+44 swerve arriere droite
+3 Pigeon 2
+
+
+DIO
+9,8 treuil
+7,6 pivot
+5 switch note

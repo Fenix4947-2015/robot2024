@@ -34,7 +34,7 @@ public class Limelight extends SubsystemBase {
     targetValid = !(tv < 1.0);
 
     //System.out.println(String.format("tx: %f ty: %f ta: %f tv: %f targetValid: %s", tx, ty, ta, tv, targetValid));
-    limelightResults = LimelightHelpers.getLatestResults(identifier);
+    //limelightResults = LimelightHelpers.getLatestResults(identifier);
   }
 
   private static double getLimelightEntry(String limelightId, String entry) {
