@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.auto.AutoAimLine;
 import frc.robot.commands.auto.AutoMoveStrategy;
+import frc.robot.commands.arm.MoveArmAim;
 import frc.robot.commands.arm.MoveArmDirect;
 import frc.robot.commands.arm.MoveArmPosition;
 import frc.robot.commands.drivetrain.DriveSwerve;
@@ -62,8 +63,8 @@ public class RobotContainer {
     private final IntakeNote m_intakeNote = new IntakeNote(m_intake);
     private final SpinShooter m_SpinShooter = new SpinShooter(m_shooter, 1.0);
     private final SpinShooter m_stopShooter = new SpinShooter(m_shooter, 0);
-    private final MoveArmPosition m_spinArmForward = new MoveArmPosition(m_arm, 320);
-    private final MoveArmPosition m_spinArmBackward = new MoveArmPosition(m_arm, 290);
+    private final MoveArmAim m_spinArmForward = new MoveArmAim(m_arm, m_limelight_three);
+    private final MoveArmPosition m_spinArmBackward = new MoveArmPosition(m_arm, 20);
     private final MoveArmDirect m_stopArm = new MoveArmDirect(m_arm, m_helperController);
     private final RollWinch m_rollWinch = new RollWinch(m_winch, m_helperController);
     private final AutoSequence m_AutoSequence = new AutoSequence(m_limelight_three, m_driveTrain);

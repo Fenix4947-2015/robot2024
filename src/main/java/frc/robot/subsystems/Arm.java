@@ -59,7 +59,8 @@ public class Arm extends SubsystemBase {
     }
 
     public double getEncoderDistance() {
-        return m_encoder.getAbsolutePosition() * 360;
+        double encodeDistance = m_encoder.getAbsolutePosition() * 360;
+        return encodeDistance > 180 ? encodeDistance - 360 : encodeDistance;
     }
 
     public void resetEncoder() {
@@ -67,14 +68,14 @@ public class Arm extends SubsystemBase {
     }
 
     private void movePid() {
-       double output = m_pidController.calculate(getEncoderDistance());
+       double output = limitOutput(m_pidController.calculate(getEncoderDistance()), getEncoderDistance());
         log(output);
         m_motorOne.set(-output);
         m_motorTwo.set(output);
     }
 
     private void moveDirect() {
-        double output = this.directOutput;
+        double output = limitOutput(this.directOutput, getEncoderDistance());
         log(output);
         m_motorOne.set(-output);
         m_motorTwo.set(output);
@@ -92,5 +93,15 @@ public class Arm extends SubsystemBase {
     private void log(double output) {
         SmartDashboard.putNumber("Arm / Output", output);
         SmartDashboard.putNumber("Arm / Distance", getEncoderDistance());
+    }
+
+    private double limitOutput(double output, double angle) {
+        if (angle > Constants.Arm.kLowestPosition) {
+            return Math.min(output, 0);
+        }
+        if (angle < Constants.Arm.kHighestPosition) {
+            return Math.max(output, 0);
+        }
+        return output;
     }
 }

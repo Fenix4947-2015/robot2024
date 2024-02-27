@@ -22,7 +22,7 @@ public class Intake extends SubsystemBase {
 
     public void roll(double speed) {
         m_motor.set(speed);
-        m_motorThirdlink.set(speed);
+        m_motorThirdlink.set(-speed);
     }
 
     public void stop() {
