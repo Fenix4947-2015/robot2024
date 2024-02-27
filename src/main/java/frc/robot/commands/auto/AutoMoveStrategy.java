@@ -85,7 +85,8 @@ public class AutoMoveStrategy extends Command {
         SmartDashboard.putNumber("AutoAimDriveCommandX", _driveCommandX);
         SmartDashboard.putNumber("AutoAimDriveCommandY", _driveCommandY);
         SmartDashboard.putNumber("AutoAimDriveCommandRot", _steerCommand);
-        _driveTrain.drive(_driveCommandX, _driveCommandY, _steerCommand, false);
+        // _driveTrain.drive(_driveCommandX, _driveCommandY, _steerCommand, false);
+        _driveTrain.driveNormalized(_driveCommandX, _driveCommandY, _steerCommand, false);
     }
 
     private void stopDrivetrain() {
@@ -132,89 +133,91 @@ public class AutoMoveStrategy extends Command {
 
         Transform2d movePose = new Transform2d(_currentPose, destination);
         
-        double totalDistance = movePose.getTranslation().getNorm();
+        // double totalDistance = movePose.getTranslation().getNorm();
 
-        ChassisSpeeds chassisSpeeds = _driveTrain.getVelocity();
-        Translation2d linearSpeed = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-        double brakeDistance = getBrakeDistance(linearSpeed.getNorm());
-        double angularBrakeDistance = getBrakeDistance(chassisSpeeds.omegaRadiansPerSecond);
+        // ChassisSpeeds chassisSpeeds = _driveTrain.getVelocity();
+        // Translation2d linearSpeed = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+        // double brakeDistance = getBrakeDistance(linearSpeed.getNorm());
+        // double angularBrakeDistance = getBrakeDistance(chassisSpeeds.omegaRadiansPerSecond);
         
-        Translation2d normalizedLinearSpeed = movePose.getTranslation().times(1/movePose.getTranslation().getNorm());
+        // Translation2d normalizedLinearSpeed = movePose.getTranslation().times(1/movePose.getTranslation().getNorm());
         
-        double dt = (System.currentTimeMillis() - _lastTimeMillis) / 1000;
+        // double dt = (System.currentTimeMillis() - _lastTimeMillis) / 1000;
 
-        SmartDashboard.putNumber("linearSpeed", linearSpeed.getNorm());
-        SmartDashboard.putNumber("totalDistance", totalDistance)    ;
-        SmartDashboard.putNumber("brakeDistance", brakeDistance);
-        SmartDashboard.putNumber("dt", dt);
+        // SmartDashboard.putNumber("linearSpeed", linearSpeed.getNorm());
+        // SmartDashboard.putNumber("totalDistance", totalDistance)    ;
+        // SmartDashboard.putNumber("brakeDistance", brakeDistance);
+        // SmartDashboard.putNumber("dt", dt);
         
-        Translation2d targetSpeed;
-        if (brakeDistance > totalDistance && Math.abs(computeFullAngleBetween(linearSpeed, movePose.getTranslation())) < 90) {
-            double targetSpeedNorm = Math.sqrt(2 * Drivetrain.K_MAX_DECELERATION * brakeDistance);
-            targetSpeed = normalizedLinearSpeed.times(targetSpeedNorm);
-        } else {
-            targetSpeed = _lastSpeed.plus(normalizedLinearSpeed.times(Drivetrain.K_MAX_ACCELERATION * dt));
-        }
-        SmartDashboard.putNumber("targetSpeed", targetSpeed.getNorm());
+        // Translation2d targetSpeed;
+        // if (brakeDistance > totalDistance && Math.abs(computeFullAngleBetween(linearSpeed, movePose.getTranslation())) < 90) {
+        //     double targetSpeedNorm = Math.sqrt(2 * Drivetrain.K_MAX_DECELERATION * brakeDistance);
+        //     targetSpeed = normalizedLinearSpeed.times(targetSpeedNorm);
+        // } else {
+        //     targetSpeed = _lastSpeed.plus(normalizedLinearSpeed.times(Drivetrain.K_MAX_ACCELERATION * dt));
+        // }
+        // SmartDashboard.putNumber("targetSpeed", targetSpeed.getNorm());
         
-        double targetAngularSpeed;
-        double turnSide = movePose.getRotation().getDegrees() > 0 ? 1 : -1;
-        if (angularBrakeDistance > Math.abs(movePose.getRotation().getRadians())) {
-            targetAngularSpeed = Math.sqrt(2 * Drivetrain.K_MAX_ANGLUAR_DECCELERATION * brakeDistance) * turnSide;
-        } else {
-            targetAngularSpeed = (_lastAngularSpeed + Drivetrain.K_MAX_ANGLUAR_DECCELERATION * dt) * turnSide;
-        }
-
-        SmartDashboard.putNumber("targetAngularSpeed", targetAngularSpeed);
-
-        _lastTimeMillis = System.currentTimeMillis();
-        _lastSpeed = targetSpeed;
-        _lastAngularSpeed = Math.abs(targetAngularSpeed);
-
-
-        _driveCommandX = -targetSpeed.getX();
-        _driveCommandY = -targetSpeed.getY();
-        _steerCommand = -0;
-
-        // SmartDashboard.putNumber("totalDistance", totalDistance);
-        // double distanceRatio = CALCULATED_DISTANCE / totalDistance;
-        // if (totalDistance < CALCULATED_DISTANCE) {
-        //     distanceRatio = 1;
+        // double targetAngularSpeed;
+        // double turnSide = movePose.getRotation().getDegrees() > 0 ? 1 : -1;
+        // if (angularBrakeDistance > Math.abs(movePose.getRotation().getRadians())) {
+        //     targetAngularSpeed = Math.sqrt(2 * Drivetrain.K_MAX_ANGLUAR_DECCELERATION * brakeDistance) * turnSide;
+        // } else {
+        //     targetAngularSpeed = (_lastAngularSpeed + Drivetrain.K_MAX_ANGLUAR_DECCELERATION * dt) * turnSide;
         // }
 
-        // Transform2d moveSmall = movePose.times(distanceRatio);
-        // Pose2d newTarget = _currentPose.plus(moveSmall);
+        // SmartDashboard.putNumber("targetAngularSpeed", targetAngularSpeed);
 
-        // Twist2d twist = _currentPose.log(newTarget);
+        // _lastTimeMillis = System.currentTimeMillis();
+        // _lastSpeed = targetSpeed;
+        // _lastAngularSpeed = Math.abs(targetAngularSpeed);
 
-        // double dx = twist.dx;
-        // double dy = twist.dy;
-        // double dtheta = twist.dtheta * 180 / Math.PI;
 
-        // SmartDashboard.putNumber("twistX", twist.dx);
-        // SmartDashboard.putNumber("twistY", twist.dy);
-        // SmartDashboard.putNumber("twistAngle", twist.dtheta);
+        // _driveCommandX = -targetSpeed.getX();
+        // _driveCommandY = -targetSpeed.getY();
+        // _steerCommand = -0;
 
-        // _pidAngle.setSetpoint(0);
-        // _pidAngle.setTolerance(2);
-        // double steerCommand = _pidAngle.calculate(dtheta);
+        double totalDistance = movePose.getTranslation().getNorm();
+        
+        SmartDashboard.putNumber("totalDistance", totalDistance);
+        double distanceRatio = CALCULATED_DISTANCE / totalDistance;
+        if (totalDistance < CALCULATED_DISTANCE) {
+            distanceRatio = 1;
+        }
 
-        // _pidDistanceX.setSetpoint(0);
-        // _pidDistanceX.setTolerance(0.1);
-        // double drive_x_cmd = _pidDistanceX.calculate(dx);
+        Transform2d moveSmall = movePose.times(distanceRatio);
+        Pose2d newTarget = _currentPose.plus(moveSmall);
 
-        // _pidDistanceY.setSetpoint(0);
-        // _pidDistanceY.setTolerance(0.1);
-        // double drive_y_cmd = _pidDistanceY.calculate(dy);
+        Twist2d twist = _currentPose.log(newTarget);
 
-        // SmartDashboard.putNumber("drive_x_cmd", drive_x_cmd);
-        // SmartDashboard.putNumber("drive_y_cmd", drive_y_cmd);
+        double dx = twist.dx;
+        double dy = twist.dy;
+        double dtheta = twist.dtheta * 180 / Math.PI;
 
-        // _steerCommand = clipValue(steerCommand, -0.7, 0.7);
-        // _driveCommandX = normaliseX(drive_x_cmd, drive_y_cmd, 0.9);
-        // _driveCommandY = normaliseY(drive_x_cmd, drive_y_cmd, 0.9);
+        SmartDashboard.putNumber("twistX", twist.dx);
+        SmartDashboard.putNumber("twistY", twist.dy);
+        SmartDashboard.putNumber("twistAngle", twist.dtheta);
 
-        // _isAtSetPoint = _pidAngle.atSetpoint() && _pidDistanceX.atSetpoint() && _pidDistanceY.atSetpoint();
+        _pidAngle.setSetpoint(0);
+        _pidAngle.setTolerance(2);
+        double steerCommand = _pidAngle.calculate(dtheta);
+
+        _pidDistanceX.setSetpoint(0);
+        _pidDistanceX.setTolerance(0.1);
+        double drive_x_cmd = _pidDistanceX.calculate(dx);
+
+        _pidDistanceY.setSetpoint(0);
+        _pidDistanceY.setTolerance(0.1);
+        double drive_y_cmd = _pidDistanceY.calculate(dy);
+
+        SmartDashboard.putNumber("drive_x_cmd", drive_x_cmd);
+        SmartDashboard.putNumber("drive_y_cmd", drive_y_cmd);
+
+        _steerCommand = clipValue(steerCommand, -0.7, 0.7);
+        _driveCommandX = normaliseX(drive_x_cmd, drive_y_cmd, 0.9);
+        _driveCommandY = normaliseY(drive_x_cmd, drive_y_cmd, 0.9);
+
+        _isAtSetPoint = _pidAngle.atSetpoint() && _pidDistanceX.atSetpoint() && _pidDistanceY.atSetpoint();
     }
 
     private double clipValue(double value, double minValue, double maxValue) {

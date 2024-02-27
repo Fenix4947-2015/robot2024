@@ -6,7 +6,7 @@ import frc.robot.subsystems.Intake;
 public class IntakeNote extends Command {
     private final Intake m_intake;
 
-    private static final double INTAKE_SPEED = 0.25;
+    private static final double INTAKE_SPEED = 0.5;
 
     public IntakeNote(Intake intake) {
         m_intake = intake;

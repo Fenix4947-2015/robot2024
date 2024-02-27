@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.opencv.core.Mat;
+
 import frc.robot.subsystems.swerve.Drivetrain;
 
 /**
@@ -58,5 +60,13 @@ public final class Constants {
         public static final double kDistanceShootFar = 4.6;
         public static final double kAngleShootNear = 100;
         public static final double kAngleShootFar = 79;
+    }
+
+    public static class Limelight {
+        public static final double offsetX = -0.46;
+        public static final double offsetY = -0.46;
+        public static final double offsetZ = 0.43;
+        public static final double angleCamera = 60 - 15;
+
     }
 }

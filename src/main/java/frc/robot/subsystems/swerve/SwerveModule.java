@@ -136,7 +136,7 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     // SwerveModuleState state =
     //     SwerveModuleState.optimize(desiredState, new Rotation2d(m_turningEncoder.getDistance()));
-    state = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(m_turningEncoder.getPosition().getValueAsDouble()));
+    state = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(m_turningEncoder.getAbsolutePosition().getValueAsDouble()));
     double wheelAngle = getWheelAngle();
     double targetWheelAngle = state.angle.getRadians();
 
