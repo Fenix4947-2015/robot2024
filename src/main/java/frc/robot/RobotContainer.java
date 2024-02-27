@@ -63,7 +63,7 @@ public class RobotContainer {
     private final IntakeNote m_intakeNote = new IntakeNote(m_intake);
     private final SpinShooter m_SpinShooter = new SpinShooter(m_shooter, 1.0);
     private final SpinShooter m_stopShooter = new SpinShooter(m_shooter, 0);
-    private final MoveArmAim m_spinArmForward = new MoveArmAim(m_arm, m_limelight_three);
+    private final MoveArmAim m_moveArmAim = new MoveArmAim(m_arm, m_limelight_three);
     private final MoveArmPosition m_spinArmBackward = new MoveArmPosition(m_arm, 20);
     private final MoveArmDirect m_stopArm = new MoveArmDirect(m_arm, m_helperController);
     private final RollWinch m_rollWinch = new RollWinch(m_winch, m_helperController);
@@ -90,13 +90,14 @@ public class RobotContainer {
     private void configureBindings() {
         // DRIVER
         m_driverController.b().whileTrue(m_autoAim);
+        m_driverController.x().whileTrue(m_moveArmAim);
 
         // HELPER
         m_helperController.leftBumper().whileTrue(m_rollIntakeForward);
         m_helperController.rightBumper().whileTrue(m_rollIntakeBackward);
         m_helperController.start().whileTrue(m_intakeNote);
         m_helperController.a().whileTrue(m_SpinShooter);
-        m_helperController.x().whileTrue(m_spinArmForward);
+        
         m_helperController.y().whileTrue(m_spinArmBackward);
         m_helperController.getLeftX();
     }
