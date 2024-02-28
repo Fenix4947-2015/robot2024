@@ -21,9 +21,9 @@ import static frc.robot.Constants.ElectricConstants.*;
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
   
-  private static final double SWERVE_TRANSLATION_X = 0.31;
-  private static final double SWERVE_TRANSLATION_Y = 0.27;
-  public static final double K_MAX_SPEED = 5.0; // 3 meters per second
+  private static final double SWERVE_TRANSLATION_X = 0.311;
+  private static final double SWERVE_TRANSLATION_Y = 0.273;
+  public static final double K_MAX_SPEED = 15.1 / (12 * 25.4 / 1000); // 3 meters per second
   private static final double K_TURN_RADIUS = Math.sqrt(Math.pow(SWERVE_TRANSLATION_X, 2) + Math.pow(SWERVE_TRANSLATION_Y, 2));
   public static final double K_MAX_ANGULAR_SPEED = K_MAX_SPEED / K_TURN_RADIUS; // 1/2 rotation per second
 

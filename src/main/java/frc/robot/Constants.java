@@ -64,7 +64,7 @@ public final class Constants {
 
     public static class Limelight {
         public static final double offsetX = -0.46;
-        public static final double offsetY = -0.46;
+        public static final double offsetY = 0;
         public static final double offsetZ = 0.43;
         public static final double angleCamera = 60 - 15;
 

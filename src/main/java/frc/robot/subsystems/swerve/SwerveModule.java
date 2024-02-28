@@ -20,7 +20,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class SwerveModule {
   private final int id;
-  private static final double K_SPEED_GEAR_RATIO = 6;
+  private static final double K_SPEED_GEAR_RATIO = 6.75;
   private static final double K_WHEEL_RADIUS = 0.0508;
   private static final double K_MAX_MOTOR_RPM = 5676;
   private static final double K_TRUN_GEAR_RATIO = 12.8;
