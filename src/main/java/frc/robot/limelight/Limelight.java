@@ -11,9 +11,11 @@ public class Limelight {
     private double tx;
     private double ty;
     private double ta;
+    private boolean targetFound;
 
   public Limelight(String identifier) {
     this.identifier = identifier;
+    NetworkTableInstance.getDefault().getTable(identifier).getEntry("pipeline").setNumber(1);
   }
 
   public void periodic() {
@@ -24,6 +26,9 @@ public class Limelight {
 
     final double tv = getLimelightEntry(identifier, "tv");
     targetValid = !(tv < 1.0);
+    if (!targetFound) {
+      targetFound = targetValid;
+    }
 
     //System.out.println(String.format("tx: %f ty: %f ta: %f tv: %f targetValid: %s", tx, ty, ta, tv, targetValid));
     //limelightResults = LimelightHelpers.getLatestResults(identifier);
@@ -49,8 +54,8 @@ public class Limelight {
     return targetValid;
   }
 
-  public void changePipeline(int pipelineID){
-    NetworkTableInstance.getDefault().getTable(identifier).getEntry("pipeline").setNumber(pipelineID);
+  public void resetTargetFound() {
+    targetFound = false;
   }
 }
 

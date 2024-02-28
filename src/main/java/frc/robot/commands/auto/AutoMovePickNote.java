@@ -27,13 +27,11 @@ public class AutoMovePickNote extends AutoMoveStrategy {
     @Override
     public void initialize() {
         super.initialize();
-        _limelight.changePipeline(_pipeline);
     }
 
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
-        _limelight.changePipeline(0);
     }
 
     @Override

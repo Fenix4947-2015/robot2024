@@ -16,11 +16,6 @@ public class FindTeam extends Command {
     }
 
     @Override
-    public void initialize() {
-        limelight.changePipeline(1);
-    }
-
-    @Override
     public void execute() {
         if (limelight.isTargetValid()) {
             team = limelight.findTeam();
@@ -32,11 +27,6 @@ public class FindTeam extends Command {
     @Override
     public boolean isFinished() {
         return done;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        limelight.changePipeline(0);
     }
 
     public Team getTeam() {

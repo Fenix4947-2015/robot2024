@@ -12,37 +12,30 @@ import frc.robot.limelight.LimelightThree;
 
 public class AutoAimRotation extends AutoMoveStrategy {
 
-    private final int _pipeline;
     private final LimelightThree _limelight;
     private Pose2d _lastPose;
 
     public AutoAimRotation(
-        int pipeline, 
         Drivetrain driveTrain, 
         LimelightThree limelight,    
         SmartDashboardSettings smartDashboardSettings) {
             super(driveTrain, smartDashboardSettings, null);
-            _pipeline = pipeline;
             _limelight = limelight;
             _lastPose = new Pose2d();
-            addRequirements(_limelight);
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        _limelight.changePipeline(_pipeline);
     }
 
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
-        _limelight.changePipeline(0);
     }
 
     @Override
     public Pose2d updateRobotPosition() {
-        _limelight.changePipeline(_pipeline);
 
         if (_limelight.isTargetValid() && !_lastPose.equals(_limelight.getResultPose2d())) {
             _lastPose = _limelight.getResultPose2d();
@@ -71,7 +64,7 @@ public class AutoAimRotation extends AutoMoveStrategy {
         Translation2d newTranslation = referenceToTarget.getTranslation().times(distanceRatio);
         Transform2d referenceToNewTarget = new Transform2d(newTranslation, referenceToTarget.getRotation());
 
-        double angle = computeFullAngleBetween(referenceToTarget, referenceToNewTarget);
+        double angle = computeFullAngleBetween(referenceToTarget, referenceToCurrent);
         Transform2d referenceToAngle = new Transform2d(0,0, Rotation2d.fromDegrees(angle));
 
         return reference.plus(referenceToAngle).plus(referenceToNewTarget);

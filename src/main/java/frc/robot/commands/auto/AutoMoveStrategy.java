@@ -194,9 +194,9 @@ public class AutoMoveStrategy extends Command {
         double dy = twist.dy;
         double dtheta = twist.dtheta * 180 / Math.PI;
 
-        SmartDashboard.putNumber("twistX", twist.dx);
-        SmartDashboard.putNumber("twistY", twist.dy);
-        SmartDashboard.putNumber("twistAngle", twist.dtheta);
+        SmartDashboard.putNumber("dx", dx);
+        SmartDashboard.putNumber("dy", dy);
+        SmartDashboard.putNumber("dtheta", dtheta);
 
         _pidAngle.setSetpoint(0);
         _pidAngle.setTolerance(2);

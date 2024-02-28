@@ -20,7 +20,6 @@ public class MoveArmAim extends Command {
     public void initialize() {
         m_arm.setPidMode();
         m_arm.setTargetPosition(m_targetPosition);
-        m_limelight.changePipeline(1);
     }
 
     @Override
@@ -35,7 +34,6 @@ public class MoveArmAim extends Command {
 
     @Override
     public void end(boolean interupted) {
-        m_limelight.changePipeline(0);
     }
 
     private double calculateAngle() {

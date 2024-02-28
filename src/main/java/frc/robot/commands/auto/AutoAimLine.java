@@ -11,17 +11,14 @@ import frc.robot.limelight.LimelightThree;
 
 public class AutoAimLine extends AutoMoveStrategy {
 
-    private final int _pipeline;
     private final LimelightThree _limelight;
     private Pose2d _lastPose;
 
     public AutoAimLine(
-        int pipeline, 
         Drivetrain driveTrain, 
         LimelightThree limelight,    
         SmartDashboardSettings smartDashboardSettings) {
             super(driveTrain, smartDashboardSettings, null);
-            _pipeline = pipeline;
             _limelight = limelight;
             _lastPose = new Pose2d();
     }
@@ -29,18 +26,15 @@ public class AutoAimLine extends AutoMoveStrategy {
     @Override
     public void initialize() {
         super.initialize();
-        _limelight.changePipeline(_pipeline);
     }
 
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
-        _limelight.changePipeline(0);
     }
 
     @Override
     public Pose2d updateRobotPosition() {
-        _limelight.changePipeline(_pipeline);
 
         if (_limelight.isTargetValid() && !_lastPose.equals(_limelight.getResultPose2d())) {
             _lastPose = _limelight.getResultPose2d();

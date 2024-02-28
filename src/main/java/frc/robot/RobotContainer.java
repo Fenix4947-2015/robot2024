@@ -57,7 +57,7 @@ public class RobotContainer {
     private final Arm m_arm = new Arm();
     private final Winch m_winch = new Winch();
 
-    private final AutoMoveStrategy m_autoAim = new AutoAimRotation(1, m_driveTrain, m_limelight_three, m_smartDashboardSettings);
+    private final AutoMoveStrategy m_autoAim = new AutoAimRotation(m_driveTrain, m_limelight_three, m_smartDashboardSettings);
     private final ParallelPickNote m_autoPickNote = new ParallelPickNote(m_limelight, m_driveTrain, m_smartDashboardSettings, m_intake);
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
 

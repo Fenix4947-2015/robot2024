@@ -18,11 +18,6 @@ public class FindInitialPose extends Command {
     }
 
     @Override
-    public void initialize() {
-        limelight.changePipeline(1);
-    }
-
-    @Override
     public void execute() {
         if (limelight.isTargetValid()) {
             targetPose = limelight.getResultPose2d();
@@ -37,7 +32,6 @@ public class FindInitialPose extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        limelight.changePipeline(0);
     }
 
     public Pose2d getTargetPose() {
