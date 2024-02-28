@@ -27,17 +27,18 @@ public class AutoAimRotation extends AutoMoveStrategy {
     @Override
     public void initialize() {
         super.initialize();
+        _limelight.resetTargetFound();
     }
 
     @Override
-    public void end(boolean interrupted) {
-        super.end(interrupted);
+    public boolean isFinished() {
+        return super.isFinished() && _limelight.getTargetFound();
     }
 
     @Override
     public Pose2d updateRobotPosition() {
 
-        if (_limelight.isTargetValid() && !_lastPose.equals(_limelight.getResultPose2d())) {
+        if (_limelight.getTargetFound() && _limelight.isTargetValid() && !_lastPose.equals(_limelight.getResultPose2d())) {
             _lastPose = _limelight.getResultPose2d();
             double latency = _limelight.getLatency();
             ChassisSpeeds chassisSpeeds = _driveTrain.getVelocity();
@@ -53,8 +54,11 @@ public class AutoAimRotation extends AutoMoveStrategy {
 
     @Override
     public Pose2d updateDestination() {
-        
         Pose2d currentPose = getCurrentPose();
+        if (!_limelight.getTargetFound()) {
+            return currentPose;
+        }
+        
         Pose2d targetPose = Position.SPEAKER_SHOOT.getPositionForTeam(_limelight.getTeam());
         Pose2d reference = Position.SPEAKER.getPositionForTeam(_limelight.getTeam());
 

@@ -57,5 +57,9 @@ public class Limelight {
   public void resetTargetFound() {
     targetFound = false;
   }
+
+  public boolean getTargetFound() {
+    return targetFound;
+  }
 }
 
