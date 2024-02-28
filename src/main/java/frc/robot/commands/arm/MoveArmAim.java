@@ -14,14 +14,13 @@ public class MoveArmAim extends Command {
         m_arm = arm;
         m_targetPosition = Constants.Arm.kAngleShootNear;
         m_limelight = limelight;
-        addRequirements(arm);
     }
 
     @Override
     public void initialize() {
         m_arm.setPidMode();
         m_arm.setTargetPosition(m_targetPosition);
-        m_limelight.changePipeline(0);
+        m_limelight.changePipeline(1);
     }
 
     @Override
