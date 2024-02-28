@@ -1,6 +1,12 @@
 package frc.robot.commands.auto;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
 import java.util.Objects;
+import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.SmartDashboardSettings;
+
+import static frc.robot.Utils.elapsedAtLeastSince;
 
 public class AutoMoveStrategy extends Command {
     public static final double K_FEED_FORWARD_ANGLE = 0.0;
@@ -50,6 +58,7 @@ public class AutoMoveStrategy extends Command {
     private PIDController _pidDistanceY = new PIDController(K_PID_P_DISTANCE, K_PID_I_DISTANCE, K_PID_D_DISTANCE);
 
     private boolean _isAtSetPoint = false;
+    private Optional<Instant> _atSetpointSince = Optional.empty();
 
     public AutoMoveStrategy(
         Drivetrain driveTrain, 
@@ -82,11 +91,23 @@ public class AutoMoveStrategy extends Command {
         Pose2d destination = updateDestination();
         updateTracking(destination);
 
+        refreshAtSetpointSince();
+
         SmartDashboard.putNumber("AutoAimDriveCommandX", _driveCommandX);
         SmartDashboard.putNumber("AutoAimDriveCommandY", _driveCommandY);
         SmartDashboard.putNumber("AutoAimDriveCommandRot", _steerCommand);
         // _driveTrain.drive(_driveCommandX, _driveCommandY, _steerCommand, false);
         _driveTrain.driveNormalized(_driveCommandX, _driveCommandY, _steerCommand, false);
+    }
+
+    private void refreshAtSetpointSince() {
+        if (_isAtSetPoint) {
+            if (_atSetpointSince.isEmpty()) {
+                _atSetpointSince = Optional.of(Instant.now());
+            }
+        } else {
+            _atSetpointSince = Optional.empty();
+        }
     }
 
     private void stopDrivetrain() {
@@ -101,12 +122,11 @@ public class AutoMoveStrategy extends Command {
         }
     }
 
-
-
     // Make this return true when this Command no longer needs to run execute()
     @Override
     public boolean isFinished() {
-        return _isAtSetPoint;
+        return _atSetpointSince.map(t -> elapsedAtLeastSince(500, t))
+                .orElse(false);
     }
 
     // Called once after isFinished returns true
