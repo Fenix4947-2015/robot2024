@@ -41,13 +41,17 @@ public class AutoMovePickNote extends AutoMoveStrategy {
     public Pose2d updateDestination() {
         Pose2d currentPose = _driveTrain.getOdometry();
         Transform2d notePose = new Transform2d(computeDistance(_limelight.getTy()), 0, Rotation2d.fromDegrees(-_limelight.getTx()));
-        return currentPose.plus(notePose);
+        if (_limelight.isTargetValid()) {
+            return currentPose.plus(notePose);
+        } else {
+            return currentPose;
+        }
     }
-
 
     private double computeDistance(double ty) {
         double cameraNoteDistance = Math.tan(Math.toRadians(ty + Constants.Limelight.angleCamera)) * Constants.Limelight.offsetZ;
         double cameraCrosshairDistance = Math.tan(Math.toRadians(Constants.Limelight.angleCamera)) * Constants.Limelight.offsetZ;
-        return (cameraNoteDistance - cameraCrosshairDistance + 0.1) * -1;
+        return (cameraNoteDistance - cameraCrosshairDistance + 0.2) * -1;
     }
+
 }

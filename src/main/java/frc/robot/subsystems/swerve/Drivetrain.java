@@ -5,6 +5,7 @@
 package frc.robot.subsystems.swerve;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -56,10 +57,13 @@ public class Drivetrain extends SubsystemBase {
 
   private double gyroOffset;
 
+  private final PIDController m_rotationPIDController = new PIDController(1.0, 0.0, 0.0);
+
   public Drivetrain(double speedRatio) {
     resetGyro(new Pose2d(0,0, Rotation2d.fromDegrees(180)));
     this.speedRatio = speedRatio;
     this.gyroOffset = 0;
+    m_rotationPIDController.setSetpoint(0.0);
   }
 
   /**
@@ -82,6 +86,7 @@ public class Drivetrain extends SubsystemBase {
     
     double robotXSpeed = xSpeed;
     double robotYSpeed = ySpeed;
+    //double adjRot = getAdjustedRotation2D().g;
     double robotRotSpeed = rot;
     SwerveModuleState[] swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
@@ -190,6 +195,8 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("stateAngleBackLeft", getSwerveModuleBackLeft().getStateAngle());
 
     SmartDashboard.putNumber("gyroAngle", getGyroAngle());
+    SmartDashboard.putNumber("adjustedRotation2d", getAdjustedRotation2D().getDegrees());
+    SmartDashboard.putNumber("gyroOffset", gyroOffset);
   }
 
   public Rotation2d getAdjustedRotation2D() {
