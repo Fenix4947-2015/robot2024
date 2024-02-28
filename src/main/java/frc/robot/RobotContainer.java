@@ -102,9 +102,6 @@ public class RobotContainer {
         m_helperController.rightBumper().whileTrue(m_rollIntakeBackward);
         m_helperController.start().whileTrue(m_intakeNote);
         m_helperController.a().whileTrue(m_SpinShooter);
-        
-        m_helperController.y().whileTrue(m_spinArmBackward);
-        m_helperController.getLeftX();
     }
 
     private void configureDefaultCommands() {

@@ -10,9 +10,10 @@ import frc.robot.subsystems.swerve.Drivetrain;
 
 public class ParallelPickNote extends ParallelCommandGroup {
     public ParallelPickNote(Limelight limelight, Drivetrain drivetrain, SmartDashboardSettings smartDashboardSettings, Intake intake) {
+        IntakeNote intakeNote = new IntakeNote(intake);
         addCommands(
-            new AutoMovePickNote(1, drivetrain, limelight, smartDashboardSettings),
-            new IntakeNote(intake)
+                new AutoMovePickNote(1, drivetrain, limelight, smartDashboardSettings, intakeNote),
+                intakeNote
         );
     }
 }
