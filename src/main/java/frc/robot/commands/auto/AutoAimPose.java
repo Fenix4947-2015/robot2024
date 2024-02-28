@@ -20,7 +20,6 @@ public class AutoAimPose extends AutoMoveStrategy {
             super(driveTrain, smartDashboardSettings, target);
             _pipeline = pipeline;
             _limelight = limelight;
-            addRequirements(_limelight);
     }
     
     @Override

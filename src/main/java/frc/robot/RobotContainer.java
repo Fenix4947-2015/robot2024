@@ -124,8 +124,10 @@ public class RobotContainer {
         return m_AutoSequence;
     }
 
-    public void autonomousPeriodic() {
+    public void periodic() {
         //m_driveTrain.updateOdometry();
+        m_limelight.periodic();
+        m_limelight_three.periodic();
     }
 
     public void teleopInit() {

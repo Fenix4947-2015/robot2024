@@ -22,7 +22,6 @@ public class AutoMovePickNote extends AutoMoveStrategy {
             super(driveTrain, smartDashboardSettings, new Pose2d());
             _pipeline = pipeline;
             _limelight = limelight;
-            addRequirements(_limelight);
     }
     
     @Override

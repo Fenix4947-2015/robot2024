@@ -13,7 +13,6 @@ public class FindTeam extends Command {
     public FindTeam(LimelightThree limelight) {
         this.limelight = limelight;
         this.done = false;
-        addRequirements(limelight); // This command requires the Limelight subsystem.
     }
 
     @Override

@@ -14,7 +14,7 @@ public class FindInitialPose extends Command {
     public FindInitialPose(LimelightThree limelight, Drivetrain drivetrain) {
         this.limelight = limelight;
         this.drivetrain = drivetrain;
-        addRequirements(limelight, drivetrain); // This command requires the Limelight subsystem.
+        addRequirements(drivetrain);
     }
 
     @Override
