@@ -3,7 +3,7 @@ package frc.robot.limelight;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Limelight extends SubsystemBase {
+public class Limelight {
 
     private final String identifier;
 
@@ -16,7 +16,6 @@ public class Limelight extends SubsystemBase {
     this.identifier = identifier;
   }
 
-  @Override
   public void periodic() {
     //System.out.println("Limelight periodic");
     tx = getLimelightEntry(identifier, "tx");

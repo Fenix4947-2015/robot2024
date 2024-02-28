@@ -24,7 +24,6 @@ public class AutoAimLine extends AutoMoveStrategy {
             _pipeline = pipeline;
             _limelight = limelight;
             _lastPose = new Pose2d();
-            addRequirements(_limelight);
     }
 
     @Override
