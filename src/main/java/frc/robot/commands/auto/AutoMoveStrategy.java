@@ -45,7 +45,6 @@ public class AutoMoveStrategy extends Command {
 
     private final SmartDashboardSettings _smartDashboardSettings;
     private Pose2d _target;
-    private Pose2d _currentPose;
     private double _lastTimeMillis;
     private Translation2d _lastSpeed;
     private double _lastAngularSpeed;
@@ -67,7 +66,6 @@ public class AutoMoveStrategy extends Command {
         _driveTrain = driveTrain;
         _smartDashboardSettings = smartDashboardSettings;
         _target = target;
-        _currentPose = _driveTrain.getOdometry();
         addRequirements(driveTrain);
         _smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
         _pidAngle.enableContinuousInput(-180, 180);
@@ -87,9 +85,9 @@ public class AutoMoveStrategy extends Command {
     @Override
     public void execute() {
         refreshPidValues();
-        _currentPose = updateRobotPosition();
+        Pose2d current = updateRobotPosition();
         Pose2d destination = updateDestination();
-        updateTracking(destination);
+        updateTracking(current, destination);
 
         refreshAtSetpointSince();
 
@@ -149,9 +147,9 @@ public class AutoMoveStrategy extends Command {
     }
     
     
-    public void updateTracking(Pose2d destination) {
+    public void updateTracking(Pose2d current, Pose2d destination) {
 
-        Transform2d movePose = new Transform2d(_currentPose, destination);
+        Transform2d movePose = new Transform2d(current, destination);
         
         // double totalDistance = movePose.getTranslation().getNorm();
 
@@ -206,9 +204,9 @@ public class AutoMoveStrategy extends Command {
         }
 
         Transform2d moveSmall = movePose.times(distanceRatio);
-        Pose2d newTarget = _currentPose.plus(moveSmall);
+        Pose2d newTarget = current.plus(moveSmall);
 
-        Twist2d twist = _currentPose.log(newTarget);
+        Twist2d twist = current.log(newTarget);
 
         double dx = twist.dx;
         double dy = twist.dy;
@@ -219,7 +217,7 @@ public class AutoMoveStrategy extends Command {
         SmartDashboard.putNumber("dtheta", dtheta);
 
         _pidAngle.setSetpoint(0);
-        _pidAngle.setTolerance(2);
+        _pidAngle.setTolerance(1);
         double steerCommand = _pidAngle.calculate(dtheta);
 
         _pidDistanceX.setSetpoint(0);
@@ -262,10 +260,6 @@ public class AutoMoveStrategy extends Command {
 
     private double norm(double x, double y) {
         return Math.max(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 1);
-    }
-
-    protected Pose2d getCurrentPose() {
-        return _currentPose;
     }
 
     protected Pose2d getTargetPose() {

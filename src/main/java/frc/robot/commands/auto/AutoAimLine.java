@@ -53,7 +53,7 @@ public class AutoAimLine extends AutoMoveStrategy {
     @Override
     public Pose2d updateDestination() {
         
-        Pose2d currentPose = getCurrentPose();
+        Pose2d currentPose = _driveTrain.getOdometry();
         Pose2d targetPose = Position.SPEAKER_SHOOT.getPositionForTeam(_limelight.getTeam());
         Pose2d reference = Position.SPEAKER.getPositionForTeam(_limelight.getTeam());
 

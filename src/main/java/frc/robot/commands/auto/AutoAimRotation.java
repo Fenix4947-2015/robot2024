@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.Position;
 import frc.robot.SmartDashboardSettings;
@@ -13,7 +13,7 @@ import frc.robot.limelight.LimelightThree;
 public class AutoAimRotation extends AutoMoveStrategy {
 
     private final LimelightThree _limelight;
-    private Pose2d _lastPose;
+    private boolean _poseFound = false;
 
     public AutoAimRotation(
         Drivetrain driveTrain, 
@@ -21,41 +21,31 @@ public class AutoAimRotation extends AutoMoveStrategy {
         SmartDashboardSettings smartDashboardSettings) {
             super(driveTrain, smartDashboardSettings, null);
             _limelight = limelight;
-            _lastPose = new Pose2d();
     }
 
     @Override
     public void initialize() {
         super.initialize();
         _limelight.resetTargetFound();
+        _poseFound = false;
     }
 
     @Override
     public boolean isFinished() {
-        return super.isFinished() && _limelight.getTargetFound();
+        return super.isFinished() && _poseFound;
     }
 
     @Override
     public Pose2d updateRobotPosition() {
-
-        if (_limelight.getTargetFound() && _limelight.isTargetValid() && !_lastPose.equals(_limelight.getResultPose2d())) {
-            _lastPose = _limelight.getResultPose2d();
-            double latency = _limelight.getLatency();
-            ChassisSpeeds chassisSpeeds = _driveTrain.getVelocity();
-            Transform2d latencyOffset = new Transform2d(
-                chassisSpeeds.vxMetersPerSecond * latency,
-                chassisSpeeds.vyMetersPerSecond * latency,
-                Rotation2d.fromRadians(chassisSpeeds.omegaRadiansPerSecond * latency));
-            this._driveTrain.resetOdometry(_lastPose.plus(latencyOffset));
-        }
+        updateIfFirstPoseFound();
 
         return _driveTrain.getOdometry();
     }
 
     @Override
     public Pose2d updateDestination() {
-        Pose2d currentPose = getCurrentPose();
-        if (!_limelight.getTargetFound()) {
+        Pose2d currentPose = _driveTrain.getOdometry();
+        if (!_poseFound) {
             return currentPose;
         }
         
@@ -72,5 +62,13 @@ public class AutoAimRotation extends AutoMoveStrategy {
         Transform2d referenceToAngle = new Transform2d(0,0, Rotation2d.fromDegrees(angle));
 
         return reference.plus(referenceToAngle).plus(referenceToNewTarget);
+    }
+
+    private void updateIfFirstPoseFound() {
+        SmartDashboard.putBoolean("targetFound", _limelight.getTargetFound());
+        if (_limelight.getTargetFound() && !_poseFound) {
+            _poseFound = true;
+            this._driveTrain.resetOdometry(_limelight.getResultPose2d());
+        }
     }
 }
