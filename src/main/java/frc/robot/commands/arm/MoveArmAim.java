@@ -1,7 +1,10 @@
 package frc.robot.commands.arm;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Position;
 import frc.robot.limelight.LimelightThree;
 import frc.robot.subsystems.Arm;
 
@@ -37,8 +40,10 @@ public class MoveArmAim extends Command {
     }
 
     private double calculateAngle() {
-        double distance = m_limelight.getResultPose2d().getX();
-        double distanceRatio = (distance - Constants.Arm.kDistanceShootNear) / (Constants.Arm.kDistanceShootFar - Constants.Arm.kDistanceShootNear);
+        Pose2d robotPose = m_limelight.getResultPose2d();
+        Pose2d speakerPose = Position.SPEAKER.getPositionForTeam(m_limelight.getTeam());
+        Transform2d speakerToRobot = new Transform2d(speakerPose, robotPose);
+        double distanceRatio = (speakerToRobot.getTranslation().getNorm() - Constants.Arm.kDistanceShootNear) / (Constants.Arm.kDistanceShootFar - Constants.Arm.kDistanceShootNear);
         double angleRange = Constants.Arm.kAngleShootFar - Constants.Arm.kAngleShootNear;
         return Constants.Arm.kAngleShootNear + distanceRatio * angleRange;
     }
