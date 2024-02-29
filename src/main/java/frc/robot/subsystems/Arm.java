@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
 
     private final PIDController m_pidController = new PIDController(Constants.Arm.kP, Constants.Arm.kI, Constants.Arm.kD);
     private double directOutput = 0;
-    private ArmMode armMode = ArmMode.PID;
+    private ArmMode armMode = ArmMode.DIRECT;
 
     private enum ArmMode {
         DIRECT,

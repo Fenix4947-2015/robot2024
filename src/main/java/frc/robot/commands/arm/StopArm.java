@@ -5,13 +5,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Arm;
 
-public class MoveArmDirect extends Command {
+public class StopArm extends Command {
     private final Arm m_arm;
-    private final CommandXboxController m_controller;
 
-    public MoveArmDirect(Arm arm, CommandXboxController controller) {
+    public StopArm(Arm arm) {
         m_arm = arm;
-        m_controller = controller;
         addRequirements(arm);
     }
 
@@ -22,8 +20,6 @@ public class MoveArmDirect extends Command {
 
     @Override
     public void execute() {
-        double speed = m_controller.getRightY();
-
-        m_arm.setDirectOutput(MathUtil.applyDeadband(speed, 0.1));
+        m_arm.setDirectOutput(0);
     }
 }
