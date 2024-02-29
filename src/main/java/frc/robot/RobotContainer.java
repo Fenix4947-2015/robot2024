@@ -19,9 +19,10 @@ import frc.robot.commands.drivetrain.DriveSwerve;
 import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
 import frc.robot.commands.sequence.AutoSequence;
+import frc.robot.commands.winch.RollWinchSpeed;
 import frc.robot.enums.Team;
 import frc.robot.commands.shooter.SpinShooter;
-import frc.robot.commands.winch.RollWinch;
+import frc.robot.commands.winch.RollWinchStick;
 import frc.robot.limelight.Limelight;
 import frc.robot.limelight.LimelightThree;
 import frc.robot.subsystems.Arm;
@@ -71,10 +72,10 @@ public class RobotContainer {
     private final MoveArmAim m_moveArmAim = new MoveArmAim(m_arm, m_limelight_three);
     private final Command m_aimSpinAndShoot = m_autoSequences.aimSpinAndShoot();
     private final Command m_spinAndShoot = m_autoSequences.spinAndShoot();
-    private final MoveArmPosition m_armAmp = new MoveArmPosition(m_arm, 5);
     private final MoveArmDirect m_moveArmDirect = new MoveArmDirect(m_arm, m_helperController);
     private final StopArm m_stopArm = new StopArm(m_arm);
-    private final RollWinch m_rollWinch = new RollWinch(m_winch, m_helperController);
+    private final RollWinchStick m_rollWinch = new RollWinchStick(m_winch, m_helperController);
+    private final RollWinchSpeed m_stopWinch = new RollWinchSpeed(m_winch, 0.0);
     private final AutoSequence m_autoSequence = new AutoSequence(m_limelight_three, m_driveTrain);
     
     /**
@@ -97,19 +98,18 @@ public class RobotContainer {
      */
     private void configureBindings() {
         // DRIVER
-        m_driverController.a().whileTrue(m_autoPickNote);
-        m_driverController.b().whileTrue(m_armAmp);
-        m_driverController.y().whileTrue(m_aimSpinAndShoot).onFalse(m_autoSequences.armToLowestPosition());
-        m_driverController.leftBumper().whileTrue(m_rollIntakeSwallow);
-        m_driverController.rightBumper().whileTrue(m_rollIntakeSpit);
-        m_driverController.start().whileTrue(m_spinAndShoot);
+        m_driverController.leftBumper().whileTrue(m_autoPickNote);
+        m_driverController.rightBumper().whileTrue(m_aimSpinAndShoot).onFalse(m_autoSequences.armToLowestPosition());
 
         // HELPER
-        m_helperController.leftBumper().whileTrue(m_rollIntakeSwallow);
-        m_helperController.rightBumper().whileTrue(m_rollIntakeSpit);
-        m_helperController.start().whileTrue(m_intakeNote);
+        m_helperController.leftBumper().whileTrue(m_rollIntakeSpit);
+        m_helperController.rightBumper().whileTrue(m_rollIntakeSwallow);
+        m_helperController.x().whileTrue(m_autoPickNote);
         m_helperController.a().whileTrue(m_spinShooter);
-        m_helperController.back().whileTrue(m_moveArmDirect);
+        m_helperController.leftStick().whileTrue(m_moveArmDirect);
+        m_helperController.rightStick().whileTrue(m_rollWinch);
+        m_helperController.povUp().whileTrue(m_autoSequences.armToAmpPosition());
+        m_helperController.povDown().whileTrue(m_autoSequences.armToLowestPosition());
     }
 
     private void configureDefaultCommands() {
@@ -117,7 +117,7 @@ public class RobotContainer {
         m_arm.setDefaultCommand(m_stopArm);
         m_intake.setDefaultCommand(m_stopIntake);
         m_shooter.setDefaultCommand(m_stopShooter);
-        m_winch.setDefaultCommand(m_rollWinch);
+        m_winch.setDefaultCommand(m_stopWinch);
     }
 
     /**
