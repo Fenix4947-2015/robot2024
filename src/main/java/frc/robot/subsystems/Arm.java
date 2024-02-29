@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -20,6 +21,7 @@ public class Arm extends SubsystemBase {
     private final DutyCycleEncoder m_encoder = new DutyCycleEncoder(dutyCycle);
 
     private final PIDController m_pidController = new PIDController(Constants.Arm.kP, Constants.Arm.kI, Constants.Arm.kD);
+    private final SimpleMotorFeedforward feedDorward = new SimpleMotorFeedforward(Constants.Arm.kS, Constants.Arm.kV);
     private double directOutput = 0;
     private ArmMode armMode = ArmMode.DIRECT;
 
@@ -68,7 +70,8 @@ public class Arm extends SubsystemBase {
     }
 
     private void movePid() {
-       double output = limitOutput(m_pidController.calculate(getEncoderDistance()), getEncoderDistance());
+        double rawOutput = m_pidController.calculate(getEncoderDistance()) + feedDorward.calculate(0);
+        double output = limitOutput(rawOutput, getEncoderDistance());
         log(output);
         m_motorOne.set(-output);
         m_motorTwo.set(output);

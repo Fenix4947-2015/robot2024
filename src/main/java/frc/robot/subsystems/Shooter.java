@@ -15,8 +15,8 @@ public class Shooter extends SubsystemBase {
     public static final double FULL_SPEED = 1.0;
 
     public Shooter() {
-        m_motorTop.setIdleMode(CANSparkBase.IdleMode.kCoast);
-        m_motorBottom.setIdleMode(CANSparkBase.IdleMode.kCoast);
+        m_motorTop.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        m_motorBottom.setIdleMode(CANSparkBase.IdleMode.kBrake);
         m_motorBottom.follow(m_motorTop);
     }
 
