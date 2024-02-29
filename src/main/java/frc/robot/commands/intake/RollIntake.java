@@ -7,7 +7,7 @@ public class RollIntake extends Command {
     private final Intake m_intake;
     private final double m_speed;
     
-    public RollIntake(Intake intake,double speed) {
+    public RollIntake(Intake intake, double speed) {
         m_intake = intake;
         m_speed = speed;
         addRequirements(intake);

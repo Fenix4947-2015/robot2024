@@ -12,6 +12,8 @@ public class Shooter extends SubsystemBase {
     private final CANSparkMax m_motorTop = new CANSparkMax(ElectricConstants.kShooterMotorTopChannel, CANSparkLowLevel.MotorType.kBrushless);
     private final CANSparkMax m_motorBottom = new CANSparkMax(ElectricConstants.kShooterMotorBottomChannel, CANSparkLowLevel.MotorType.kBrushless);
 
+    public static final double FULL_SPEED = 1.0;
+
     public Shooter() {
         m_motorTop.setIdleMode(CANSparkBase.IdleMode.kCoast);
         m_motorBottom.setIdleMode(CANSparkBase.IdleMode.kCoast);

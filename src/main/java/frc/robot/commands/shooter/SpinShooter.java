@@ -8,6 +8,10 @@ public class SpinShooter extends Command {
     private final Shooter m_shooter;
     private final double m_speed;
 
+    public SpinShooter(Shooter shooter) {
+        this(shooter, Shooter.FULL_SPEED);
+    }
+
     public SpinShooter(Shooter shooter,double speed) {
         m_shooter = shooter;
         m_speed = speed;

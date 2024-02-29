@@ -15,6 +15,11 @@ public class Intake extends SubsystemBase {
 
     private final DigitalInput m_detector = new DigitalInput(ElectricConstants.kIntakeDetectorChannel);
 
+    public static double DEFAULT_SPEED = 0.5;
+    public static double DEFAULT_SWALLOW_SPEED = -DEFAULT_SPEED;
+    public static double DEFAULT_SPIT_SPEED = DEFAULT_SPEED;
+    public static double SLOW_SPIT_SPEED = 0.1;
+
     public Intake() {
         m_motor.setIdleMode(CANSparkBase.IdleMode.kBrake);
         m_motorThirdlink.setIdleMode(CANSparkBase.IdleMode.kBrake);
