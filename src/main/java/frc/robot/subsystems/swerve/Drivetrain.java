@@ -183,6 +183,16 @@ public class Drivetrain extends SubsystemBase {
     resetOdometry(pose);
   }
 
+  public boolean isMovingSlow() {
+    ChassisSpeeds speeds = getVelocity();
+    if (Math.abs(speeds.omegaRadiansPerSecond) < 0.01 && 
+    Math.abs(speeds.vxMetersPerSecond) < 0.1 && 
+    Math.abs(speeds.vyMetersPerSecond) < 0.1) {
+      return false;
+    }
+    return true;
+  }
+
   public void updateSmartDashboard() {
     SmartDashboard.putNumber("wheelAngleFrontRight", getSwerveModuleFrontRight().getWheelAngle());
     SmartDashboard.putNumber("wheelAngleBackRight", getSwerveModuleBackRight().getWheelAngle());

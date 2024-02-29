@@ -1,7 +1,6 @@
 package frc.robot.limelight;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Limelight {
 
@@ -11,7 +10,6 @@ public class Limelight {
     private double tx;
     private double ty;
     private double ta;
-    private boolean targetFound;
 
   public Limelight(String identifier) {
     this.identifier = identifier;
@@ -26,9 +24,6 @@ public class Limelight {
 
     final double tv = getLimelightEntry(identifier, "tv");
     targetValid = !(tv < 1.0);
-    if (!targetFound) {
-      targetFound = targetValid;
-    }
 
     //System.out.println(String.format("tx: %f ty: %f ta: %f tv: %f targetValid: %s", tx, ty, ta, tv, targetValid));
     //limelightResults = LimelightHelpers.getLatestResults(identifier);
@@ -52,14 +47,6 @@ public class Limelight {
 
   public boolean isTargetValid() {
     return targetValid;
-  }
-
-  public void resetTargetFound() {
-    targetFound = false;
-  }
-
-  public boolean getTargetFound() {
-    return targetFound;
   }
 }
 

@@ -123,8 +123,9 @@ public class AutoMoveStrategy extends Command {
     // Make this return true when this Command no longer needs to run execute()
     @Override
     public boolean isFinished() {
-        return _atSetpointSince.map(t -> elapsedAtLeastSince(500, t))
-                .orElse(false);
+        return false;
+        // return _atSetpointSince.map(t -> elapsedAtLeastSince(500, t))
+                // .orElse(false);
     }
 
     // Called once after isFinished returns true

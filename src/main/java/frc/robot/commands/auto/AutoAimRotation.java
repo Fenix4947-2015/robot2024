@@ -26,7 +26,6 @@ public class AutoAimRotation extends AutoMoveStrategy {
     @Override
     public void initialize() {
         super.initialize();
-        _limelight.resetTargetFound();
         _poseFound = false;
     }
 
@@ -65,8 +64,7 @@ public class AutoAimRotation extends AutoMoveStrategy {
     }
 
     private void updateIfFirstPoseFound() {
-        SmartDashboard.putBoolean("targetFound", _limelight.getTargetFound());
-        if (_limelight.getTargetFound() && !_poseFound) {
+        if (_limelight.isTargetValid() && _driveTrain.isMovingSlow()) {
             _poseFound = true;
             this._driveTrain.resetOdometry(_limelight.getResultPose2d());
         }
