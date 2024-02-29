@@ -1,8 +1,10 @@
 package frc.robot.commands.combo;
 
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.arm.MoveArmAim;
+import frc.robot.commands.arm.MoveArmPosition;
 import frc.robot.commands.auto.AutoAimRotation;
 import frc.robot.commands.auto.AutoMovePickNote;
 import frc.robot.commands.intake.IntakeNote;
@@ -28,8 +30,9 @@ public class AutoSequences {
     public Command autoPickNote() {
         return new ParallelDeadlineGroup(
                 intakeNoteAndReadjust(),
+                armToLowestPosition(),
                 new AutoMovePickNote(1, m_robotContainer.m_driveTrain, m_robotContainer.m_limelight, m_robotContainer.m_smartDashboardSettings)
-                );
+        );
     }
 
     public Command spinAndShoot() {
@@ -48,7 +51,12 @@ public class AutoSequences {
                         new MoveArmAim(m_robotContainer.m_arm, m_robotContainer.m_limelight_three),
                         new AutoAimRotation(m_robotContainer.m_driveTrain, m_robotContainer.m_limelight_three, m_robotContainer.m_smartDashboardSettings)
                 ),
-                spinAndShoot()
+                spinAndShoot(),
+                armToLowestPosition()
         );
+    }
+
+    private Command armToLowestPosition() {
+        return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kLowestPosition);
     }
 }
