@@ -84,6 +84,8 @@ public class AutoMoveStrategy extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     public void execute() {
+        //System.out.println(Instant.now() + " " + getClass().getSimpleName() + ".execute()");
+
         refreshPidValues();
         Pose2d current = updateRobotPosition();
         Pose2d destination = updateDestination();
@@ -130,6 +132,7 @@ public class AutoMoveStrategy extends Command {
     // Called once after isFinished returns true
     @Override
     public void end(boolean interrupted) {
+        System.out.println(Instant.now() + " " + getClass().getSimpleName() + ".end() isInterrupted: " + interrupted);
         stopDrivetrain();
     }
 
@@ -217,7 +220,7 @@ public class AutoMoveStrategy extends Command {
         SmartDashboard.putNumber("dtheta", dtheta);
 
         _pidAngle.setSetpoint(0);
-        _pidAngle.setTolerance(1);
+        _pidAngle.setTolerance(3);
         double steerCommand = _pidAngle.calculate(dtheta);
 
         _pidDistanceX.setSetpoint(0);

@@ -7,6 +7,7 @@ import frc.robot.commands.arm.MoveArmAim;
 import frc.robot.commands.arm.MoveArmPosition;
 import frc.robot.commands.auto.AutoAimRotation;
 import frc.robot.commands.auto.AutoMovePickNote;
+import frc.robot.commands.drivetrain.DriveNoOp;
 import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
 import frc.robot.commands.shooter.SpinShooter;

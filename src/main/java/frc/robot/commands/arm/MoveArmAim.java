@@ -1,5 +1,7 @@
 package frc.robot.commands.arm;
 
+import java.time.Instant;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +39,7 @@ public class MoveArmAim extends Command {
 
     @Override
     public void end(boolean interupted) {
+        System.out.println(Instant.now() + " " + getClass().getSimpleName() + ".end() isInterrupted: " + interupted);
     }
 
     private double calculateAngle() {

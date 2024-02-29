@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ElectricConstants.*;
 
+import java.time.Instant;
+
 /** Represents a swerve drive style drivetrain. */
 public class Drivetrain extends SubsystemBase {
   
@@ -59,6 +61,11 @@ public class Drivetrain extends SubsystemBase {
 
   private final PIDController m_rotationPIDController = new PIDController(1.0, 0.0, 0.0);
 
+  private double m_xSpeed;
+  private double m_ySpeed;
+  private double m_rot;
+  boolean m_fieldRelative;
+
   public Drivetrain(double speedRatio) {
     resetGyro(new Pose2d(0,0, Rotation2d.fromDegrees(180)));
     this.speedRatio = speedRatio;
@@ -75,7 +82,8 @@ public class Drivetrain extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void driveNormalized(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    
+    //System.out.println(Instant.now() + " " + getClass().getSimpleName() + ".driveNormalized()");
+
     double robotXSpeed = xSpeed * K_MAX_SPEED * speedRatio;
     double robotYSpeed = ySpeed * K_MAX_SPEED * speedRatio;
     double robotRotSpeed = rot * K_MAX_ANGULAR_SPEED * speedRatio;
@@ -83,16 +91,23 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    
-    double robotXSpeed = xSpeed;
-    double robotYSpeed = ySpeed;
-    //double adjRot = getAdjustedRotation2D().g;
-    double robotRotSpeed = rot;
+    //System.out.println(Instant.now() + " " + getClass().getSimpleName() + ".drive()");
+
+    m_xSpeed = xSpeed;
+    m_ySpeed = ySpeed;
+    m_rot = rot;
+    m_fieldRelative = fieldRelative;
+  }
+
+  @Override
+  public void periodic() {
+    //System.out.println(Instant.now() + " " + getClass().getSimpleName() + ".periodic()");
+
     SwerveModuleState[] swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
-            fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(robotXSpeed, robotYSpeed, robotRotSpeed, getAdjustedRotation2D())
-                : new ChassisSpeeds(robotXSpeed, robotYSpeed, robotRotSpeed));
+            m_fieldRelative
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(m_xSpeed, m_ySpeed, m_rot, getAdjustedRotation2D())
+                : new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, K_MAX_SPEED * speedRatio);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
@@ -188,9 +203,9 @@ public class Drivetrain extends SubsystemBase {
     if (Math.abs(speeds.omegaRadiansPerSecond) < 0.01 && 
     Math.abs(speeds.vxMetersPerSecond) < 0.1 && 
     Math.abs(speeds.vyMetersPerSecond) < 0.1) {
-      return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
   public void updateSmartDashboard() {

@@ -50,13 +50,13 @@ public final class Constants {
     }
 
     public static class Arm {
-        public static final double kP = 0.05;
+        public static final double kP = 0.06;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kS = 0.04;
+        public static final double kS = 0.06;
         public static final double kV = 0;
-        public static final double kToleranceDegrees = 0.5;
-        public static final double kLowestPosition = 99.0;
+        public static final double kToleranceDegrees = 1.0;
+        public static final double kLowestPosition = 100.0;
         public static final double kHighestPosition = -3.0;
         public static final double kDistanceShootNear = 1.5;
         public static final double kDistanceShootFar = 3.4;
