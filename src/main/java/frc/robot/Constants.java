@@ -61,7 +61,7 @@ public final class Constants {
         public static final double kDistanceShootNear = 1.5;
         public static final double kDistanceShootFar = 3.4;
         public static final double kAngleShootNear = 100;
-        public static final double kAngleShootFar = 80;
+        public static final double kAngleShootFar = 78;
     }
 
     public static class Limelight {

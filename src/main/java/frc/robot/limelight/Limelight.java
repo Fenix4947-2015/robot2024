@@ -13,10 +13,10 @@ public class Limelight {
 
   public Limelight(String identifier) {
     this.identifier = identifier;
-    NetworkTableInstance.getDefault().getTable(identifier).getEntry("pipeline").setNumber(1);
   }
 
   public void periodic() {
+    NetworkTableInstance.getDefault().getTable(identifier).getEntry("pipeline").setNumber(1);
     //System.out.println("Limelight periodic");
     tx = getLimelightEntry(identifier, "tx");
     ty = getLimelightEntry(identifier, "ty");
