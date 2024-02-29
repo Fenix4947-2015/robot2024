@@ -51,12 +51,11 @@ public class AutoSequences {
                         new MoveArmAim(m_robotContainer.m_arm, m_robotContainer.m_limelight_three),
                         new AutoAimRotation(m_robotContainer.m_driveTrain, m_robotContainer.m_limelight_three, m_robotContainer.m_smartDashboardSettings)
                 ),
-                spinAndShoot(),
-                armToLowestPosition()
+                spinAndShoot()
         );
     }
 
-    private Command armToLowestPosition() {
+    public Command armToLowestPosition() {
         return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kLowestPosition);
     }
 }
