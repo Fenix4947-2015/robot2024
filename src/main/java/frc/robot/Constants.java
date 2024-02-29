@@ -53,6 +53,8 @@ public final class Constants {
         public static final double kP = 0.05;
         public static final double kI = 0;
         public static final double kD = 0;
+        public static final double kS = 0.04;
+        public static final double kV = 0;
         public static final double kToleranceDegrees = 0.5;
         public static final double kLowestPosition = 99.0;
         public static final double kHighestPosition = -3.0;
