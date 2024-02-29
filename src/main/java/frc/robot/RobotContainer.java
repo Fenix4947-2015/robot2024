@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.arm.StopArm;
 import frc.robot.commands.auto.AutoAimRotation;
 import frc.robot.commands.auto.AutoMoveStrategy;
 import frc.robot.commands.arm.MoveArmAim;
@@ -71,7 +72,8 @@ public class RobotContainer {
     private final Command m_aimSpinAndShoot = m_autoSequences.aimSpinAndShoot();
     private final Command m_spinAndShoot = m_autoSequences.spinAndShoot();
     private final MoveArmPosition m_spinArmBackward = new MoveArmPosition(m_arm, 20);
-    private final MoveArmDirect m_stopArm = new MoveArmDirect(m_arm, m_helperController);
+    private final MoveArmDirect m_moveArmDirect = new MoveArmDirect(m_arm, m_helperController);
+    private final StopArm m_stopArm = new StopArm(m_arm);
     private final RollWinch m_rollWinch = new RollWinch(m_winch, m_helperController);
     private final AutoSequence m_autoSequence = new AutoSequence(m_limelight_three, m_driveTrain);
     
@@ -108,6 +110,7 @@ public class RobotContainer {
         m_helperController.rightBumper().whileTrue(m_rollIntakeSpit);
         m_helperController.start().whileTrue(m_intakeNote);
         m_helperController.a().whileTrue(m_spinShooter);
+        m_helperController.back().whileTrue(m_moveArmDirect);
     }
 
     private void configureDefaultCommands() {
