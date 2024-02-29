@@ -56,10 +56,10 @@ public final class Constants {
         public static final double kToleranceDegrees = 0.5;
         public static final double kLowestPosition = 99.0;
         public static final double kHighestPosition = -3.0;
-        public static final double kDistanceShootNear = 1.6;
-        public static final double kDistanceShootFar = 4.6;
+        public static final double kDistanceShootNear = 1.5;
+        public static final double kDistanceShootFar = 3.4;
         public static final double kAngleShootNear = 100;
-        public static final double kAngleShootFar = 79;
+        public static final double kAngleShootFar = 80;
     }
 
     public static class Limelight {

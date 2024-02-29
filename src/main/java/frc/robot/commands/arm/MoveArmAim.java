@@ -32,7 +32,7 @@ public class MoveArmAim extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return m_arm.atSetpoint();
     }
 
     @Override
