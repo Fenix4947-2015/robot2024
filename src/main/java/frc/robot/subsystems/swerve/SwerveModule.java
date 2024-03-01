@@ -26,6 +26,8 @@ public class SwerveModule {
   private static final double K_TRUN_GEAR_RATIO = 12.8;
   private static final double K_MODULE_MAX_ANGULAR_VELOCITY = K_MAX_MOTOR_RPM * 2 * Math.PI / 60 / K_TRUN_GEAR_RATIO; // radians per second
   private static final double K_MODULE_MAX_ANGULAR_ACCELERATION = 2 * Math.PI * 100; // radians per second squared
+  private static final double K_VELOCITY_CONVERSION_FACTOR = 2 * Math.PI * K_WHEEL_RADIUS / (60 * K_SPEED_GEAR_RATIO);
+  private static final double K_VELOCITY_MAX = K_MAX_MOTOR_RPM * K_VELOCITY_CONVERSION_FACTOR;
 
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
@@ -83,7 +85,7 @@ public class SwerveModule {
     // resolution.
     //m_driveEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius / kEncoderResolution);
 
-    m_driveEncoder.setVelocityConversionFactor(2 * Math.PI * K_WHEEL_RADIUS / (60 * K_SPEED_GEAR_RATIO));
+    m_driveEncoder.setVelocityConversionFactor(K_VELOCITY_CONVERSION_FACTOR);
     m_driveEncoder.setPositionConversionFactor(2 * Math.PI * K_WHEEL_RADIUS / K_SPEED_GEAR_RATIO);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
@@ -167,7 +169,7 @@ public class SwerveModule {
     double motorSetPoint = (driveOutput + driveFeedforward) * reversed * atPosition; 
     // motorSetPoint = targetSpeed / Drivetrain.K_MAX_SPEED;
     
-    m_driveMotor.set(motorSetPoint);
+    m_driveMotor.set(capMotorSetPoint(motorSetPoint, speed));
     m_turningMotor.set(turnOutput + turnFeedforward);
   }
 
@@ -175,5 +177,12 @@ public class SwerveModule {
     long deltaAngle = Math.round(Math.abs(wheelAngle - wheelTarget)  / Math.PI);
     double reversed = deltaAngle % 2 == 1 ? -1.0 : 1.0;
     return reversed;
+  }
+
+  private double capMotorSetPoint(double setpoint, double motorSpeed) {
+    if (motorSpeed < K_VELOCITY_MAX / 4) {
+      return setpoint > 0.5 ? 0.5 : setpoint;
+    }
+    return setpoint;
   }
 }
