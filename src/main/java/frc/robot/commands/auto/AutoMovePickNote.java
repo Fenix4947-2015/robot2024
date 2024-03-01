@@ -11,18 +11,15 @@ import frc.robot.limelight.Limelight;
 
 public class AutoMovePickNote extends AutoMoveStrategy {
 
-    private final int _pipeline;
     private final Limelight _limelight;
 
     public AutoMovePickNote(
-        int pipeline, 
         Drivetrain driveTrain, 
         Limelight limelight,
         SmartDashboardSettings smartDashboardSettings
         )
         {
             super(driveTrain, smartDashboardSettings, new Pose2d());
-            _pipeline = pipeline;
             _limelight = limelight;
     }
     

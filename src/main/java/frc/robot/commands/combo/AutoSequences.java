@@ -2,15 +2,18 @@ package frc.robot.commands.combo;
 
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
+import frc.robot.Position;
 import frc.robot.RobotContainer;
 import frc.robot.commands.arm.MoveArmAim;
 import frc.robot.commands.arm.MoveArmPosition;
 import frc.robot.commands.auto.AutoAimRotation;
+import frc.robot.commands.auto.AutoMoveIntakeFirst;
 import frc.robot.commands.auto.AutoMovePickNote;
 import frc.robot.commands.drivetrain.DriveNoOp;
 import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
 import frc.robot.commands.shooter.SpinShooter;
+import frc.robot.enums.Team;
 import frc.robot.subsystems.Intake;
 
 public class AutoSequences {
@@ -32,7 +35,7 @@ public class AutoSequences {
         return new ParallelDeadlineGroup(
                 intakeNoteAndReadjust(),
                 armToLowestPosition(),
-                new AutoMovePickNote(1, m_robotContainer.m_driveTrain, m_robotContainer.m_limelight, m_robotContainer.m_smartDashboardSettings)
+                new AutoMovePickNote(m_robotContainer.m_driveTrain, m_robotContainer.m_limelight, m_robotContainer.m_smartDashboardSettings)
         );
     }
 
@@ -64,9 +67,26 @@ public class AutoSequences {
         return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kHighestPosition);
     }
 
+    public Command findNote1Red() {
+        return new AutoMoveIntakeFirst(
+            m_robotContainer.m_driveTrain, 
+            m_robotContainer.m_smartDashboardSettings, 
+            Position.NOTE_1.getPositionForTeam(Team.RED));
+    }
+
     // AUTOS
 
     public Command autoAimSpinAndShoot() {
-        return armToLowestPosition().andThen(aimSpinAndShoot());
+        return armToLowestPosition()
+        .andThen(aimSpinAndShoot());
+    }
+
+    public Command autoAimAndPickOne() {
+        return armToLowestPosition()
+        .andThen(aimSpinAndShoot()
+        .andThen(findNote1Red())
+        .andThen(autoPickNote())
+        .andThen(aimSpinAndShoot())
+        );
     }
 }
