@@ -23,6 +23,11 @@ public class SpinShooter extends Command {
     }
 
     @Override
+    public boolean isFinished() {
+        return m_shooter.atSetpoint();
+    }
+
+    @Override
     public void end(boolean interrupted) {
         System.out.println(getClass().getSimpleName() + ".end() interrupted: " + interrupted);
         m_shooter.roll(0);

@@ -15,6 +15,8 @@ public class Shooter extends SubsystemBase {
 
     public static final double FULL_SPEED = 1.0;
 
+    public static final double SETPOINT_RPM = 4000;
+
     public Shooter() {
         m_motorTop.setIdleMode(CANSparkBase.IdleMode.kBrake);
         m_motorBottom.setIdleMode(CANSparkBase.IdleMode.kBrake);
@@ -37,5 +39,9 @@ public class Shooter extends SubsystemBase {
 
     private double getShooterBottomRpm() {
         return m_motorBottom.getEncoder().getVelocity();
+    }
+
+    public boolean atSetpoint() {
+        return getShooterTopRpm() >= SETPOINT_RPM && getShooterBottomRpm() >= SETPOINT_RPM; 
     }
 }
