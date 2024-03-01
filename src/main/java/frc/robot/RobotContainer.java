@@ -22,7 +22,7 @@ import frc.robot.commands.drivetrain.DriveSwerve;
 import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
 import frc.robot.commands.sequence.AutoInitSequence;
-import frc.robot.commands.shooter.SpinShooter;
+import frc.robot.commands.shooter.SpinShooterContinuous;
 import frc.robot.commands.winch.RollWinchSpeed;
 import frc.robot.commands.winch.RollWinchStick;
 import frc.robot.limelight.Limelight;
@@ -71,11 +71,10 @@ public class RobotContainer {
     private final RollIntake m_rollIntakeSpit = new RollIntake(m_intake, Intake.DEFAULT_SPIT_SPEED);
     private final RollIntake m_stopIntake = new RollIntake(m_intake, 0);
     private final IntakeNote m_intakeNote = new IntakeNote(m_intake);
-    private final SpinShooter m_spinShooter = new SpinShooter(m_shooter);
-    private final SpinShooter m_stopShooter = new SpinShooter(m_shooter, 0);
+    private final SpinShooterContinuous m_spinShooterContinous = new SpinShooterContinuous(m_shooter);
+    private final Command m_stopShooter = m_autoSequences.stopShooter();
     private final MoveArmAim m_moveArmAim = new MoveArmAim(m_arm, m_limelight_three, this);
     private final Command m_aimSpinAndShoot = m_autoSequences.aimSpinAndShoot();
-    private final Command m_spinAndShoot = m_autoSequences.spinAndShoot();
     private final MoveArmDirect m_moveArmDirect = new MoveArmDirect(m_arm, m_helperController);
     private final StopArm m_stopArm = new StopArm(m_arm);
     private final RollWinchStick m_rollWinch = new RollWinchStick(m_winch, m_helperController);
@@ -116,7 +115,7 @@ public class RobotContainer {
         m_helperController.leftBumper().whileTrue(m_rollIntakeSpit);
         m_helperController.rightBumper().whileTrue(m_rollIntakeSwallow);
         m_helperController.x().whileTrue(m_autoPickNote);
-        m_helperController.a().whileTrue(m_spinShooter);
+        m_helperController.a().whileTrue(m_spinShooterContinous);
         m_helperController.leftStick().whileTrue(m_moveArmDirect);
         m_helperController.rightStick().whileTrue(m_rollWinch);
         m_helperController.povUp().whileTrue(m_autoSequences.armToAmpPosition());
@@ -150,7 +149,7 @@ public class RobotContainer {
             m_autonomousDelayChooser.addOption(String.valueOf(i), i);
         }
 
-        m_autonomousCommandChooser.setDefaultOption("Lower arm and shoot preload only", () -> m_autoSequences.autoAimSpinAndShoot());
+        m_autonomousCommandChooser.setDefaultOption("Shoot preload only", () -> m_autoSequences.autoAimSpinAndShoot());
         m_autonomousCommandChooser.addOption("Lower arm only", () -> m_autoSequences.armToLowestPosition());
         m_autonomousCommandChooser.addOption("Shoot and Pick one", () -> m_autoSequences.autoAimAndPickOne());
         m_autonomousCommandChooser.addOption("Shoot and Pick two", () -> m_autoSequences.autoAimAndPickTwo());

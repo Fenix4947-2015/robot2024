@@ -13,6 +13,7 @@ import frc.robot.commands.auto.AutoMovePickNote;
 import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
 import frc.robot.commands.shooter.SpinShooter;
+import frc.robot.commands.shooter.StopShooter;
 import frc.robot.subsystems.Intake;
 
 public class AutoSequences {
@@ -38,35 +39,36 @@ public class AutoSequences {
         );
     }
 
-    public Command spinAndShoot() {
-        return new ParallelDeadlineGroup(
-                new SequentialCommandGroup(
-                        Commands.waitSeconds(1.0),
-                        new RollIntake(m_robotContainer.m_intake, Intake.DEFAULT_SWALLOW_SPEED).withTimeout(1.0)
-                ),
-                new SpinShooter(m_robotContainer.m_shooter)
-        );
+    public Command stopShooter() {
+        return new StopShooter(m_robotContainer.m_shooter);
     }
 
+//    public Command spinAndShoot() {
+//        return new ParallelDeadlineGroup(
+//                new SequentialCommandGroup(
+//                        Commands.waitSeconds(1.0),
+//                        new RollIntake(m_robotContainer.m_intake, Intake.DEFAULT_SWALLOW_SPEED).withTimeout(1.0)
+//                ),
+//                new SpinShooter(m_robotContainer.m_shooter)
+//        );
+//    }
+
     public Command spinAndShootNoPrespin() {
-        return new ParallelDeadlineGroup(
-                new SequentialCommandGroup(
-                        Commands.waitSeconds(0.1),
-                        new RollIntake(m_robotContainer.m_intake, Intake.DEFAULT_SWALLOW_SPEED).withTimeout(0.5)
-                ),
-                new SpinShooter(m_robotContainer.m_shooter)
+        return new SequentialCommandGroup(
+                Commands.waitSeconds(0.1),
+                new RollIntake(m_robotContainer.m_intake, Intake.DEFAULT_SWALLOW_SPEED).withTimeout(0.5)
         );
     }
 
     public Command aimSpinAndShoot() {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                        new SpinShooter(m_robotContainer.m_shooter).withTimeout(1.0),
+                        new SpinShooter(m_robotContainer.m_shooter),
                         new MoveArmAim(m_robotContainer.m_arm, m_robotContainer.m_limelight_three, m_robotContainer),
                         new AutoAimRotation(m_robotContainer.m_driveTrain, m_robotContainer.m_limelight_three, m_robotContainer.m_smartDashboardSettings, m_robotContainer)
                 ),
-                spinAndShootNoPrespin()
-                //spinAndShoot()
+                spinAndShootNoPrespin(),
+                stopShooter()
         );
     }
 
@@ -102,44 +104,37 @@ public class AutoSequences {
     // AUTOS
 
     public Command autoAimSpinAndShoot() {
-        return armToLowestPosition()
-                .andThen(aimSpinAndShoot());
+        return aimSpinAndShoot();
     }
 
     public Command autoAimAndPickOne() {
-        return armToLowestPosition()
-                .andThen(aimSpinAndShoot()
-                        .andThen(findNote1())
-                        .andThen(autoPickNote())
-                        .andThen(aimSpinAndShoot())
-                );
+        return aimSpinAndShoot()
+                .andThen(findNote1())
+                .andThen(autoPickNote())
+                .andThen(aimSpinAndShoot());
     }
 
     public Command autoAimAndPickTwo() {
-        return armToLowestPosition()
-                .andThen(aimSpinAndShoot()
-                        .andThen(findNote1())
-                        .andThen(autoPickNote())
-                        .andThen(aimSpinAndShoot())
-                        .andThen(findNote2())
-                        .andThen(autoPickNote())
-                        .andThen(aimSpinAndShoot())
-                );
+        return aimSpinAndShoot()
+                .andThen(findNote1())
+                .andThen(autoPickNote())
+                .andThen(aimSpinAndShoot())
+                .andThen(findNote2())
+                .andThen(autoPickNote())
+                .andThen(aimSpinAndShoot());
     }
 
     public Command autoAimAndPickNearAndFarAndFurious() {
-        return armToLowestPosition()
-                .andThen(aimSpinAndShoot()
-                        .andThen(findNote1())
-                        .andThen(autoPickNote())
-                        .andThen(aimSpinAndShoot())
-                        .andThen(findNote4())
-                        .andThen(autoPickNote())
-                        .andThen(new AutoMoveAbsolute(
-                                m_robotContainer.m_driveTrain,
-                                m_robotContainer.m_smartDashboardSettings,
-                                Position.SPEAKER_SHOOT_AUTO.getPositionForTeam(m_robotContainer.m_alliance)))
-                        .andThen(aimSpinAndShoot())
-                );
+        return aimSpinAndShoot()
+                .andThen(findNote1())
+                .andThen(autoPickNote())
+                .andThen(aimSpinAndShoot())
+                .andThen(findNote4())
+                .andThen(autoPickNote())
+                .andThen(new AutoMoveAbsolute(
+                        m_robotContainer.m_driveTrain,
+                        m_robotContainer.m_smartDashboardSettings,
+                        Position.SPEAKER_SHOOT_AUTO.getPositionForTeam(m_robotContainer.m_alliance)))
+                .andThen(aimSpinAndShoot());
     }
 }
