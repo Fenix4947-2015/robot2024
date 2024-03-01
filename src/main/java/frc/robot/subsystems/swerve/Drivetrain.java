@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -40,6 +41,8 @@ public class Drivetrain extends SubsystemBase {
   private final Translation2d m_backLeftLocation = new Translation2d(-SWERVE_TRANSLATION_X, SWERVE_TRANSLATION_Y);
   private final Translation2d m_backRightLocation = new Translation2d(-SWERVE_TRANSLATION_X, -SWERVE_TRANSLATION_Y);
 
+  private static final Transform2d offset180 = new Transform2d(0, 0, Rotation2d.fromDegrees(180));
+
   public record SwerveModuleSettings(int id, int driveMotorChannel, int turningMotorChannel, int turningEncoderId) {}
 
   private final SwerveModule m_frontLeft = new SwerveModule(kSwerveModuleSettingsFL, 0, false);
@@ -67,7 +70,7 @@ public class Drivetrain extends SubsystemBase {
   boolean m_fieldRelative;
 
   public Drivetrain(double speedRatio) {
-    resetGyro(new Pose2d(0,0, Rotation2d.fromDegrees(180)));
+    resetGyro(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
     this.speedRatio = speedRatio;
     this.gyroOffset = 0;
     m_rotationPIDController.setSetpoint(0.0);
@@ -150,7 +153,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Pose2d getOdometry() {
-    Pose2d currentPose = m_odometry.getPoseMeters();
+    Pose2d currentPose = m_odometry.getPoseMeters().plus(offset180);
 
     SmartDashboard.putNumber("currentPoseX", currentPose.getX());
     SmartDashboard.putNumber("currentPoseY", currentPose.getY());
@@ -179,7 +182,7 @@ public class Drivetrain extends SubsystemBase {
           m_backLeft.getPosition(),
           m_backRight.getPosition()
         },
-        pose);
+        pose.plus(offset180));
   }
 
   public void resetGyro(Pose2d pose) {
@@ -194,7 +197,8 @@ public class Drivetrain extends SubsystemBase {
         m_frontRight.getPosition(),
         m_backLeft.getPosition(),
         m_backRight.getPosition()
-      });
+      }, 
+      pose);
     resetOdometry(pose);
   }
 

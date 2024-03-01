@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.arm.StopArm;
 import frc.robot.commands.auto.AutoAimRotation;
+import frc.robot.commands.auto.AutoMoveIntakeFirst;
 import frc.robot.commands.auto.AutoMoveStrategy;
 import frc.robot.commands.arm.MoveArmAim;
 import frc.robot.commands.arm.MoveArmDirect;
@@ -58,7 +59,7 @@ public class RobotContainer {
     public final Arm m_arm = new Arm();
     public final Winch m_winch = new Winch();
 
-    private final AutoMoveStrategy m_autoAim = new AutoAimRotation(m_driveTrain, m_limelight_three, m_smartDashboardSettings);
+    private final AutoMoveStrategy m_autoAim = new AutoMoveIntakeFirst(m_driveTrain, m_smartDashboardSettings, Position.NOTE_1.getPositionForTeam(Team.RED));
     private final Command m_autoPickNote = m_autoSequences.autoPickNote();
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
 
@@ -99,6 +100,7 @@ public class RobotContainer {
         // DRIVER
         m_driverController.a().whileTrue(m_autoPickNote);
         m_driverController.b().whileTrue(m_armAmp);
+        m_driverController.x().whileTrue(m_autoAim);
         m_driverController.y().whileTrue(m_aimSpinAndShoot).onFalse(m_autoSequences.armToLowestPosition());
         m_driverController.leftBumper().whileTrue(m_rollIntakeSwallow);
         m_driverController.rightBumper().whileTrue(m_rollIntakeSpit);
