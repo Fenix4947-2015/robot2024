@@ -38,9 +38,9 @@ public enum Position {
     SPEAKER_SHOOT_NOTE_3 {
         public Pose2d getPositionForTeam(Alliance team) {
             if (team == Blue) {
-                return new Pose2d(1.19, 4.21, Rotation2d.fromDegrees(-130.5));
+                return new Pose2d(1.19, 4.21, Rotation2d.fromDegrees(130.5));
             } else {
-                return new Pose2d(1.19, 4, Rotation2d.fromDegrees(130.5));
+                return new Pose2d(1.19, 4, Rotation2d.fromDegrees(-130.5));
             }
         }
     },
