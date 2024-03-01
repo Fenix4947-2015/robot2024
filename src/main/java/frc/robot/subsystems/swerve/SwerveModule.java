@@ -181,7 +181,11 @@ public class SwerveModule {
 
   private double capMotorSetPoint(double setpoint, double motorSpeed) {
     if (motorSpeed < K_VELOCITY_MAX / 4) {
-      return setpoint > 0.5 ? 0.5 : setpoint;
+      if (setpoint > 0.5) {
+        return 0.5;
+      } else if (setpoint < -0.5) {
+        return -0.5;
+      }
     }
     return setpoint;
   }
