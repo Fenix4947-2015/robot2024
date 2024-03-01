@@ -54,7 +54,7 @@ public class DriveSwerve extends Command {
         final var rot = (REVERSE_ROTATION ? -1 : 1) *
                 m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.2));
 
-        m_driveTrain.driveNormalized(-xSpeed * reverseRotation, -ySpeed, rot, fieldRelative);
+        m_driveTrain.driveNormalized(-xSpeed * reverseRotation, -ySpeed * reverseRotation, rot, fieldRelative);
 
         SmartDashboardWrapper.putNumber("xSpeed", xSpeed);
         SmartDashboardWrapper.putNumber("ySpeed", ySpeed);

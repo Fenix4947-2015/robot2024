@@ -160,6 +160,7 @@ public class RobotContainer {
 
         SmartDashboard.putData("Autonomous Delay", m_autonomousDelayChooser);
         SmartDashboard.putData("Autonomous Command", m_autonomousCommandChooser);
+        SmartDashboard.putBoolean("Reverse rotation", false);
     }
 
     private int getAutonomousDelay() {
