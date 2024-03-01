@@ -63,4 +63,10 @@ public class AutoSequences {
     public Command armToAmpPosition() {
         return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kHighestPosition);
     }
+
+    // AUTOS
+
+    public Command autoAimSpinAndShoot() {
+        return armToLowestPosition().andThen(aimSpinAndShoot());
+    }
 }
