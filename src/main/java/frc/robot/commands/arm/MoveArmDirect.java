@@ -22,7 +22,7 @@ public class MoveArmDirect extends Command {
 
     @Override
     public void execute() {
-        double speed = m_controller.getRightY();
+        double speed = m_controller.getLeftY();
 
         m_arm.setDirectOutput(MathUtil.applyDeadband(speed, 0.1));
     }
