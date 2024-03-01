@@ -13,7 +13,7 @@ public class StopShooter extends Command {
 
     @Override
     public void execute() {
-        m_shooter.roll(0;);
+        m_shooter.roll(0);
     }
 
     @Override
