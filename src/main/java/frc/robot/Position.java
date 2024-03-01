@@ -29,7 +29,7 @@ public enum Position {
     SPEAKER_SHOOT_AUTO {
         public Pose2d getPositionForTeam(Alliance team) {
             if (team == Blue) {
-                return new Pose2d(5, 2, Rotation2d.fromDegrees(130.5));
+                return new Pose2d(1.19, 6.87, Rotation2d.fromDegrees(-130.5));
             } else {
                 return new Pose2d(1.19, 1.34, Rotation2d.fromDegrees(130.5));
             }
