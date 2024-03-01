@@ -36,7 +36,7 @@ public final class Constants {
         public static final int kWinchMotorTwoChannel = 29;
         public static final int kWinchEncoderChannel1 = 9;
         public static final int kWinchEncoderChannel2 = 8;
-        public static final int kWinchSafetySwitchChannel = 7;
+        public static final int kWinchSafetySwitchChannel = 6;
         public static final int kArmDutyCycleChannel = 7;
 
         //public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsFL = new Drivetrain.SwerveModuleSettings(1, 56, 55, 60);

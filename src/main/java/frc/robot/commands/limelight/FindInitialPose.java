@@ -22,6 +22,7 @@ public class FindInitialPose extends Command {
         if (limelight.isTargetValid()) {
             targetPose = limelight.getResultPose2d();
             drivetrain.resetGyro(targetPose);
+            drivetrain.resetOdometry(targetPose);
         }
     }
 
