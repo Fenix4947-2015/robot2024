@@ -24,6 +24,7 @@ public class SpinShooter extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        System.out.println(getClass().getSimpleName() + ".end() interrupted: " + interrupted);
         m_shooter.roll(0);
     }
 }

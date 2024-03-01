@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.SmartDashboardWrapper;
 
 import static frc.robot.Constants.ElectricConstants.*;
 
@@ -155,9 +156,9 @@ public class Drivetrain extends SubsystemBase {
   public Pose2d getOdometry() {
     Pose2d currentPose = m_odometry.getPoseMeters().plus(offset180);
 
-    SmartDashboard.putNumber("currentPoseX", currentPose.getX());
-    SmartDashboard.putNumber("currentPoseY", currentPose.getY());
-    SmartDashboard.putNumber("currentPoseAngle", currentPose.getRotation().getDegrees());
+    SmartDashboardWrapper.putNumber("currentPoseX", currentPose.getX());
+    SmartDashboardWrapper.putNumber("currentPoseY", currentPose.getY());
+    SmartDashboardWrapper.putNumber("currentPoseAngle", currentPose.getRotation().getDegrees());
 
     return currentPose;
   }
@@ -213,19 +214,19 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void updateSmartDashboard() {
-    SmartDashboard.putNumber("wheelAngleFrontRight", getSwerveModuleFrontRight().getWheelAngle());
-    SmartDashboard.putNumber("wheelAngleBackRight", getSwerveModuleBackRight().getWheelAngle());
-    SmartDashboard.putNumber("wheelAngleFrontLeft", getSwerveModuleFrontLeft().getWheelAngle());
-    SmartDashboard.putNumber("wheelAngleBackLeft", getSwerveModuleBackLeft().getWheelAngle());
+    SmartDashboardWrapper.putNumber("wheelAngleFrontRight", getSwerveModuleFrontRight().getWheelAngle());
+    SmartDashboardWrapper.putNumber("wheelAngleBackRight", getSwerveModuleBackRight().getWheelAngle());
+    SmartDashboardWrapper.putNumber("wheelAngleFrontLeft", getSwerveModuleFrontLeft().getWheelAngle());
+    SmartDashboardWrapper.putNumber("wheelAngleBackLeft", getSwerveModuleBackLeft().getWheelAngle());
 
-    SmartDashboard.putNumber("stateAngleFrontRight", getSwerveModuleFrontRight().getStateAngle());
-    SmartDashboard.putNumber("stateAngleBackRight", getSwerveModuleBackRight().getStateAngle());
-    SmartDashboard.putNumber("stateAngleFrontLeft", getSwerveModuleFrontLeft().getStateAngle());
-    SmartDashboard.putNumber("stateAngleBackLeft", getSwerveModuleBackLeft().getStateAngle());
+    SmartDashboardWrapper.putNumber("stateAngleFrontRight", getSwerveModuleFrontRight().getStateAngle());
+    SmartDashboardWrapper.putNumber("stateAngleBackRight", getSwerveModuleBackRight().getStateAngle());
+    SmartDashboardWrapper.putNumber("stateAngleFrontLeft", getSwerveModuleFrontLeft().getStateAngle());
+    SmartDashboardWrapper.putNumber("stateAngleBackLeft", getSwerveModuleBackLeft().getStateAngle());
 
-    SmartDashboard.putNumber("gyroAngle", getGyroAngle());
-    SmartDashboard.putNumber("adjustedRotation2d", getAdjustedRotation2D().getDegrees());
-    SmartDashboard.putNumber("gyroOffset", gyroOffset);
+    SmartDashboardWrapper.putNumber("gyroAngle", getGyroAngle());
+    SmartDashboardWrapper.putNumber("adjustedRotation2d", getAdjustedRotation2D().getDegrees());
+    SmartDashboardWrapper.putNumber("gyroOffset", gyroOffset);
   }
 
   public Rotation2d getAdjustedRotation2D() {

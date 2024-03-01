@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.SmartDashboardWrapper;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.SmartDashboardSettings;
 
@@ -93,9 +94,9 @@ public class AutoMoveStrategy extends Command {
 
         refreshAtSetpointSince();
 
-        SmartDashboard.putNumber("AutoAimDriveCommandX", _driveCommandX);
-        SmartDashboard.putNumber("AutoAimDriveCommandY", _driveCommandY);
-        SmartDashboard.putNumber("AutoAimDriveCommandRot", _steerCommand);
+        SmartDashboardWrapper.putNumber("AutoAimDriveCommandX", _driveCommandX);
+        SmartDashboardWrapper.putNumber("AutoAimDriveCommandY", _driveCommandY);
+        SmartDashboardWrapper.putNumber("AutoAimDriveCommandRot", _steerCommand);
         // _driveTrain.drive(_driveCommandX, _driveCommandY, _steerCommand, false);
         _driveTrain.driveNormalized(_driveCommandX, _driveCommandY, _steerCommand, false);
     }
@@ -199,8 +200,8 @@ public class AutoMoveStrategy extends Command {
         // _steerCommand = -0;
 
         double totalDistance = movePose.getTranslation().getNorm();
-        
-        SmartDashboard.putNumber("totalDistance", totalDistance);
+
+        SmartDashboardWrapper.putNumber("totalDistance", totalDistance);
         double distanceRatio = CALCULATED_DISTANCE / totalDistance;
         if (totalDistance < CALCULATED_DISTANCE) {
             distanceRatio = 1;
@@ -215,9 +216,9 @@ public class AutoMoveStrategy extends Command {
         double dy = twist.dy;
         double dtheta = twist.dtheta * 180 / Math.PI;
 
-        SmartDashboard.putNumber("dx", dx);
-        SmartDashboard.putNumber("dy", dy);
-        SmartDashboard.putNumber("dtheta", dtheta);
+        SmartDashboardWrapper.putNumber("dx", dx);
+        SmartDashboardWrapper.putNumber("dy", dy);
+        SmartDashboardWrapper.putNumber("dtheta", dtheta);
 
         _pidAngle.setSetpoint(0);
         _pidAngle.setTolerance(3);
@@ -231,8 +232,8 @@ public class AutoMoveStrategy extends Command {
         _pidDistanceY.setTolerance(0.1);
         double drive_y_cmd = _pidDistanceY.calculate(dy);
 
-        SmartDashboard.putNumber("drive_x_cmd", drive_x_cmd);
-        SmartDashboard.putNumber("drive_y_cmd", drive_y_cmd);
+        SmartDashboardWrapper.putNumber("drive_x_cmd", drive_x_cmd);
+        SmartDashboardWrapper.putNumber("drive_y_cmd", drive_y_cmd);
 
         _steerCommand = clipValue(steerCommand, -0.7, 0.7);
         _driveCommandX = normaliseX(drive_x_cmd, drive_y_cmd, 0.9);

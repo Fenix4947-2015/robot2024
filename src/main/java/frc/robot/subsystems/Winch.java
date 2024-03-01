@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElectricConstants;
+import frc.robot.SmartDashboardWrapper;
 
 public class Winch extends SubsystemBase {
 
@@ -47,8 +48,8 @@ public class Winch extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Winch / Distance", getEncoderDistance());
-        SmartDashboard.putBoolean("Winch / safetySwitch", m_safetySwitch.get());
+        SmartDashboardWrapper.putNumber("Winch / Distance", getEncoderDistance());
+        SmartDashboardWrapper.putBoolean("Winch / safetySwitch", m_safetySwitch.get());
     }
 
 }

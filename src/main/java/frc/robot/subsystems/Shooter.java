@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElectricConstants;
+import frc.robot.SmartDashboardWrapper;
 
 public class Shooter extends SubsystemBase {
 
@@ -26,8 +27,8 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Shooter / Shooter Top Speed (RPM)", getShooterTopRpm());
-        SmartDashboard.putNumber("Shooter / Shooter Bottom Speed (RPM)", getShooterBottomRpm());
+        SmartDashboardWrapper.putNumber("Shooter / Shooter Top Speed (RPM)", getShooterTopRpm());
+        SmartDashboardWrapper.putNumber("Shooter / Shooter Bottom Speed (RPM)", getShooterBottomRpm());
     }
 
     private double getShooterTopRpm() {

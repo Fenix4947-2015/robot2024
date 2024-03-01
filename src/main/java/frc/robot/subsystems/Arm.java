@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.SmartDashboardWrapper;
 
 public class Arm extends SubsystemBase {
 
@@ -94,8 +95,8 @@ public class Arm extends SubsystemBase {
     }
 
     private void log(double output) {
-        SmartDashboard.putNumber("Arm / Output", output);
-        SmartDashboard.putNumber("Arm / Distance", getEncoderDistance());
+        SmartDashboardWrapper.putNumber("Arm / Output", output);
+        SmartDashboardWrapper.putNumber("Arm / Distance", getEncoderDistance());
     }
 
     private double limitOutput(double output, double angle) {

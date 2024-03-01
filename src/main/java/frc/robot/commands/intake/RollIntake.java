@@ -18,4 +18,10 @@ public class RollIntake extends Command {
     public void execute() {
         m_intake.roll(m_speed);
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        System.out.println(getClass().getSimpleName() + ".end() interrupted: " + interrupted);
+        m_intake.roll(0.0);
+    }
 }

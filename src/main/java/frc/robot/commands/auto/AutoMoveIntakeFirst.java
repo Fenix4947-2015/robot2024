@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.SmartDashboardWrapper;
 import frc.robot.subsystems.swerve.Drivetrain;
 import frc.robot.SmartDashboardSettings;
 
@@ -26,7 +27,7 @@ public class AutoMoveIntakeFirst extends AutoMoveStrategy {
         Pose2d targetPose = getTargetPose();
         Translation2d vector = new Translation2d(currentPose.getX() - targetPose.getX() , currentPose.getY() - targetPose.getY());
         double angle = angleFromVector(vector);
-        SmartDashboard.putNumber("target angle", Rotation2d.fromRadians(angle).getDegrees());
+        SmartDashboardWrapper.putNumber("target angle", Rotation2d.fromRadians(angle).getDegrees());
         return new Pose2d(targetPose.getX(), targetPose.getY(), Rotation2d.fromRadians(angle)).plus(robotOffset);
     }
 

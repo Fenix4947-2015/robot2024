@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.SmartDashboardWrapper;
 import frc.robot.subsystems.swerve.Drivetrain;
 
 public class DriveSwerve extends Command {
@@ -52,8 +53,8 @@ public class DriveSwerve extends Command {
 
         m_driveTrain.driveNormalized(xSpeed, ySpeed, rot, fieldRelative);
 
-        SmartDashboard.putNumber("xSpeed", xSpeed);
-        SmartDashboard.putNumber("ySpeed", ySpeed);
-        SmartDashboard.putNumber("rot", rot);
+        SmartDashboardWrapper.putNumber("xSpeed", xSpeed);
+        SmartDashboardWrapper.putNumber("ySpeed", ySpeed);
+        SmartDashboardWrapper.putNumber("rot", rot);
     }
 }
