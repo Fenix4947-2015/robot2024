@@ -59,4 +59,8 @@ public class AutoSequences {
     public Command armToLowestPosition() {
         return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kLowestPosition);
     }
+
+    public Command armToAmpPosition() {
+        return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kHighestPosition);
+    }
 }

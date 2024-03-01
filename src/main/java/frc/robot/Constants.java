@@ -36,6 +36,7 @@ public final class Constants {
         public static final int kWinchMotorTwoChannel = 29;
         public static final int kWinchEncoderChannel1 = 9;
         public static final int kWinchEncoderChannel2 = 8;
+        public static final int kWinchSafetySwitchChannel = 7;
         public static final int kArmDutyCycleChannel = 7;
 
         //public static Drivetrain.SwerveModuleSettings kSwerveModuleSettingsFL = new Drivetrain.SwerveModuleSettings(1, 56, 55, 60);
@@ -57,7 +58,7 @@ public final class Constants {
         public static final double kV = 0;
         public static final double kToleranceDegrees = 1.0;
         public static final double kLowestPosition = 100.0;
-        public static final double kHighestPosition = -3.0;
+        public static final double kHighestPosition = 5.0;
         public static final double kDistanceShootNear = 1.5;
         public static final double kDistanceShootFar = 3.4;
         public static final double kAngleShootNear = 100;
