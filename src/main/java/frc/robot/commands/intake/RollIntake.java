@@ -13,6 +13,10 @@ public class RollIntake extends Command {
         addRequirements(intake);
     }
         
+    @Override
+    public void initialize() {
+        m_intake.resetNoteIsProbablyInside();
+    }
 
     @Override
     public void execute() {

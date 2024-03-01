@@ -26,12 +26,21 @@ public enum Position {
             }
         }
     },
-    SPEAKER_SHOOT_AUTO {
+    SPEAKER_SHOOT_NOTE_1 {
         public Pose2d getPositionForTeam(Alliance team) {
             if (team == Blue) {
                 return new Pose2d(1.19, 6.87, Rotation2d.fromDegrees(-130.5));
             } else {
                 return new Pose2d(1.19, 1.34, Rotation2d.fromDegrees(130.5));
+            }
+        }
+    },
+    SPEAKER_SHOOT_NOTE_3 {
+        public Pose2d getPositionForTeam(Alliance team) {
+            if (team == Blue) {
+                return new Pose2d(1.19, 4.21, Rotation2d.fromDegrees(-130.5));
+            } else {
+                return new Pose2d(1.19, 4, Rotation2d.fromDegrees(130.5));
             }
         }
     },
@@ -114,6 +123,15 @@ public enum Position {
                 return new Pose2d(8.27, 0.753, new Rotation2d());
             } else {
                 return new Pose2d(8.27, 7.457, new Rotation2d());
+            }
+        }
+    },
+    NOTE_8_APPROACH {
+        public Pose2d getPositionForTeam(Alliance team) {
+            if (team == Blue) {
+                return new Pose2d(2, 0.753, Rotation2d.fromDegrees(130));
+            } else {
+                return new Pose2d(2, 7.457, Rotation2d.fromDegrees(-130));
             }
         }
     };

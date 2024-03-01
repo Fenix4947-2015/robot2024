@@ -160,6 +160,7 @@ public class RobotContainer {
         m_autonomousCommandChooser.addOption("Shoot and Pick note 3", () -> m_autoSequences.autoAimAndPickNote3());
         m_autonomousCommandChooser.addOption("Shoot and Pick note 1 and 2", () -> m_autoSequences.autoAimAndPick1And2());
         m_autonomousCommandChooser.addOption("Shoot and Pick near and far", () -> m_autoSequences.autoAimAndPickNearAndFarAndFurious());
+        m_autonomousCommandChooser.addOption("Shoot and Pick 8 & 7", () -> m_autoSequences.autoAimAndPick8and7());
         m_autonomousCommandChooser.addOption("None", () -> new PrintCommand("No autonomous command selected"));
 
         SmartDashboard.putData("Autonomous Delay", m_autonomousDelayChooser);

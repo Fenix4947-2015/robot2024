@@ -90,6 +90,13 @@ public class AutoSequences {
         );
     }
 
+    public Command moveAbsolute(Position position) {
+        return new AutoMoveAbsolute(
+                        m_robotContainer.m_driveTrain,
+                        m_robotContainer.m_smartDashboardSettings,
+                        position.getPositionForTeam(m_robotContainer.m_alliance));
+    }
+
     // AUTOS
 
     public Command autoAimSpinAndShoot() {
@@ -134,10 +141,26 @@ public class AutoSequences {
                 .andThen(aimSpinAndShoot())
                 .andThen(findNote(Position.NOTE_4))
                 .andThen(autoPickNote())
-                .andThen(new AutoMoveAbsolute(
-                        m_robotContainer.m_driveTrain,
-                        m_robotContainer.m_smartDashboardSettings,
-                        Position.SPEAKER_SHOOT_AUTO.getPositionForTeam(m_robotContainer.m_alliance)))
+                .andThen(moveAbsolute(Position.SPEAKER_SHOOT_NOTE_1))
                 .andThen(aimSpinAndShoot());
+    }
+
+    public Command autoAimAndPick8and7() {
+        return aimSpinAndShoot()
+                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(findNote(Position.NOTE_8))
+                .andThen(autoPickNote())
+                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(moveAbsolute(Position.SPEAKER_SHOOT_NOTE_3))
+                .andThen(aimSpinAndShoot())
+                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(findNote(Position.NOTE_7))
+                .andThen(autoPickNote())
+                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(moveAbsolute(Position.SPEAKER_SHOOT_NOTE_3))
+                .andThen(aimSpinAndShoot())
+                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(findNote(Position.NOTE_7))
+                ;
     }
 }

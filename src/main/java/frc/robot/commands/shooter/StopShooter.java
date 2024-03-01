@@ -23,7 +23,7 @@ public class StopShooter extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println(getClass().getSimpleName() + ".end() interrupted: " + interrupted);
+        //System.out.println(getClass().getSimpleName() + ".end() interrupted: " + interrupted);
         m_shooter.roll(0);
     }
 }

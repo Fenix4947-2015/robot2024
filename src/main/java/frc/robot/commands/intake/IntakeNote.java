@@ -15,9 +15,15 @@ public class IntakeNote extends Command {
     public void execute() {
         if (!m_intake.isNoteDetected()) {
             m_intake.roll(Intake.DEFAULT_SWALLOW_SPEED);
+            m_intake.setIsIntaking(true);
         } else {
             m_intake.roll(0.0);
         }
+    }
+
+    @Override
+    public void initialize() {
+        m_intake.resetNoteIsProbablyInside();
     }
 
     @Override
@@ -28,5 +34,6 @@ public class IntakeNote extends Command {
     @Override
     public void end(boolean interrupted) {
         m_intake.roll(0);
+        m_intake.setIsIntaking(false);
     }
 }
