@@ -151,8 +151,10 @@ public class RobotContainer {
 
         m_autonomousCommandChooser.setDefaultOption("Shoot preload only", () -> m_autoSequences.autoAimSpinAndShoot());
         m_autonomousCommandChooser.addOption("Lower arm only", () -> m_autoSequences.armToLowestPosition());
-        m_autonomousCommandChooser.addOption("Shoot and Pick one", () -> m_autoSequences.autoAimAndPickOne());
-        m_autonomousCommandChooser.addOption("Shoot and Pick two", () -> m_autoSequences.autoAimAndPickTwo());
+        m_autonomousCommandChooser.addOption("Shoot and Pick note 1", () -> m_autoSequences.autoAimAndPickNote1());
+        m_autonomousCommandChooser.addOption("Shoot and Pick note 2", () -> m_autoSequences.autoAimAndPickNote2());
+        m_autonomousCommandChooser.addOption("Shoot and Pick note 3", () -> m_autoSequences.autoAimAndPickNote3());
+        m_autonomousCommandChooser.addOption("Shoot and Pick note 1 and 2", () -> m_autoSequences.autoAimAndPick1And2());
         m_autonomousCommandChooser.addOption("Shoot and Pick near and far", () -> m_autoSequences.autoAimAndPickNearAndFarAndFurious());
         m_autonomousCommandChooser.addOption("None", () -> new PrintCommand("No autonomous command selected"));
 

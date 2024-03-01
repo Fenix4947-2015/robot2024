@@ -76,9 +76,7 @@ public enum Position {
             if (team == Blue) {
                 return new Pose2d(8.27, 7.457, new Rotation2d());
             } else {
-                //true position:
-                //return new Pose2d(8.27, 0.753, new Rotation2d());
-                return new Pose2d(6.0, 1.2, new Rotation2d());
+                return new Pose2d(8.27, 0.753, new Rotation2d());
             }
         }
     },

@@ -17,7 +17,7 @@ public class AutoMoveIntakeFirst extends AutoMoveStrategy {
         Drivetrain driveTrain, 
         SmartDashboardSettings smartDashboardSettings,
         Pose2d target) {
-            super(driveTrain, smartDashboardSettings, target);
+            super(driveTrain, smartDashboardSettings, target, 50);
     }
 
     

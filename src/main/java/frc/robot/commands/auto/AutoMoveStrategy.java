@@ -57,6 +57,9 @@ public class AutoMoveStrategy extends Command {
     private PIDController _pidDistanceX = new PIDController(K_PID_P_DISTANCE, K_PID_I_DISTANCE, K_PID_D_DISTANCE);
     private PIDController _pidDistanceY = new PIDController(K_PID_P_DISTANCE, K_PID_I_DISTANCE, K_PID_D_DISTANCE);
 
+    private final long _setpointDelayMs;
+    public static final long DEFAULT_SETPOINT_DELAY_MS = 500;
+
     private boolean _isAtSetPoint = false;
     private Optional<Instant> _atSetpointSince = Optional.empty();
 
@@ -64,9 +67,18 @@ public class AutoMoveStrategy extends Command {
         Drivetrain driveTrain, 
         SmartDashboardSettings smartDashboardSettings,
         Pose2d target) {
+            this(driveTrain, smartDashboardSettings, target, DEFAULT_SETPOINT_DELAY_MS);
+        }
+
+    public AutoMoveStrategy(
+        Drivetrain driveTrain, 
+        SmartDashboardSettings smartDashboardSettings,
+        Pose2d target,
+        long setpointDelayMs) {
         _driveTrain = driveTrain;
         _smartDashboardSettings = smartDashboardSettings;
         _target = target;
+        _setpointDelayMs = setpointDelayMs;
         addRequirements(driveTrain);
         _smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
         _pidAngle.enableContinuousInput(-180, 180);
@@ -126,7 +138,7 @@ public class AutoMoveStrategy extends Command {
     // Make this return true when this Command no longer needs to run execute()
     @Override
     public boolean isFinished() {
-        return _atSetpointSince.map(t -> elapsedAtLeastSince(500, t))
+        return _atSetpointSince.map(t -> elapsedAtLeastSince(_setpointDelayMs, t))
                 .orElse(false);
     }
 

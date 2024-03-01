@@ -48,10 +48,13 @@ public class DriveSwerve extends Command {
         // positive value when we pull to the left (remember, CCW is positive in
         // mathematics). Xbox controllers return positive values when you pull to
         // the right by default.
+
+        double reverseRotation = SmartDashboard.getBoolean("Reverse rotation", false) ? -1 : 1;
+
         final var rot = (REVERSE_ROTATION ? -1 : 1) *
                 m_rotLimiter.calculate(MathUtil.applyDeadband(m_controller.getRightX(), 0.2));
 
-        m_driveTrain.driveNormalized(xSpeed, ySpeed, rot, fieldRelative);
+        m_driveTrain.driveNormalized(-xSpeed * reverseRotation, -ySpeed, rot, fieldRelative);
 
         SmartDashboardWrapper.putNumber("xSpeed", xSpeed);
         SmartDashboardWrapper.putNumber("ySpeed", ySpeed);

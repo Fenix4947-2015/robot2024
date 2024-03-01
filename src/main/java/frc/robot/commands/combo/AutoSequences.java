@@ -80,25 +80,14 @@ public class AutoSequences {
         return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kHighestPosition);
     }
 
-    public Command findNote1() {
-        return new AutoMoveIntakeFirst(
-                m_robotContainer.m_driveTrain,
-                m_robotContainer.m_smartDashboardSettings,
-                Position.NOTE_1.getPositionForTeam(m_robotContainer.m_alliance));
-    }
-
-    public Command findNote2() {
-        return new AutoMoveIntakeFirst(
-                m_robotContainer.m_driveTrain,
-                m_robotContainer.m_smartDashboardSettings,
-                Position.NOTE_2.getPositionForTeam(m_robotContainer.m_alliance));
-    }
-
-    public Command findNote4() {
-        return new AutoMoveIntakeFirst(
-                m_robotContainer.m_driveTrain,
-                m_robotContainer.m_smartDashboardSettings,
-                Position.NOTE_4.getPositionForTeam(m_robotContainer.m_alliance));
+    public Command findNote(Position note) {
+        return new ParallelDeadlineGroup(
+                new AutoMoveIntakeFirst(
+                    m_robotContainer.m_driveTrain,
+                    m_robotContainer.m_smartDashboardSettings,
+                    note.getPositionForTeam(m_robotContainer.m_alliance)),
+                armToLowestPosition()
+        );
     }
 
     // AUTOS
@@ -107,29 +96,43 @@ public class AutoSequences {
         return aimSpinAndShoot();
     }
 
-    public Command autoAimAndPickOne() {
+    public Command autoAimAndPickNote1() {
         return aimSpinAndShoot()
-                .andThen(findNote1())
+                .andThen(findNote(Position.NOTE_1))
+                .andThen(autoPickNote())
+                .andThen(aimSpinAndShoot());
+    }
+    
+    public Command autoAimAndPickNote2() {
+        return aimSpinAndShoot()
+                .andThen(findNote(Position.NOTE_2))
+                .andThen(autoPickNote())
+                .andThen(aimSpinAndShoot());
+    }
+    
+    public Command autoAimAndPickNote3() {
+        return aimSpinAndShoot()
+                .andThen(findNote(Position.NOTE_3))
                 .andThen(autoPickNote())
                 .andThen(aimSpinAndShoot());
     }
 
-    public Command autoAimAndPickTwo() {
+    public Command autoAimAndPick1And2() {
         return aimSpinAndShoot()
-                .andThen(findNote1())
+                .andThen(findNote(Position.NOTE_1))
                 .andThen(autoPickNote())
                 .andThen(aimSpinAndShoot())
-                .andThen(findNote2())
+                .andThen(findNote(Position.NOTE_2))
                 .andThen(autoPickNote())
                 .andThen(aimSpinAndShoot());
     }
 
     public Command autoAimAndPickNearAndFarAndFurious() {
         return aimSpinAndShoot()
-                .andThen(findNote1())
+                .andThen(findNote(Position.NOTE_1))
                 .andThen(autoPickNote())
                 .andThen(aimSpinAndShoot())
-                .andThen(findNote4())
+                .andThen(findNote(Position.NOTE_4))
                 .andThen(autoPickNote())
                 .andThen(new AutoMoveAbsolute(
                         m_robotContainer.m_driveTrain,
