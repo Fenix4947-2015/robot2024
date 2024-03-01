@@ -138,6 +138,7 @@ public class RobotContainer {
         int autonomousDelay = getAutonomousDelay();
         Command delayedCommand = autonomousDelay > 0 ? chosenCommand.beforeStarting(new WaitCommand(autonomousDelay)) : chosenCommand;
 
+        System.out.println("delayedCommand " + delayedCommand.getName() + " " + delayedCommand.getClass().getSimpleName());
         return m_autoInitSequence.andThen(delayedCommand);
     }
 
