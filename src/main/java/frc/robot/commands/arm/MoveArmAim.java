@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Position;
+import frc.robot.RobotContainer;
 import frc.robot.limelight.LimelightThree;
 import frc.robot.subsystems.Arm;
 
@@ -14,11 +15,13 @@ public class MoveArmAim extends Command {
     private final Arm m_arm;
     private final double m_targetPosition;
     private final LimelightThree m_limelight;
+    private final RobotContainer m_robotContainer;
 
-    public MoveArmAim(Arm arm, LimelightThree limelight) {
+    public MoveArmAim(Arm arm, LimelightThree limelight, RobotContainer robotContainer) {
         m_arm = arm;
         m_targetPosition = Constants.Arm.kAngleShootNear;
         m_limelight = limelight;
+        m_robotContainer = robotContainer;
     }
 
     @Override
@@ -44,7 +47,7 @@ public class MoveArmAim extends Command {
 
     private double calculateAngle() {
         Pose2d robotPose = m_limelight.getResultPose2d();
-        Pose2d speakerPose = Position.SPEAKER.getPositionForTeam(m_limelight.getTeam());
+        Pose2d speakerPose = Position.SPEAKER.getPositionForTeam(m_robotContainer.m_alliance);
         Transform2d speakerToRobot = new Transform2d(speakerPose, robotPose);
         double distanceRatio = (speakerToRobot.getTranslation().getNorm() - Constants.Arm.kDistanceShootNear) / (Constants.Arm.kDistanceShootFar - Constants.Arm.kDistanceShootNear);
         double angleRange = Constants.Arm.kAngleShootFar - Constants.Arm.kAngleShootNear;

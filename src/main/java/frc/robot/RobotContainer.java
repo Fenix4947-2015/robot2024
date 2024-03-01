@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,7 +27,6 @@ import frc.robot.commands.sequence.AutoInitSequence;
 import frc.robot.commands.shooter.SpinShooter;
 import frc.robot.commands.winch.RollWinchSpeed;
 import frc.robot.commands.winch.RollWinchStick;
-import frc.robot.enums.Team;
 import frc.robot.limelight.Limelight;
 import frc.robot.limelight.LimelightThree;
 import frc.robot.subsystems.Arm;
@@ -57,14 +58,13 @@ public class RobotContainer {
 
     // SUBSYSTEMS
     public final Drivetrain m_driveTrain = new Drivetrain(SPEED_RATIO);
-    public final LimelightThree m_limelight_three = new LimelightThree("limelight-three", Team.RED);
+    public final LimelightThree m_limelight_three = new LimelightThree("limelight-three", this);
     public final Limelight m_limelight = new Limelight("limelight");
     public final Intake m_intake = new Intake();
     public final Shooter m_shooter = new Shooter();
     public final Arm m_arm = new Arm();
     public final Winch m_winch = new Winch();
 
-    private final AutoMoveStrategy m_autoAim = new AutoMoveIntakeFirst(m_driveTrain, m_smartDashboardSettings, Position.NOTE_1.getPositionForTeam(Team.RED));
     private final Command m_autoPickNote = m_autoSequences.autoPickNote();
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
 
@@ -74,7 +74,7 @@ public class RobotContainer {
     private final IntakeNote m_intakeNote = new IntakeNote(m_intake);
     private final SpinShooter m_spinShooter = new SpinShooter(m_shooter);
     private final SpinShooter m_stopShooter = new SpinShooter(m_shooter, 0);
-    private final MoveArmAim m_moveArmAim = new MoveArmAim(m_arm, m_limelight_three);
+    private final MoveArmAim m_moveArmAim = new MoveArmAim(m_arm, m_limelight_three, this);
     private final Command m_aimSpinAndShoot = m_autoSequences.aimSpinAndShoot();
     private final Command m_spinAndShoot = m_autoSequences.spinAndShoot();
     private final MoveArmDirect m_moveArmDirect = new MoveArmDirect(m_arm, m_helperController);
@@ -86,6 +86,8 @@ public class RobotContainer {
 
     private final SendableChooser<Integer> m_autonomousDelayChooser = new SendableChooser<>();
     private final SendableChooser<Command> m_autonomousCommandChooser = new SendableChooser<>();
+
+    public Alliance m_alliance = Alliance.Red;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -110,8 +112,8 @@ public class RobotContainer {
         // DRIVER
         m_driverController.leftBumper().whileTrue(m_autoPickNote);
         m_driverController.rightBumper().whileTrue(m_aimSpinAndShoot).onFalse(m_autoSequences.armToLowestPosition());
-        m_driverController.a().whileTrue(m_autoPickNote);
-        m_driverController.x().whileTrue(m_autoAim);
+//        m_driverController.a().whileTrue(m_autoPickNote);
+//        m_driverController.x().whileTrue(m_aimSpinAndShoot);
 
         // HELPER
         m_helperController.leftBumper().whileTrue(m_rollIntakeSpit);
@@ -169,7 +171,14 @@ public class RobotContainer {
     }
 
     public void teleopInit() {
-        // m_driveTrain.resetGyro();
+        setAlliance();
     }
 
+    public void autonomousInit() {
+        setAlliance();
+    }
+
+    private void setAlliance() {
+        m_alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+    }
 }

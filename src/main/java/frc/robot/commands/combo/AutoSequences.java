@@ -9,11 +9,9 @@ import frc.robot.commands.arm.MoveArmPosition;
 import frc.robot.commands.auto.AutoAimRotation;
 import frc.robot.commands.auto.AutoMoveIntakeFirst;
 import frc.robot.commands.auto.AutoMovePickNote;
-import frc.robot.commands.drivetrain.DriveNoOp;
 import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
 import frc.robot.commands.shooter.SpinShooter;
-import frc.robot.enums.Team;
 import frc.robot.subsystems.Intake;
 
 public class AutoSequences {
@@ -52,8 +50,8 @@ public class AutoSequences {
     public Command aimSpinAndShoot() {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                        new MoveArmAim(m_robotContainer.m_arm, m_robotContainer.m_limelight_three),
-                        new AutoAimRotation(m_robotContainer.m_driveTrain, m_robotContainer.m_limelight_three, m_robotContainer.m_smartDashboardSettings)
+                        new MoveArmAim(m_robotContainer.m_arm, m_robotContainer.m_limelight_three, m_robotContainer),
+                        new AutoAimRotation(m_robotContainer.m_driveTrain, m_robotContainer.m_limelight_three, m_robotContainer.m_smartDashboardSettings, m_robotContainer)
                 ),
                 spinAndShoot()
         );
@@ -71,7 +69,7 @@ public class AutoSequences {
         return new AutoMoveIntakeFirst(
             m_robotContainer.m_driveTrain, 
             m_robotContainer.m_smartDashboardSettings, 
-            Position.NOTE_1.getPositionForTeam(Team.RED));
+            Position.NOTE_1.getPositionForTeam(m_robotContainer.m_alliance));
     }
 
     // AUTOS

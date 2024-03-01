@@ -1,20 +1,21 @@
 package frc.robot.limelight;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.Results;
-import frc.robot.enums.Team;
+import frc.robot.RobotContainer;
 
 public class LimelightThree extends Limelight {
 
     private LimelightHelpers.LimelightResults limelightResults;
-    private Team team = Team.RED;
     private final String identifier;
+    private final RobotContainer m_robotContainer;
 
-  public LimelightThree(String identifier, Team team) {
+  public LimelightThree(String identifier, RobotContainer robotContainer) {
     super(identifier);
-    this.team = team;
     this.identifier = identifier;
+    m_robotContainer = robotContainer;
   }
 
   @Override
@@ -27,25 +28,8 @@ public class LimelightThree extends Limelight {
     return limelightResults;
   }
   
-  public Team findTeam() { 
-    double fiducialId = getLimelightResults().targetingResults.targets_Fiducials[0].fiducialID;
-    if (fiducialId == 3 || fiducialId == 4) {
-      return Team.RED;
-    } else {
-      return Team.BLUE;
-    }
-  }
-
-  public Team getTeam() {
-    return this.team;
-  }
-
-  public void setTeam(Team team) {
-    this.team = team;
-  }
-
   public Pose2d getResultPose2d() {
-    if (Team.RED.equals(team)) {
+    if (DriverStation.Alliance.Red.equals(m_robotContainer.m_alliance)) {
       return getLimelightResults().targetingResults.getBotPose2d_wpiRed();
     }
     return getLimelightResults().targetingResults.getBotPose2d_wpiBlue();
