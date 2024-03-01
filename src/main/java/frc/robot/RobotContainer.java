@@ -4,26 +4,28 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.arm.StopArm;
-import frc.robot.commands.auto.AutoAimRotation;
-import frc.robot.commands.auto.AutoMoveIntakeFirst;
-import frc.robot.commands.auto.AutoMoveStrategy;
 import frc.robot.commands.arm.MoveArmAim;
 import frc.robot.commands.arm.MoveArmDirect;
-import frc.robot.commands.arm.MoveArmPosition;
+import frc.robot.commands.arm.StopArm;
+import frc.robot.commands.auto.AutoMoveIntakeFirst;
+import frc.robot.commands.auto.AutoMoveStrategy;
 import frc.robot.commands.combo.AutoSequences;
 import frc.robot.commands.drivetrain.DriveSwerve;
 import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
-import frc.robot.commands.sequence.AutoSequence;
-import frc.robot.commands.winch.RollWinchSpeed;
-import frc.robot.enums.Team;
+import frc.robot.commands.sequence.AutoInitSequence;
 import frc.robot.commands.shooter.SpinShooter;
+import frc.robot.commands.winch.RollWinchSpeed;
 import frc.robot.commands.winch.RollWinchStick;
+import frc.robot.enums.Team;
 import frc.robot.limelight.Limelight;
 import frc.robot.limelight.LimelightThree;
 import frc.robot.subsystems.Arm;
@@ -31,6 +33,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Winch;
 import frc.robot.subsystems.swerve.Drivetrain;
+
+import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -77,8 +81,12 @@ public class RobotContainer {
     private final StopArm m_stopArm = new StopArm(m_arm);
     private final RollWinchStick m_rollWinch = new RollWinchStick(m_winch, m_helperController);
     private final RollWinchSpeed m_stopWinch = new RollWinchSpeed(m_winch, 0.0);
-    private final AutoSequence m_autoSequence = new AutoSequence(m_limelight_three, m_driveTrain);
-    
+    private final AutoInitSequence m_autoInitSequence = new AutoInitSequence(m_limelight_three, m_driveTrain);
+    private final Command m_autoNone = new PrintCommand("No autonomous command selected");
+
+    private final SendableChooser<Integer> m_autonomousDelayChooser = new SendableChooser<>();
+    private final SendableChooser<Command> m_autonomousCommandChooser = new SendableChooser<>();
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -86,6 +94,7 @@ public class RobotContainer {
         // Configure the trigger bindings
         configureBindings();
         configureDefaultCommands();
+        configureAutonomousCommands();
     }
 
     /**
@@ -123,14 +132,32 @@ public class RobotContainer {
         m_winch.setDefaultCommand(m_stopWinch);
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
     public Command getAutonomousCommand() {
-        // An example command will be run in autonomous
-        return m_autoSequence;
+        Command chosenCommand = Optional.ofNullable(m_autonomousCommandChooser.getSelected()).orElse(m_aimSpinAndShoot);
+
+        int autonomousDelay = getAutonomousDelay();
+        Command delayedCommand = autonomousDelay > 0 ? chosenCommand.beforeStarting(new WaitCommand(autonomousDelay)) : chosenCommand;
+
+        return m_autoInitSequence.andThen(delayedCommand);
+    }
+
+    private void configureAutonomousCommands() {
+        m_autonomousDelayChooser.setDefaultOption("0", 0);
+        for (int i = 1; i <= 15; ++i) {
+            m_autonomousDelayChooser.addOption(String.valueOf(i), i);
+        }
+
+        m_autonomousCommandChooser.setDefaultOption("Lower arm and shoot preload only", m_autoSequences.autoAimSpinAndShoot());
+        m_autonomousCommandChooser.addOption("Lower arm only", m_autoSequences.armToLowestPosition());
+        m_autonomousCommandChooser.addOption("None", m_autoNone);
+
+        SmartDashboard.putData("Autonomous Delay", m_autonomousDelayChooser);
+        SmartDashboard.putData("Autonomous Command", m_autonomousCommandChooser);
+    }
+
+    private int getAutonomousDelay() {
+        Integer autonomousDelay = m_autonomousDelayChooser.getSelected();
+        return (autonomousDelay != null) ? autonomousDelay.intValue() : 0;
     }
 
     public void periodic() {

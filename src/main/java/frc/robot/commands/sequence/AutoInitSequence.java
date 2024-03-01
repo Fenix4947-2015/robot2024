@@ -6,8 +6,8 @@ import frc.robot.commands.limelight.FindTeam;
 import frc.robot.limelight.LimelightThree;
 import frc.robot.subsystems.swerve.Drivetrain;
 
-public class AutoSequence extends SequentialCommandGroup {
-    public AutoSequence(LimelightThree limelight, Drivetrain drivetrain) {
+public class AutoInitSequence extends SequentialCommandGroup {
+    public AutoInitSequence(LimelightThree limelight, Drivetrain drivetrain) {
         addCommands(
             new FindTeam(limelight),
             new FindInitialPose(limelight, drivetrain)
