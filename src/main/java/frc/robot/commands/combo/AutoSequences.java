@@ -74,6 +74,13 @@ public class AutoSequences {
             Position.NOTE_1.getPositionForTeam(Team.RED));
     }
 
+        public Command findNote2Red() {
+        return new AutoMoveIntakeFirst(
+            m_robotContainer.m_driveTrain, 
+            m_robotContainer.m_smartDashboardSettings, 
+            Position.NOTE_2.getPositionForTeam(Team.RED));
+    }
+
     // AUTOS
 
     public Command autoAimSpinAndShoot() {
@@ -85,6 +92,18 @@ public class AutoSequences {
         return armToLowestPosition()
         .andThen(aimSpinAndShoot()
         .andThen(findNote1Red())
+        .andThen(autoPickNote())
+        .andThen(aimSpinAndShoot())
+        );
+    }
+
+    public Command autoAimAndPickTwo() {
+        return armToLowestPosition()
+        .andThen(aimSpinAndShoot()
+        .andThen(findNote1Red())
+        .andThen(autoPickNote())
+        .andThen(aimSpinAndShoot())
+        .andThen(findNote2Red())
         .andThen(autoPickNote())
         .andThen(aimSpinAndShoot())
         );

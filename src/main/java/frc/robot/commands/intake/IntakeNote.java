@@ -24,4 +24,9 @@ public class IntakeNote extends Command {
     public boolean isFinished() {
         return m_intake.isNoteDetected();
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_intake.roll(0);
+    }
 }

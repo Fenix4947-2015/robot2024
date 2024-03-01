@@ -151,6 +151,7 @@ public class RobotContainer {
         m_autonomousCommandChooser.setDefaultOption("Lower arm and shoot preload only", m_autoSequences.autoAimSpinAndShoot());
         m_autonomousCommandChooser.addOption("Lower arm only", m_autoSequences.armToLowestPosition());
         m_autonomousCommandChooser.addOption("Shoot and Pick one", m_autoSequences.autoAimAndPickOne());
+        m_autonomousCommandChooser.addOption("Shoot and Pick two", m_autoSequences.autoAimAndPickTwo());
         m_autonomousCommandChooser.addOption("None", m_autoNone);
 
         SmartDashboard.putData("Autonomous Delay", m_autonomousDelayChooser);
