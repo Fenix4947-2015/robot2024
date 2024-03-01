@@ -12,6 +12,7 @@ public class Shooter extends SubsystemBase {
 
     private final CANSparkMax m_motorTop = new CANSparkMax(ElectricConstants.kShooterMotorTopChannel, CANSparkLowLevel.MotorType.kBrushless);
     private final CANSparkMax m_motorBottom = new CANSparkMax(ElectricConstants.kShooterMotorBottomChannel, CANSparkLowLevel.MotorType.kBrushless);
+    private double speed;
 
     public static final double FULL_SPEED = 1.0;
 
@@ -21,16 +22,18 @@ public class Shooter extends SubsystemBase {
         m_motorTop.setIdleMode(CANSparkBase.IdleMode.kBrake);
         m_motorBottom.setIdleMode(CANSparkBase.IdleMode.kBrake);
         m_motorBottom.follow(m_motorTop);
+        this.speed = 0;
     }
 
     public void roll(double speed) {
-        m_motorTop.set(speed);
+        this.speed = speed;
     }
 
     @Override
     public void periodic() {
         SmartDashboardWrapper.putNumber("Shooter / Shooter Top Speed (RPM)", getShooterTopRpm());
         SmartDashboardWrapper.putNumber("Shooter / Shooter Bottom Speed (RPM)", getShooterBottomRpm());
+        m_motorTop.set(speed);
     }
 
     private double getShooterTopRpm() {
