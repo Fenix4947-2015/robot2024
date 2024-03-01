@@ -7,6 +7,7 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.arm.MoveArmAim;
 import frc.robot.commands.arm.MoveArmPosition;
 import frc.robot.commands.auto.AutoAimRotation;
+import frc.robot.commands.auto.AutoMoveAbsolute;
 import frc.robot.commands.auto.AutoMoveIntakeFirst;
 import frc.robot.commands.auto.AutoMovePickNote;
 import frc.robot.commands.intake.IntakeNote;
@@ -65,18 +66,25 @@ public class AutoSequences {
         return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kHighestPosition);
     }
 
-    public Command findNote1Red() {
+    public Command findNote1() {
         return new AutoMoveIntakeFirst(
                 m_robotContainer.m_driveTrain,
                 m_robotContainer.m_smartDashboardSettings,
                 Position.NOTE_1.getPositionForTeam(m_robotContainer.m_alliance));
     }
 
-    public Command findNote2Red() {
+    public Command findNote2() {
         return new AutoMoveIntakeFirst(
                 m_robotContainer.m_driveTrain,
                 m_robotContainer.m_smartDashboardSettings,
                 Position.NOTE_2.getPositionForTeam(m_robotContainer.m_alliance));
+    }
+
+    public Command findNote4() {
+        return new AutoMoveIntakeFirst(
+                m_robotContainer.m_driveTrain,
+                m_robotContainer.m_smartDashboardSettings,
+                Position.NOTE_4.getPositionForTeam(m_robotContainer.m_alliance));
     }
 
     // AUTOS
@@ -89,7 +97,7 @@ public class AutoSequences {
     public Command autoAimAndPickOne() {
         return armToLowestPosition()
                 .andThen(aimSpinAndShoot()
-                        .andThen(findNote1Red())
+                        .andThen(findNote1())
                         .andThen(autoPickNote())
                         .andThen(aimSpinAndShoot())
                 );
@@ -98,11 +106,27 @@ public class AutoSequences {
     public Command autoAimAndPickTwo() {
         return armToLowestPosition()
                 .andThen(aimSpinAndShoot()
-                        .andThen(findNote1Red())
+                        .andThen(findNote1())
                         .andThen(autoPickNote())
                         .andThen(aimSpinAndShoot())
-                        .andThen(findNote2Red())
+                        .andThen(findNote2())
                         .andThen(autoPickNote())
+                        .andThen(aimSpinAndShoot())
+                );
+    }
+
+    public Command autoAimAndPickNearAndFarAndFurious() {
+        return armToLowestPosition()
+                .andThen(aimSpinAndShoot()
+                        .andThen(findNote1())
+                        .andThen(autoPickNote())
+                        .andThen(aimSpinAndShoot())
+                        .andThen(findNote4())
+                        .andThen(autoPickNote())
+                        .andThen(new AutoMoveAbsolute(
+                                m_robotContainer.m_driveTrain,
+                                m_robotContainer.m_smartDashboardSettings,
+                                Position.SPEAKER_SHOOT_AUTO.getPositionForTeam(m_robotContainer.m_alliance)))
                         .andThen(aimSpinAndShoot())
                 );
     }

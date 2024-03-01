@@ -17,8 +17,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.arm.MoveArmAim;
 import frc.robot.commands.arm.MoveArmDirect;
 import frc.robot.commands.arm.StopArm;
-import frc.robot.commands.auto.AutoMoveIntakeFirst;
-import frc.robot.commands.auto.AutoMoveStrategy;
 import frc.robot.commands.combo.AutoSequences;
 import frc.robot.commands.drivetrain.DriveSwerve;
 import frc.robot.commands.intake.IntakeNote;
@@ -36,6 +34,7 @@ import frc.robot.subsystems.Winch;
 import frc.robot.subsystems.swerve.Drivetrain;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -81,11 +80,9 @@ public class RobotContainer {
     private final StopArm m_stopArm = new StopArm(m_arm);
     private final RollWinchStick m_rollWinch = new RollWinchStick(m_winch, m_helperController);
     private final RollWinchSpeed m_stopWinch = new RollWinchSpeed(m_winch, 0.0);
-    private final AutoInitSequence m_autoInitSequence = new AutoInitSequence(m_limelight_three, m_driveTrain);
-    private final Command m_autoNone = new PrintCommand("No autonomous command selected");
 
     private final SendableChooser<Integer> m_autonomousDelayChooser = new SendableChooser<>();
-    private final SendableChooser<Command> m_autonomousCommandChooser = new SendableChooser<>();
+    private final SendableChooser<Supplier<Command>> m_autonomousCommandChooser = new SendableChooser<>();
 
     public Alliance m_alliance = Alliance.Red;
 
@@ -135,26 +132,30 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        Command chosenCommand = Optional.ofNullable(m_autonomousCommandChooser.getSelected()).orElse(m_aimSpinAndShoot);
+        Command chosenCommand = Optional.ofNullable(m_autonomousCommandChooser.getSelected()).orElse(() -> m_autoSequences.autoAimSpinAndShoot()).get();
 
         int autonomousDelay = getAutonomousDelay();
         Command delayedCommand = autonomousDelay > 0 ? chosenCommand.beforeStarting(new WaitCommand(autonomousDelay)) : chosenCommand;
 
         System.out.println("delayedCommand " + delayedCommand.getName() + " " + delayedCommand.getClass().getSimpleName());
-        return m_autoInitSequence.andThen(delayedCommand);
+
+        Command autoInitSeq = new AutoInitSequence(m_limelight_three, m_driveTrain);
+
+        return autoInitSeq.andThen(delayedCommand);
     }
 
-    private void configureAutonomousCommands() {
+    public void configureAutonomousCommands() {
         m_autonomousDelayChooser.setDefaultOption("0", 0);
         for (int i = 1; i <= 15; ++i) {
             m_autonomousDelayChooser.addOption(String.valueOf(i), i);
         }
 
-        m_autonomousCommandChooser.setDefaultOption("Lower arm and shoot preload only", m_autoSequences.autoAimSpinAndShoot());
-        m_autonomousCommandChooser.addOption("Lower arm only", m_autoSequences.armToLowestPosition());
-        m_autonomousCommandChooser.addOption("Shoot and Pick one", m_autoSequences.autoAimAndPickOne());
-        m_autonomousCommandChooser.addOption("Shoot and Pick two", m_autoSequences.autoAimAndPickTwo());
-        m_autonomousCommandChooser.addOption("None", m_autoNone);
+        m_autonomousCommandChooser.setDefaultOption("Lower arm and shoot preload only", () -> m_autoSequences.autoAimSpinAndShoot());
+        m_autonomousCommandChooser.addOption("Lower arm only", () -> m_autoSequences.armToLowestPosition());
+        m_autonomousCommandChooser.addOption("Shoot and Pick one", () -> m_autoSequences.autoAimAndPickOne());
+        m_autonomousCommandChooser.addOption("Shoot and Pick two", () -> m_autoSequences.autoAimAndPickTwo());
+        m_autonomousCommandChooser.addOption("Shoot and Pick near and far", () -> m_autoSequences.autoAimAndPickNearAndFarAndFurious());
+        m_autonomousCommandChooser.addOption("None", () -> new PrintCommand("No autonomous command selected"));
 
         SmartDashboard.putData("Autonomous Delay", m_autonomousDelayChooser);
         SmartDashboard.putData("Autonomous Command", m_autonomousCommandChooser);
