@@ -48,13 +48,25 @@ public class AutoSequences {
         );
     }
 
+    public Command spinAndShootNoPrespin() {
+        return new ParallelDeadlineGroup(
+                new SequentialCommandGroup(
+                        Commands.waitSeconds(0.1),
+                        new RollIntake(m_robotContainer.m_intake, Intake.DEFAULT_SWALLOW_SPEED).withTimeout(0.5)
+                ),
+                new SpinShooter(m_robotContainer.m_shooter)
+        );
+    }
+
     public Command aimSpinAndShoot() {
         return new SequentialCommandGroup(
                 new ParallelCommandGroup(
+                        new SpinShooter(m_robotContainer.m_shooter).withTimeout(1.0),
                         new MoveArmAim(m_robotContainer.m_arm, m_robotContainer.m_limelight_three, m_robotContainer),
                         new AutoAimRotation(m_robotContainer.m_driveTrain, m_robotContainer.m_limelight_three, m_robotContainer.m_smartDashboardSettings, m_robotContainer)
                 ),
-                spinAndShoot()
+                spinAndShootNoPrespin()
+                //spinAndShoot()
         );
     }
 
