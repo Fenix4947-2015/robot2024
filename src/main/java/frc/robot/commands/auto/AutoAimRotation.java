@@ -49,9 +49,9 @@ public class AutoAimRotation extends AutoMoveStrategy {
     @Override
     public Pose2d updateDestination() {
         Pose2d currentPose = _driveTrain.getOdometry();
-        if (!_poseFound) {
-            return currentPose;
-        }
+        // if (!_poseFound) {
+        //     return currentPose;
+        // }
         
         Pose2d targetPose = Position.SPEAKER_SHOOT.getPositionForTeam(_robotContainer.m_alliance);
         Pose2d reference = Position.SPEAKER.getPositionForTeam(_robotContainer.m_alliance);
