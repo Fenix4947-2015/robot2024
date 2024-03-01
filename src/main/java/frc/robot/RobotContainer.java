@@ -118,8 +118,12 @@ public class RobotContainer {
         m_helperController.a().whileTrue(m_spinShooterContinous);
         m_helperController.leftStick().whileTrue(m_moveArmDirect);
         m_helperController.rightStick().whileTrue(m_rollWinch);
+        m_helperController.povUpLeft().whileTrue(m_autoSequences.armToAmpPosition());
         m_helperController.povUp().whileTrue(m_autoSequences.armToAmpPosition());
+        m_helperController.povUpRight().whileTrue(m_autoSequences.armToAmpPosition());
+        m_helperController.povDownLeft().whileTrue(m_autoSequences.armToLowestPosition());
         m_helperController.povDown().whileTrue(m_autoSequences.armToLowestPosition());
+        m_helperController.povDownRight().whileTrue(m_autoSequences.armToLowestPosition());
     }
 
     private void configureDefaultCommands() {
