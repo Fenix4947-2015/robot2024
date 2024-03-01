@@ -47,63 +47,63 @@ public enum Position {
     NOTE_2 {
         public Pose2d getPositionForTeam(Team team) {
             if (team == Team.BLUE) {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(2.9, 5.53, new Rotation2d());
             } else {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(2.9, 2.655, new Rotation2d());
             }
         }
     },
     NOTE_3 {
         public Pose2d getPositionForTeam(Team team) {
             if (team == Team.BLUE) {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(2.9, 4.106, new Rotation2d());
             } else {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(2.9, 4.106, new Rotation2d());
             }
         }
     },
     NOTE_4 {
         public Pose2d getPositionForTeam(Team team) {
             if (team == Team.BLUE) {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0, new Rotation2d());
             } else {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0.753, new Rotation2d());
             }
         }
     },
     NOTE_5 {
         public Pose2d getPositionForTeam(Team team) {
             if (team == Team.BLUE) {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0, new Rotation2d());
             } else {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0, new Rotation2d());
             }
         }
     },
     NOTE_6 {
         public Pose2d getPositionForTeam(Team team) {
             if (team == Team.BLUE) {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0, new Rotation2d());
             } else {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0, new Rotation2d());
             }
         }
     },
     NOTE_7 {
         public Pose2d getPositionForTeam(Team team) {
             if (team == Team.BLUE) {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0, new Rotation2d());
             } else {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0, new Rotation2d());
             }
         }
     },
     NOTE_8 {
         public Pose2d getPositionForTeam(Team team) {
             if (team == Team.BLUE) {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0, new Rotation2d());
             } else {
-                return new Pose2d(0, 0, new Rotation2d());
+                return new Pose2d(8.27, 0, new Rotation2d());
             }
         }
     };
