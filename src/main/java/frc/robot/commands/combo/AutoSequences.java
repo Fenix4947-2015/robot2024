@@ -67,43 +67,43 @@ public class AutoSequences {
 
     public Command findNote1Red() {
         return new AutoMoveIntakeFirst(
-            m_robotContainer.m_driveTrain, 
-            m_robotContainer.m_smartDashboardSettings, 
-            Position.NOTE_1.getPositionForTeam(m_robotContainer.m_alliance));
+                m_robotContainer.m_driveTrain,
+                m_robotContainer.m_smartDashboardSettings,
+                Position.NOTE_1.getPositionForTeam(m_robotContainer.m_alliance));
     }
 
-        public Command findNote2Red() {
+    public Command findNote2Red() {
         return new AutoMoveIntakeFirst(
-            m_robotContainer.m_driveTrain, 
-            m_robotContainer.m_smartDashboardSettings, 
-            Position.NOTE_2.getPositionForTeam(Team.RED));
+                m_robotContainer.m_driveTrain,
+                m_robotContainer.m_smartDashboardSettings,
+                Position.NOTE_2.getPositionForTeam(m_robotContainer.m_alliance));
     }
 
     // AUTOS
 
     public Command autoAimSpinAndShoot() {
         return armToLowestPosition()
-        .andThen(aimSpinAndShoot());
+                .andThen(aimSpinAndShoot());
     }
 
     public Command autoAimAndPickOne() {
         return armToLowestPosition()
-        .andThen(aimSpinAndShoot()
-        .andThen(findNote1Red())
-        .andThen(autoPickNote())
-        .andThen(aimSpinAndShoot())
-        );
+                .andThen(aimSpinAndShoot()
+                        .andThen(findNote1Red())
+                        .andThen(autoPickNote())
+                        .andThen(aimSpinAndShoot())
+                );
     }
 
     public Command autoAimAndPickTwo() {
         return armToLowestPosition()
-        .andThen(aimSpinAndShoot()
-        .andThen(findNote1Red())
-        .andThen(autoPickNote())
-        .andThen(aimSpinAndShoot())
-        .andThen(findNote2Red())
-        .andThen(autoPickNote())
-        .andThen(aimSpinAndShoot())
-        );
+                .andThen(aimSpinAndShoot()
+                        .andThen(findNote1Red())
+                        .andThen(autoPickNote())
+                        .andThen(aimSpinAndShoot())
+                        .andThen(findNote2Red())
+                        .andThen(autoPickNote())
+                        .andThen(aimSpinAndShoot())
+                );
     }
 }
