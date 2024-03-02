@@ -180,7 +180,7 @@ public class RobotContainer {
     }
 
     public void teleopInit() {
-        setAlliance();
+        //setAlliance();
     }
 
     public void autonomousInit() {
@@ -188,6 +188,6 @@ public class RobotContainer {
     }
 
     private void setAlliance() {
-        m_alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+        m_alliance = DriverStation.getAlliance().orElse(m_alliance);
     }
 }

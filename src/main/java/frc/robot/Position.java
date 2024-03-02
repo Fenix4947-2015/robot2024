@@ -129,9 +129,9 @@ public enum Position {
     NOTE_8_APPROACH {
         public Pose2d getPositionForTeam(Alliance team) {
             if (team == Blue) {
-                return new Pose2d(2, 0.753, Rotation2d.fromDegrees(130));
+                return new Pose2d(2, 0.753, Rotation2d.fromDegrees(180));
             } else {
-                return new Pose2d(2, 7.457, Rotation2d.fromDegrees(-130));
+                return new Pose2d(2, 7.457, Rotation2d.fromDegrees(180));
             }
         }
     };
