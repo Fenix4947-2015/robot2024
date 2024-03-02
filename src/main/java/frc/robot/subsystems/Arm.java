@@ -96,7 +96,7 @@ public class Arm extends SubsystemBase {
 
     private void log(double output) {
         SmartDashboardWrapper.putNumber("Arm / Output", output);
-        SmartDashboardWrapper.putNumber("Arm / Distance", getEncoderDistance());
+        SmartDashboardWrapper.putNumberImportant("Arm / Distance", getEncoderDistance());
     }
 
     private double limitOutput(double output, double angle) {

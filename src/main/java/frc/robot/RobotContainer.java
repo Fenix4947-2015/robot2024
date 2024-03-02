@@ -108,6 +108,7 @@ public class RobotContainer {
         // DRIVER
         m_driverController.leftBumper().whileTrue(m_autoPickNote);
         m_driverController.rightBumper().whileTrue(m_aimSpinAndShoot).onFalse(m_autoSequences.armToLowestPosition());
+        //m_driverController.leftTrigger().whileTrue(m_autoSequences.armToSafePosition()).onFalse(m_autoSequences.armToLowestPosition());
 //        m_driverController.a().whileTrue(m_autoPickNote);
 //        m_driverController.x().whileTrue(m_aimSpinAndShoot);
 

@@ -82,6 +82,10 @@ public class AutoSequences {
         return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kHighestPosition);
     }
 
+    public Command armToSafePosition() {
+        return new MoveArmPosition(m_robotContainer.m_arm, Constants.Arm.kSafePosition);
+    }
+
     public Command findNote(Position note) {
         return new ParallelDeadlineGroup(
                 new AutoMoveIntakeFirst(
