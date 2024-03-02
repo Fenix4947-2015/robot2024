@@ -1,5 +1,10 @@
 package frc.robot.subsystems;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
@@ -17,6 +22,8 @@ public class Intake extends SubsystemBase {
     private final DigitalInput m_detector = new DigitalInput(ElectricConstants.kIntakeDetectorChannel);
     private boolean m_noteIsProbablyInside = false;
     private boolean m_isIntaking = false;
+
+    private Optional<Instant> m_lastTimeNoteDetected = Optional.empty();
 
     public static double DEFAULT_SPEED = 0.5;
     public static double DEFAULT_SWALLOW_SPEED = -DEFAULT_SPEED;
@@ -56,6 +63,15 @@ public class Intake extends SubsystemBase {
         if (m_isIntaking && isNoteDetected()) {
             m_noteIsProbablyInside = true;
         }
-        SmartDashboard.putBoolean("Intake / Note detected", m_noteIsProbablyInside);
+        //SmartDashboard.putBoolean("Intake / Note detected", m_noteIsProbablyInside);
+
+        if (isNoteDetected()) {
+            m_lastTimeNoteDetected = Optional.of(Instant.now());
+        }
+
+        boolean noteDetecteeRecemment = m_lastTimeNoteDetected.map(lastTimeNoteDetected -> Duration
+                .between(lastTimeNoteDetected, Instant.now()).compareTo(Duration.ofSeconds(3)) < 0).orElse(false);
+
+        SmartDashboard.putBoolean("Intake / Note detectee recemment", noteDetecteeRecemment);
     }
 }
