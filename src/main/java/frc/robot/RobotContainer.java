@@ -67,9 +67,9 @@ public class RobotContainer {
     private final Command m_autoPickNote = m_autoSequences.autoPickNote();
     private final DriveSwerve m_driveSwerve = new DriveSwerve(m_driverController, m_driveTrain, SPEED_RATIO);
 
-    private final RollIntake m_rollIntakeSwallow = new RollIntake(m_intake, Intake.DEFAULT_SWALLOW_SPEED);
-    private final RollIntake m_rollIntakeSpit = new RollIntake(m_intake, Intake.DEFAULT_SPIT_SPEED);
-    private final RollIntake m_stopIntake = new RollIntake(m_intake, 0);
+    private final RollIntake m_rollIntakeSwallow = new RollIntake(m_intake, Intake.DEFAULT_SWALLOW_SPEED, true);
+    private final RollIntake m_rollIntakeSpit = new RollIntake(m_intake, Intake.DEFAULT_SPIT_SPEED, true);
+    private final RollIntake m_stopIntake = new RollIntake(m_intake, 0, false);
     private final IntakeNote m_intakeNote = new IntakeNote(m_intake);
     private final SpinShooterContinuous m_spinShooterContinous = new SpinShooterContinuous(m_shooter);
     private final Command m_stopShooter = m_autoSequences.stopShooter();

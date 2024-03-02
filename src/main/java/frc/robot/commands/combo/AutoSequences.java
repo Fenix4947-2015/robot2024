@@ -27,7 +27,7 @@ public class AutoSequences {
     public Command intakeNoteAndReadjust() {
         return new SequentialCommandGroup(
                 new IntakeNote(m_robotContainer.m_intake),
-                new RollIntake(m_robotContainer.m_intake, Intake.SLOW_SPIT_SPEED).withTimeout(0.2)
+                new RollIntake(m_robotContainer.m_intake, Intake.SLOW_SPIT_SPEED, true).withTimeout(0.2)
         );
     }
 
@@ -56,7 +56,7 @@ public class AutoSequences {
     public Command spinAndShootNoPrespin() {
         return new SequentialCommandGroup(
                 Commands.waitSeconds(0.1),
-                new RollIntake(m_robotContainer.m_intake, Intake.DEFAULT_SWALLOW_SPEED).withTimeout(0.5)
+                new RollIntake(m_robotContainer.m_intake, Intake.DEFAULT_SWALLOW_SPEED, true).withTimeout(0.5)
         );
     }
 

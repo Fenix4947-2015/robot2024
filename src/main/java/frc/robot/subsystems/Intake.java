@@ -56,6 +56,6 @@ public class Intake extends SubsystemBase {
         if (m_isIntaking && isNoteDetected()) {
             m_noteIsProbablyInside = true;
         }
-        SmartDashboard.putBoolean("Note a été détectée", m_noteIsProbablyInside);
+        SmartDashboard.putBoolean("Intake / Note detected", m_noteIsProbablyInside);
     }
 }
