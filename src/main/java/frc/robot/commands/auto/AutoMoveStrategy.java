@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -59,6 +60,8 @@ public class AutoMoveStrategy extends Command {
 
     private final long _setpointDelayMs;
     public static final long DEFAULT_SETPOINT_DELAY_MS = 500;
+    private final Pose2d _posTolerance;
+    public static final Pose2d DEFAULT_POS_TOLERANCE = new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(3.0));
 
     private boolean _isAtSetPoint = false;
     private Optional<Instant> _atSetpointSince = Optional.empty();
@@ -66,19 +69,37 @@ public class AutoMoveStrategy extends Command {
     public AutoMoveStrategy(
         Drivetrain driveTrain, 
         SmartDashboardSettings smartDashboardSettings,
+        Pose2d target,
+        Pose2d posTolerance) {
+            this(driveTrain, smartDashboardSettings, target, DEFAULT_SETPOINT_DELAY_MS, posTolerance);
+    }
+    
+    public AutoMoveStrategy(
+        Drivetrain driveTrain, 
+        SmartDashboardSettings smartDashboardSettings,
         Pose2d target) {
             this(driveTrain, smartDashboardSettings, target, DEFAULT_SETPOINT_DELAY_MS);
-        }
+    }
 
     public AutoMoveStrategy(
         Drivetrain driveTrain, 
         SmartDashboardSettings smartDashboardSettings,
         Pose2d target,
         long setpointDelayMs) {
+            this(driveTrain, smartDashboardSettings, target, setpointDelayMs, DEFAULT_POS_TOLERANCE);
+    }
+
+    public AutoMoveStrategy(
+        Drivetrain driveTrain, 
+        SmartDashboardSettings smartDashboardSettings,
+        Pose2d target,
+        long setpointDelayMs,
+        Pose2d posTolerance) {
         _driveTrain = driveTrain;
         _smartDashboardSettings = smartDashboardSettings;
         _target = target;
         _setpointDelayMs = setpointDelayMs;
+        _posTolerance = posTolerance;
         addRequirements(driveTrain);
         _smartDashboardSettings.setPidValues(_pidAngle.getP(), _pidAngle.getI(), _pidAngle.getD(), 0.0, PIDTYPE_AUTOAIM);
         _pidAngle.enableContinuousInput(-180, 180);
@@ -233,15 +254,15 @@ public class AutoMoveStrategy extends Command {
         SmartDashboardWrapper.putNumber("dtheta", dtheta);
 
         _pidAngle.setSetpoint(0);
-        _pidAngle.setTolerance(3);
+        _pidAngle.setTolerance(_posTolerance.getRotation().getDegrees());
         double steerCommand = _pidAngle.calculate(dtheta);
 
         _pidDistanceX.setSetpoint(0);
-        _pidDistanceX.setTolerance(0.1);
+        _pidDistanceX.setTolerance(_posTolerance.getX());
         double drive_x_cmd = _pidDistanceX.calculate(dx);
 
         _pidDistanceY.setSetpoint(0);
-        _pidDistanceY.setTolerance(0.1);
+        _pidDistanceY.setTolerance(_posTolerance.getY());
         double drive_y_cmd = _pidDistanceY.calculate(dy);
 
         SmartDashboardWrapper.putNumber("drive_x_cmd", drive_x_cmd);

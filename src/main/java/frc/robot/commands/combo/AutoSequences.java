@@ -1,5 +1,7 @@
 package frc.robot.commands.combo;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.Position;
@@ -97,6 +99,15 @@ public class AutoSequences {
                         position.getPositionForTeam(m_robotContainer.m_alliance));
     }
 
+    public Command moveAbsoluteRough(Position position) {
+        final Pose2d posTolerance = new Pose2d(0.3, 0.3, Rotation2d.fromDegrees(10.0));
+        return new AutoMoveAbsolute(
+                        m_robotContainer.m_driveTrain,
+                        m_robotContainer.m_smartDashboardSettings,
+                        position.getPositionForTeam(m_robotContainer.m_alliance),
+                        posTolerance);
+    }
+
     // AUTOS
 
     public Command autoAimSpinAndShoot() {
@@ -142,24 +153,25 @@ public class AutoSequences {
                 .andThen(findNote(Position.NOTE_4))
                 .andThen(autoPickNote())
                 .andThen(moveAbsolute(Position.SPEAKER_SHOOT_NOTE_1))
-                .andThen(aimSpinAndShoot());
+                .andThen(aimSpinAndShoot())
+                .andThen(findNote(Position.NOTE_1));
     }
 
     public Command autoAimAndPick8and7() {
         return aimSpinAndShoot()
-                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(moveAbsoluteRough(Position.NOTE_8_APPROACH))
                 .andThen(findNote(Position.NOTE_8))
                 .andThen(autoPickNote())
-                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(moveAbsoluteRough(Position.NOTE_8_APPROACH))
                 .andThen(moveAbsolute(Position.SPEAKER_SHOOT_NOTE_3))
                 .andThen(aimSpinAndShoot())
-                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(moveAbsoluteRough(Position.NOTE_8_APPROACH))
                 .andThen(findNote(Position.NOTE_7))
                 .andThen(autoPickNote())
-                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(moveAbsoluteRough(Position.NOTE_8_APPROACH))
                 .andThen(moveAbsolute(Position.SPEAKER_SHOOT_NOTE_3))
                 .andThen(aimSpinAndShoot())
-                .andThen(moveAbsolute(Position.NOTE_8_APPROACH))
+                .andThen(moveAbsoluteRough(Position.NOTE_8_APPROACH))
                 .andThen(findNote(Position.NOTE_7))
                 ;
     }
