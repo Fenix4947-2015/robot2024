@@ -23,6 +23,7 @@ import frc.robot.commands.intake.IntakeNote;
 import frc.robot.commands.intake.RollIntake;
 import frc.robot.commands.sequence.AutoInitSequence;
 import frc.robot.commands.shooter.SpinShooterContinuous;
+import frc.robot.commands.shooter.SpinShooterContinuousAdjustable;
 import frc.robot.commands.winch.RollWinchSpeed;
 import frc.robot.commands.winch.RollWinchStick;
 import frc.robot.limelight.Limelight;
@@ -73,6 +74,7 @@ public class RobotContainer {
     private final RollIntake m_stopIntake = new RollIntake(m_intake, 0, false);
     private final IntakeNote m_intakeNote = new IntakeNote(m_intake);
     private final SpinShooterContinuous m_spinShooterContinous = new SpinShooterContinuous(m_shooter);
+    private final SpinShooterContinuousAdjustable m_spinShooterAdjustable = new SpinShooterContinuousAdjustable(m_shooter);
     private final Command m_stopShooter = m_autoSequences.stopShooter();
     private final MoveArmAim m_moveArmAim = new MoveArmAim(m_arm, m_limelight_three, this);
     private final Command m_aimSpinAndShoot = m_autoSequences.aimSpinAndShoot();
@@ -119,6 +121,8 @@ public class RobotContainer {
         m_helperController.rightBumper().whileTrue(m_rollIntakeSwallow);
         m_helperController.x().whileTrue(m_autoPickNote);
         m_helperController.a().whileTrue(m_spinShooterContinous);
+        m_helperController.rightTrigger().whileTrue(m_spinShooterAdjustable);
+
         m_helperController.leftStick().whileTrue(m_moveArmDirect);
         m_helperController.rightStick().whileTrue(m_rollWinch);
         m_helperController.povUpLeft().whileTrue(m_autoSequences.armToAmpPosition());
@@ -127,6 +131,8 @@ public class RobotContainer {
         m_helperController.povDownLeft().whileTrue(m_autoSequences.armToLowestPosition());
         m_helperController.povDown().whileTrue(m_autoSequences.armToLowestPosition());
         m_helperController.povDownRight().whileTrue(m_autoSequences.armToLowestPosition());
+
+        SmartDashboard.putNumber("Adjust shooter speed", 0.5);
     }
 
     private void configureDefaultCommands() {
