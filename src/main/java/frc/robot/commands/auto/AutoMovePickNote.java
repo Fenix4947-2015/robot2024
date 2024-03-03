@@ -48,7 +48,7 @@ public class AutoMovePickNote extends AutoMoveStrategy {
     @Override
     public boolean isFinished() {
         return super.isFinished() || 
-        (_limelight.isTargetValid() && _limelight.getTx() < 0 && _quickStop);
+        (_limelight.isTargetValid() && _limelight.getTy() < 0 && _quickStop);
     }
 
     @Override
