@@ -12,6 +12,7 @@ import frc.robot.limelight.Limelight;
 public class AutoMovePickNote extends AutoMoveStrategy {
 
     private final Limelight _limelight;
+    private final boolean _quickStop;
 
     public AutoMovePickNote(
         Drivetrain driveTrain, 
@@ -19,8 +20,19 @@ public class AutoMovePickNote extends AutoMoveStrategy {
         SmartDashboardSettings smartDashboardSettings
         )
         {
+            this(driveTrain, limelight, smartDashboardSettings, false);
+    }
+
+        public AutoMovePickNote(
+        Drivetrain driveTrain, 
+        Limelight limelight,
+        SmartDashboardSettings smartDashboardSettings,
+        boolean quickStop
+        )
+        {
             super(driveTrain, smartDashboardSettings, new Pose2d());
             _limelight = limelight;
+            _quickStop = quickStop;
     }
     
     @Override
@@ -31,6 +43,12 @@ public class AutoMovePickNote extends AutoMoveStrategy {
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return super.isFinished() || 
+        (_limelight.isTargetValid() && _limelight.getTx() < 0 && _quickStop);
     }
 
     @Override

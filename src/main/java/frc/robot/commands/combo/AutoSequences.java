@@ -41,6 +41,18 @@ public class AutoSequences {
         );
     }
 
+    public Command autoPickNoteTeleop() {
+        return new ParallelDeadlineGroup(
+                intakeNoteAndReadjust(),
+                armToLowestPosition(),
+                new AutoMovePickNote(
+                    m_robotContainer.m_driveTrain, 
+                    m_robotContainer.m_limelight, 
+                    m_robotContainer.m_smartDashboardSettings,
+                    true)
+        );
+    }
+
     public Command stopShooter() {
         return new StopShooter(m_robotContainer.m_shooter);
     }
