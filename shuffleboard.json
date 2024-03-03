@@ -85,6 +85,32 @@
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
             }
+          },
+          "7,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Shooter / Shooter Top Speed (RPM)",
+              "_title": "/SmartDashboard/Shooter / Shooter Top Speed (RPM)",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Adjust shooter speed",
+              "_title": "/SmartDashboard/Adjust shooter speed",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
